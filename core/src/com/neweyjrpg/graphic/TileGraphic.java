@@ -1,4 +1,4 @@
-package com.neweyjrpg.graphics;
+package com.neweyjrpg.graphic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
