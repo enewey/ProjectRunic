@@ -20,14 +20,14 @@ public class InputController extends InputAdapter {
 			case Keys.UP:
 				dirs[0]=false;
 				return true;
+			case Keys.RIGHT:
+				dirs[1] = false;
+				return true;
 			case Keys.DOWN:
 				dirs[2] = false;
 				return true;
 			case Keys.LEFT:
 				dirs[3] = false;
-				return true;
-			case Keys.RIGHT:
-				dirs[1] = false;
 				return true;
 		}
 		
@@ -40,14 +40,14 @@ public class InputController extends InputAdapter {
 			case Keys.UP:
 				dirs[0] = true;
 				return true;
+			case Keys.RIGHT:
+				dirs[1] = true;
+				return true;
 			case Keys.DOWN:
 				dirs[2] = true;
 				return true;
 			case Keys.LEFT:
 				dirs[3] = true;
-				return true;
-			case Keys.RIGHT:
-				dirs[1] = true;
 				return true;
 		}
 		
