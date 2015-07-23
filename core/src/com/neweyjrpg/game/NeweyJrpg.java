@@ -31,9 +31,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		
-		MapParser mapParser = new MapParser("maps/map1.txt");
-		map = new GameMap("dungeon.png", mapParser.getMapData());
+		map = new GameMap("dungeon.png", "maps/map1.txt");
 		
 		
 		//tile = new TileGraphic(new Texture("dungeon.png"), 20, 10);

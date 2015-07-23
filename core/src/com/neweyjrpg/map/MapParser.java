@@ -11,10 +11,9 @@ import com.sun.media.sound.InvalidFormatException;
 
 public class MapParser {
 
-	private char[][] data;
+	private String[][] data;
 	private String tileSet;
 	
-	@SuppressWarnings("resource")
 	public MapParser(String file)
 	{
 		BufferedReader br = null;
@@ -30,11 +29,13 @@ public class MapParser {
 			
 			int counter = 0;
 			String line = null;
-			data = new char[height][];
-			while ((line = br.readLine()) != null && counter < height) {
-				data[counter] = line.toCharArray();
+			data = new String[height][];
+			while ((line = br.readLine()) != null) {
+				if (counter > height)
+					throw new InvalidFormatException("Height does not match supplied map data");
+				data[counter] = line.split(",");
 				if (data[counter].length != width) {
-					System.out.println("Line length invalid");
+					System.out.println("Invalid file format");
 					throw new InvalidFormatException("Line length of map at line "+counter+" did not match dimension");
 				}
 				counter++;
@@ -48,7 +49,7 @@ public class MapParser {
 		}
 	}
 	
-	public char[][] getMapData(){
+	public String[][] getMapData(){
 		return this.data;
 	}
 	public String getTileSetFile(){

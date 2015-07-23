@@ -6,17 +6,19 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class GameMap {
 
-	private HashMap<Character, MapTile> tileCache;
+	private HashMap<String, MapTile> tileCache;
 	private Texture tileSet;
 	private MapTile[][] mapData;
 	private int dimX, dimY;
 	
-	public GameMap(String tileFile, char[][] data) {
+	public GameMap(String tileFile, String mapFile) {
+		MapParser mapParser = new MapParser(mapFile);
+		String[][] data = mapParser.getMapData();
 		tileSet = new Texture(tileFile);
 		dimX = data.length;
 		dimY = data[0].length;
 		mapData = new MapTile[dimY][dimX];
-		tileCache = new HashMap<Character, MapTile>();
+		tileCache = new HashMap<String, MapTile>();
 		
 		for (int i = 0; i<data.length; i++)	{
 			for (int j = 0; j<data[i].length; j++) {
