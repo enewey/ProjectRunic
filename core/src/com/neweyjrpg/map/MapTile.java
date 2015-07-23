@@ -13,4 +13,8 @@ public class MapTile {
 		graphic = new TileGraphic(tileSet, x, y);
 	}
 	
+	public TileGraphic getGraphic(){
+		return this.graphic;
+	}
+	
 }

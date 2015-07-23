@@ -15,12 +15,15 @@ import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.InputController;
 import com.neweyjrpg.graphic.ActorGraphic;
 import com.neweyjrpg.graphic.TileGraphic;
+import com.neweyjrpg.map.GameMap;
+import com.neweyjrpg.map.MapParser;
 
 public class NeweyJrpg extends ApplicationAdapter {
 	SpriteBatch batch;
 	GameActor chara;
 	InputController input;
-	TileGraphic tile;
+	
+	GameMap map;
 	
 	Camera camera;
 	Viewport viewport;
@@ -28,7 +31,12 @@ public class NeweyJrpg extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		tile = new TileGraphic(new Texture("dungeon.png"), 20, 10);
+		
+		MapParser mapParser = new MapParser("maps/map1.txt");
+		map = new GameMap("dungeon.png", mapParser.getMapData());
+		
+		
+		//tile = new TileGraphic(new Texture("dungeon.png"), 20, 10);
 		chara = new GameActor(
 					new Sprite(new ActorGraphic(new Texture("charas.png"), 1, 0)),
 					new Sprite(new ActorGraphic(new Texture("charas.png"), 13, 0)),
@@ -46,9 +54,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		Gdx.input.setInputProcessor(input);
 		batch.begin();
-		for (int x=0; x<60; x++)
+		for (int x=0; x<30; x++)
 			for (int y=0; y<30; y++)
-				batch.draw(tile, x*16, y*16);
+				batch.draw(map.getMapTile(x, y).getGraphic(), x*16, y*16);
 		
 		boolean[] dirs = input.getInputs();
 		float tx=0f, ty=0f;
