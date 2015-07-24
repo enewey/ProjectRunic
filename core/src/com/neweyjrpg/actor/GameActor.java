@@ -1,5 +1,6 @@
 package com.neweyjrpg.actor;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -25,6 +26,7 @@ public class GameActor {
 		this.layerSprite.setPosition(x, y);
 	}
 	
+	
 	//Members
 	
 	private Sprite baseSprite;
@@ -37,6 +39,10 @@ public class GameActor {
 		this.layerSprite = layerSprite;
 		this.layerSprite.setPosition(this.baseSprite.getX(), this.baseSprite.getY());
 	}
+	
+	private Animation animation;
+	public Animation getAnimation() { return animation; }
+	public void setAnimation(Animation animation) {	this.animation = animation;	}
 	
 	//Methods
 	
@@ -59,5 +65,6 @@ public class GameActor {
 	public float[] getPosition() {
 		return new float[]{ this.baseSprite.getX(),	this.baseSprite.getY() };
 	}
+	
 	
 }
