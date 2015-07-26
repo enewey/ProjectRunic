@@ -62,11 +62,12 @@ public class GameActor {
 	//Methods
 	public void draw(SpriteBatch batch, float deltaTime) {
 		this.animation.draw(batch, deltaTime, this.dir, this.isMoving);
-		this.isMoving = false;
 	}
 	
 	public void move(float x, float y){
-		isMoving = true;
+		if (x == 0 && y == 0) isMoving = false;
+		else isMoving = true;
+		
 		if (x<0) this.dir=Direction.LEFT;
 		else if (x>0) this.dir=Direction.RIGHT;
 		if (y<0) this.dir=Direction.DOWN;
