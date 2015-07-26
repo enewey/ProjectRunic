@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.neweyjrpg.constants.Constants;
-import com.neweyjrpg.enums.Enums.Direction;
+import com.neweyjrpg.enums.Enums.Dir;
 
 public class ActorAnimation {
 	
@@ -55,7 +55,7 @@ public class ActorAnimation {
 		}
 	}
 	
-	public Animation getAnim(Direction dir) {
+	public Animation getAnim(Dir dir) {
 		switch(dir){
 			case UP:
 				return upAnim;
@@ -83,7 +83,7 @@ public class ActorAnimation {
 		return new float[] { xPos, yPos };
 	}
 	
-	public void draw(Batch batch, float deltaTime, Direction dir, boolean loop) {
+	public void draw(Batch batch, float deltaTime, Dir dir, boolean loop) {
 		switch(dir){
 			case UP:
 				batch.draw(upAnim.getKeyFrame(deltaTime, loop), this.xPos, this.yPos);

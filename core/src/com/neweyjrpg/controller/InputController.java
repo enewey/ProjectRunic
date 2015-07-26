@@ -2,12 +2,10 @@ package com.neweyjrpg.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.neweyjrpg.interfaces.IProducesInputs;
 
-public class InputController extends InputAdapter {
+public class InputController extends InputAdapter implements IProducesInputs {
 
-	enum Dir {
-		UP, DOWN, LEFT, RIGHT
-	}
 	private boolean[] dirs;
 	
 	public InputController() {
@@ -54,8 +52,14 @@ public class InputController extends InputAdapter {
 		return false;
 	}
 	
-	public boolean[] getInputs() {
+	@Override
+	public boolean[] getDirectionalInput() {
 		return dirs;
+	}
+
+	@Override
+	public boolean[] getButtonInput() {
+		return new boolean[10];
 	}
 	
 	
