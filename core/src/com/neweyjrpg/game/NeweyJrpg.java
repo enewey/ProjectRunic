@@ -28,6 +28,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 	Camera camera;
 	Viewport viewport;
 	
+	float stateTime;
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -35,14 +37,13 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		
 		//tile = new TileGraphic(new Texture("dungeon.png"), 20, 10);
-		chara = new GameActor(
-					new Sprite(new ActorGraphic(new Texture("charas.png"), 1, 0)),
-					new Sprite(new ActorGraphic(new Texture("charas.png"), 13, 0)),
-					40f, 40f);
+		chara = new GameActor(new Texture("hero.png"), 0, 40f, 40f);
 		input = new InputController();
 		
 		camera = new PerspectiveCamera();
-		viewport = new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera);	
+		viewport = new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera);
+		
+		stateTime = 0f;
 	}
 
 	@Override
@@ -68,7 +69,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 			tx=-2f;
 		chara.move(tx, ty);
 		
-		chara.draw(batch);
+		stateTime += Gdx.graphics.getDeltaTime();
+		
+		chara.draw(batch, stateTime);
 		batch.end();
 	}
 	
