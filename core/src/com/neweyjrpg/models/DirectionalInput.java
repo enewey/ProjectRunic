@@ -6,38 +6,29 @@ import com.neweyjrpg.enums.Enums.Dir;
 
 public class DirectionalInput {
 	
-	private Stack<Dir> data;
-	
+	private boolean[] data;
 	
 	public DirectionalInput() {
-		this.data = new Stack<Dir>();
+		this.data = new boolean[4];
 	}
-	public DirectionalInput(Dir[] in) {
-		this.data = new Stack<Dir>();
-		for (int i=0; i<in.length; i++)
-			this.data.push(in[i]);
-	}
+	
+	public void pushUp() 	{ this.data[0] = true; }
+	public void pushRight() { this.data[1] = true; }
+	public void pushDown() 	{ this.data[2] = true; }
+	public void pushLeft() 	{ this.data[3] = true; }
 	
 	public void clear() {
-		this.data.clear();
-	}
-	public boolean isEmpty() {
-		return this.data.isEmpty();
-	}
-	public Dir pop() {
-		return this.data.pop();
+		for (int i=0; i<4; i++)
+			this.data[i] = false;
 	}
 	
-	public void pushDown() 	{ this.push(Dir.DOWN); }
-	public void pushUp() 	{ this.push(Dir.UP); }
-	public void pushLeft() 	{ this.push(Dir.LEFT); }
-	public void pushRight() { this.push(Dir.RIGHT); }
-	
-	private void push(Dir in) {
-		if (!this.data.contains(in))
-			this.data.push(in);
+	public Stack<Dir> getInputs() {
+		Stack<Dir> ret = new Stack<Dir>();
+		if (data[0]) ret.push(Dir.UP);
+		if (data[1]) ret.push(Dir.RIGHT);
+		if (data[2]) ret.push(Dir.DOWN);
+		if (data[3]) ret.push(Dir.LEFT);
+		return ret;
 	}
-	
-	
 
 }

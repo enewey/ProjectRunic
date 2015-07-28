@@ -1,5 +1,7 @@
 package com.neweyjrpg.actor;
 
+import java.util.Stack;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -59,8 +61,9 @@ public class GameActor implements IHandlesInputs {
 	}
 	
 	@Override
-	public void moveFromInput(DirectionalInput dirs) {
+	public void moveFromInput(DirectionalInput input) {
 		float tx=0f, ty=0f;
+		Stack<Dir> dirs = input.getInputs();
 		while (!dirs.isEmpty()) {
 			Dir d = dirs.pop();
 			switch (d){

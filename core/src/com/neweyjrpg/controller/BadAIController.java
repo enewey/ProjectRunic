@@ -10,11 +10,11 @@ public class BadAIController implements IProducesInputs {
 	
 	private float timeSinceLastInput;
 	
-	private boolean[] dirs;
+	DirectionalInput dirs;
 	private boolean[] buttons;
 	
 	public BadAIController() {
-		dirs = new boolean[]{false,false,false,false};
+		dirs = new DirectionalInput();
 		buttons = new boolean[]{ false, false, false, false, false,
 								 false, false, false, false, false};
 		timeSinceLastInput = 0f;
@@ -23,12 +23,7 @@ public class BadAIController implements IProducesInputs {
 	@Override
 	public DirectionalInput getDirectionalInput() {
 		randomizeInputs();
-		DirectionalInput input = new DirectionalInput();
-		if (dirs[0]) input.pushUp();
-		if (dirs[1]) input.pushRight();
-		if (dirs[2]) input.pushDown();
-		if (dirs[3]) input.pushLeft();
-		return input;
+		return dirs;
 	}
 
 	@Override
@@ -43,8 +38,7 @@ public class BadAIController implements IProducesInputs {
 		if (timeSinceLastInput >= TIME_BETWEEN_INPUTS)
 			timeSinceLastInput = 0f;
 		else if (timeSinceLastInput >= TIME_BETWEEN_INPUTS * 3 / 4) {
-			for (int i=0; i<4; i++)
-				dirs[i] = false;
+			dirs.clear();
 			for (int i=0; i<10; i++)
 				buttons[i] = false;
 			return;
@@ -54,15 +48,15 @@ public class BadAIController implements IProducesInputs {
 		
 		double rand = Math.random()*2 - 1;
 		if (rand < -0.3)
-			dirs[0] = true;
+			dirs.pushUp();
 		else if (rand > 0.3)
-			dirs[2] = true;
+			dirs.pushDown();
 		
 		rand = Math.random()*2 - 1;
 		if (rand < -0.3)
-			dirs[1] = true;
+			dirs.pushLeft();
 		else if (rand > 0.3)
-			dirs[3] = true;
+			dirs.pushRight();
 		//TODO: Add button randomization here -_-	
 		
 	}
