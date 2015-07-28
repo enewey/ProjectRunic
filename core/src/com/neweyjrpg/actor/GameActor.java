@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
 import com.neweyjrpg.interfaces.IHandlesInputs;
+import com.neweyjrpg.models.DirectionalInput;
 
 public class GameActor implements IHandlesInputs {
-	
-	private final static float MOVEMENT_DISTANCE = 2f;
 	
 	//Fields
 	private ActorAnimation animation;
@@ -22,13 +22,17 @@ public class GameActor implements IHandlesInputs {
 	public void setDir(Dir dir) {	this.dir = dir;	}
 	
 	private boolean isMoving;
-
+	protected float movespeed;
+	public float getMovespeed() { return movespeed;	}
+	public void setMovespeed(float movespeed) {	this.movespeed = movespeed;	}
+	
 	//Constructors
 	public GameActor(Texture charaSet, int pos, float x, float y){
 		this.animation = new ActorAnimation(charaSet, pos);
 		this.setPosition(x, y);
 		this.dir = Dir.DOWN;
 		this.isMoving = false;
+		movespeed = 2f;
 	}
 	
 	//Methods
@@ -55,16 +59,25 @@ public class GameActor implements IHandlesInputs {
 	}
 	
 	@Override
-	public void moveFromInput(boolean[] dirs) {
+	public void moveFromInput(DirectionalInput dirs) {
 		float tx=0f, ty=0f;
-		if (dirs[0] && !dirs[2])
-			ty = MOVEMENT_DISTANCE;
-		else if (!dirs[0] && dirs[2])
-			ty = -MOVEMENT_DISTANCE;
-		if (dirs[1] && !dirs[3])
-			tx = MOVEMENT_DISTANCE;
-		else if (!dirs[1] && dirs[3])
-			tx = -MOVEMENT_DISTANCE;
-		this.move(tx, ty);
+		while (!dirs.isEmpty()) {
+			Dir d = dirs.pop();
+			switch (d){
+			case UP:
+				ty += movespeed;
+				break;
+			case RIGHT:
+				tx += movespeed;
+				break;
+			case DOWN:
+				ty -= movespeed;
+				break;
+			case LEFT:
+				tx -= movespeed;
+				break;
+			}
+		}
+		move(tx, ty);
 	}
 }

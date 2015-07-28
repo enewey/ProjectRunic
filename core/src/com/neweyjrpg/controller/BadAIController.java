@@ -2,6 +2,7 @@ package com.neweyjrpg.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.models.DirectionalInput;
 
 public class BadAIController implements IProducesInputs {
 
@@ -9,20 +10,25 @@ public class BadAIController implements IProducesInputs {
 	
 	private float timeSinceLastInput;
 	
-	private boolean[] directions;
+	private boolean[] dirs;
 	private boolean[] buttons;
 	
 	public BadAIController() {
-		directions = new boolean[]{ false, false, false, false};
+		dirs = new boolean[]{false,false,false,false};
 		buttons = new boolean[]{ false, false, false, false, false,
 								 false, false, false, false, false};
 		timeSinceLastInput = 0f;
 	}
 	
 	@Override
-	public boolean[] getDirectionalInput() {
+	public DirectionalInput getDirectionalInput() {
 		randomizeInputs();
-		return directions;
+		DirectionalInput input = new DirectionalInput();
+		if (dirs[0]) input.pushUp();
+		if (dirs[1]) input.pushRight();
+		if (dirs[2]) input.pushDown();
+		if (dirs[3]) input.pushLeft();
+		return input;
 	}
 
 	@Override
@@ -33,11 +39,12 @@ public class BadAIController implements IProducesInputs {
 	
 	private void randomizeInputs() {
 		timeSinceLastInput += Gdx.graphics.getDeltaTime();
+		
 		if (timeSinceLastInput >= TIME_BETWEEN_INPUTS)
 			timeSinceLastInput = 0f;
-		else if (timeSinceLastInput >= TIME_BETWEEN_INPUTS / 2){
+		else if (timeSinceLastInput >= TIME_BETWEEN_INPUTS * 3 / 4) {
 			for (int i=0; i<4; i++)
-				directions[i] = false;
+				dirs[i] = false;
 			for (int i=0; i<10; i++)
 				buttons[i] = false;
 			return;
@@ -45,22 +52,17 @@ public class BadAIController implements IProducesInputs {
 		else
 			return;
 		
-		for (int i=0; i<4; i++) {
-			if (Math.random() >= 0.5) {
-				directions[i] = false;
-			} else {
-				directions[i] = true;
-			}
-		}
-		if (directions[0] && directions[2]) {
-			if (Math.round(Math.random()) == 0) directions[0] = false;
-			else directions[2] = false;
-		}
-		if (directions[1] && directions[3]) {
-			if (Math.round(Math.random()) == 0) directions[1] = false;
-			else directions[3] = false;
-		}
-			
+		double rand = Math.random()*2 - 1;
+		if (rand < -0.3)
+			dirs[0] = true;
+		else if (rand > 0.3)
+			dirs[2] = true;
+		
+		rand = Math.random()*2 - 1;
+		if (rand < -0.3)
+			dirs[1] = true;
+		else if (rand > 0.3)
+			dirs[3] = true;
 		//TODO: Add button randomization here -_-	
 		
 	}

@@ -3,6 +3,7 @@ package com.neweyjrpg.controller;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.models.DirectionalInput;
 
 public class InputController extends InputAdapter implements IProducesInputs {
 
@@ -53,8 +54,13 @@ public class InputController extends InputAdapter implements IProducesInputs {
 	}
 	
 	@Override
-	public boolean[] getDirectionalInput() {
-		return dirs;
+	public DirectionalInput getDirectionalInput() {
+		DirectionalInput input = new DirectionalInput();
+		if (dirs[0]) input.pushUp();
+		if (dirs[1]) input.pushRight();
+		if (dirs[2]) input.pushDown();
+		if (dirs[3]) input.pushLeft();
+		return input;
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.controller.InputController;
 import com.neweyjrpg.map.GameMap;
+import com.neweyjrpg.models.DirectionalInput;
 
 public class NeweyJrpg extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -59,8 +60,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		//Handle actor movement
 		chara.moveFromInput(input.getDirectionalInput());
-		boolean[] inputs = ai.getDirectionalInput();
-		npc.moveFromInput(inputs);
+		npc.moveFromInput(ai.getDirectionalInput());
 		
 		stateTime += Gdx.graphics.getDeltaTime();
 		

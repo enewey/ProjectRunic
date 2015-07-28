@@ -1,16 +1,17 @@
 package com.neweyjrpg.interfaces;
 
+import com.neweyjrpg.models.DirectionalInput;
+
 public interface IProducesInputs {
 	
 	/**
-	 * 0 - Up, 1 - Right, 2 - Down, 3 - Left
-	 * @return four element array of booleans to indicate directions input
+	 * @return object that is guaranteed to represent what 
+	 * 			directions are being pressed at the time of call
 	 */
-	public boolean[] getDirectionalInput();
+	public DirectionalInput getDirectionalInput();
 	
 	/**
-	 * 0 - Button1, 1 - Button2, etc...
-	 * @return ten element array of booleans
+	 *  NOT DONE!
 	 */
 	public boolean[] getButtonInput();
 	
