@@ -46,13 +46,9 @@ public class GameActor extends Actor implements IHandlesInputs {
 	//Methods
 	@Override
 	public void draw(Batch batch, float deltaTime) {
-		if (this.isMoving) {
-			animation.setPosition(this.getX(), this.getY());
-			this.animation.draw(batch, deltaTime, this.dir, this.isMoving);	
-		}
-		else {
-			batch.draw(this.animation.getAnim(this.dir).getKeyFrame(Constants.IDLE_FRAME * Constants.FRAME_DURATION), getX(), getY());
-		}
+		if (!this.isMoving)
+			deltaTime = Constants.IDLE_FRAME * Constants.FRAME_DURATION; 
+		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), getX(), getY());
 		
 	}
 	
@@ -63,7 +59,7 @@ public class GameActor extends Actor implements IHandlesInputs {
 		this.setY(y);
 	}
 	public float[] getPosition() {
-		return animation.getPosition();
+		return new float[]{getX(), getY()};
 	}
 	
 	public void move(float x, float y){
