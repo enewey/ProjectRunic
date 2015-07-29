@@ -8,5 +8,4 @@ public class NPCActor extends GameActor {
 		super(charaSet, pos, x, y);
 		this.movespeed = 1f;
 	}
-
 }

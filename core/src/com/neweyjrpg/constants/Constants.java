@@ -16,4 +16,8 @@ public class Constants {
 	//Actor Animation
 	public final static float FRAME_DURATION = 0.125f;
 	public final static int FRAME_COUNT = 4;
+	public final static int IDLE_FRAME = 1; //the frame of animation which a character appears standing still
+	
+	//Actor movement
+	
 }

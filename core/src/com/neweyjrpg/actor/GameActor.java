@@ -2,17 +2,20 @@ package com.neweyjrpg.actor;
 
 import java.util.Stack;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
 import com.neweyjrpg.interfaces.IHandlesInputs;
 import com.neweyjrpg.models.DirectionalInput;
 
-public class GameActor implements IHandlesInputs {
+public class GameActor extends Actor implements IHandlesInputs {
+	
+	protected final static float ACTION_SPEED = 0.01f;
 	
 	//Fields
 	private ActorAnimation animation;
@@ -32,32 +35,58 @@ public class GameActor implements IHandlesInputs {
 	public GameActor(Texture charaSet, int pos, float x, float y){
 		this.animation = new ActorAnimation(charaSet, pos);
 		this.setPosition(x, y);
+		this.setBounds(x, y, 
+				this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionWidth(), 
+				this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionWidth());
 		this.dir = Dir.DOWN;
 		this.isMoving = false;
 		movespeed = 2f;
 	}
 	
 	//Methods
-	public void draw(SpriteBatch batch, float deltaTime) {
-		this.animation.draw(batch, deltaTime, this.dir, this.isMoving);
+	@Override
+	public void draw(Batch batch, float deltaTime) {
+		if (this.isMoving) {
+			animation.setPosition(this.getX(), this.getY());
+			this.animation.draw(batch, deltaTime, this.dir, this.isMoving);	
+		}
+		else {
+			batch.draw(this.animation.getAnim(this.dir).getKeyFrame(Constants.IDLE_FRAME * Constants.FRAME_DURATION), getX(), getY());
+		}
+		
 	}
 	
+	
+	@Override
 	public void setPosition(float x, float y) {
-		animation.setPosition(x, y);
+		this.setX(x);
+		this.setY(y);
 	}
 	public float[] getPosition() {
 		return animation.getPosition();
 	}
 	
 	public void move(float x, float y){
-		if (x == 0 && y == 0) isMoving = false;
-		else isMoving = true;
+		if (x == 0 && y == 0) 	
+			isMoving = false;
+		else 					
+			isMoving = true;
 		
-		if (x<0) this.dir=Dir.LEFT;
-		else if (x>0) this.dir=Dir.RIGHT;
-		if (y<0) this.dir=Dir.DOWN;
-		else if (y>0) this.dir=Dir.UP;
-		this.animation.translate(x, y);
+		if (x<0) 
+			this.dir=Dir.LEFT;
+		else if (x>0) 
+			this.dir=Dir.RIGHT;
+		
+		if (y<0) 
+			this.dir=Dir.DOWN;
+		else if (y>0) 
+			this.dir=Dir.UP;
+		
+		MoveToAction action = new MoveToAction();
+		action.setPosition(getX() + x, getY() + y);
+		action.setDuration(ACTION_SPEED);
+		this.addAction(action);
+		this.act(Gdx.graphics.getDeltaTime());
 	}
 	
 	@Override
