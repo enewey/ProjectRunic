@@ -9,14 +9,12 @@ public class BadAIController implements IProducesInputs {
 	private final static float TIME_BETWEEN_INPUTS = 0.25f;
 	
 	private float timeSinceLastInput;
-	
-	DirectionalInput dirs;
+	private DirectionalInput dirs;
 	private boolean[] buttons;
 	
 	public BadAIController() {
+		buttons = new boolean[10];
 		dirs = new DirectionalInput();
-		buttons = new boolean[]{ false, false, false, false, false,
-								 false, false, false, false, false};
 		timeSinceLastInput = 0f;
 	}
 	
@@ -39,7 +37,7 @@ public class BadAIController implements IProducesInputs {
 			timeSinceLastInput = 0f;
 		else if (timeSinceLastInput >= TIME_BETWEEN_INPUTS * 3 / 4) {
 			dirs.clear();
-			for (int i=0; i<10; i++)
+			for (int i=0; i<buttons.length; i++)
 				buttons[i] = false;
 			return;
 		}

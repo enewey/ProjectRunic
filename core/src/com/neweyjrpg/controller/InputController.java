@@ -18,21 +18,21 @@ public class InputController extends InputAdapter {
 	@Override
 	public boolean keyUp(int keycode) {
 		switch (keycode){
-			case Keys.UP:
-				dirs[0] = false;
-				return true;
-			case Keys.RIGHT:
-				dirs[1] = false;
-				return true;
-			case Keys.DOWN:
-				dirs[2] = false;
-				return true;
-			case Keys.LEFT:
-				dirs[3] = false;
-				return true;
-		}
-		
-		return false;
+		case Keys.UP:
+			dirs[0] = false;
+			return true;
+		case Keys.RIGHT:
+			dirs[1] = false;
+			return true;
+		case Keys.DOWN:
+			dirs[2] = false;
+			return true;
+		case Keys.LEFT:
+			dirs[3] = false;
+			return true;
+	}
+	
+	return false;
 	}
 	
 	@Override

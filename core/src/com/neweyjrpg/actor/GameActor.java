@@ -1,22 +1,23 @@
 package com.neweyjrpg.actor;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
 
 public class GameActor extends Actor {
 	
-	protected final static float ACTION_SPEED = 0.01f;
+	
 	
 	//Fields
 	private ActorAnimation animation;
 	public ActorAnimation getAnimation() { return animation; }
 	public void setAnimation(ActorAnimation animation) {	this.animation = animation;	}
+	
+	public boolean[] dirs;
 	
 	private Dir dir;
 	public Dir getDir() {	return dir;	}
@@ -26,7 +27,9 @@ public class GameActor extends Actor {
 	public float getMovespeed() { return movespeed;	}
 	public void setMovespeed(float movespeed) {	this.movespeed = movespeed;	}
 	
-	private boolean isMoving;
+	protected boolean isMoving;
+	protected float actionSpeed = 0.01f;
+	
 	
 	//Constructors
 	public GameActor(Texture charaSet, int pos, float x, float y){
@@ -34,7 +37,7 @@ public class GameActor extends Actor {
 		float width = this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionWidth(); 
 		float height = this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionHeight();
 		
-		
+		this.dirs = new boolean[4];
 		this.setBounds(x, y, width, height);
 		this.dir = Dir.DOWN;
 		this.isMoving = false;
@@ -44,7 +47,7 @@ public class GameActor extends Actor {
 	//Methods
 	@Override
 	public void draw(Batch batch, float deltaTime) {
-		if (!this.isMoving)
+		if (!isMoving)
 			deltaTime = Constants.IDLE_FRAME * Constants.FRAME_DURATION; 
 		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), this.getX(), this.getY());
 	}
@@ -55,13 +58,22 @@ public class GameActor extends Actor {
 		this.setY(y);
 	}
 	
+	@Override
+	public void act(float delta) {
+		if (dirs[0] || dirs[1] || dirs[2] || dirs[3])
+			this.moveFromInput(dirs);
+		else
+			this.isMoving = false;
+		
+		super.act(delta);
+	}
+	
 	public float[] getPosition() {
 		return new float[]{getX(), getY()};
 	}
 	
 	public void move(float x, float y){
-		this.isMoving = !(x==0 && y==0);
-		
+		this.isMoving = true;
 		
 		if (x<0) 
 			this.dir=Dir.LEFT;
@@ -73,11 +85,8 @@ public class GameActor extends Actor {
 		else if (y>0) 
 			this.dir=Dir.UP; 
 		
-		MoveToAction action = new MoveToAction();
-		action.setPosition(getX() + x, getY() + y);
-		action.setDuration(ACTION_SPEED);
-		this.addAction(action);
-		this.act(Gdx.graphics.getDeltaTime());
+		this.addAction(Actions.moveBy(x, y, this.actionSpeed));
+		//this.act(Gdx.graphics.getDeltaTime());
 	}
 	
 	public void moveFromInput(boolean[] dirs) {
@@ -98,5 +107,7 @@ public class GameActor extends Actor {
 		}
 		
 		move(tx, ty);
+
+	
 	}	
 }

@@ -22,13 +22,12 @@ public class DirectionalInput {
 			this.data[i] = false;
 	}
 	
-	public Stack<Dir> getInputs() {
-		Stack<Dir> ret = new Stack<Dir>();
-		if (data[0]) ret.push(Dir.UP);
-		if (data[1]) ret.push(Dir.RIGHT);
-		if (data[2]) ret.push(Dir.DOWN);
-		if (data[3]) ret.push(Dir.LEFT);
-		return ret;
+	public boolean[] getInputs() {
+		return data;
+	}
+	
+	public boolean isEmpty() {
+		return !(data[0] || data[1] || data[2] || data[3]);
 	}
 
 }
