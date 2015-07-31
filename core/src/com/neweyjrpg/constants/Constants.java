@@ -20,7 +20,9 @@ public class Constants {
 	
 	//Physics
 	public final static float TIME_STEP = 1 / 60.0f;
-	public final static int VELOCITY_ITERATIONS = 6;
+	public final static int VELOCITY_ITERATIONS = 8;
 	public final static int POSITION_ITERATIONS = 2; 
+	
+	public final static float MAX_MOVEMENT_SPEED = 2f;
 	
 }
