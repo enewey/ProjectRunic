@@ -17,6 +17,11 @@ public class DirectionalInput {
 	public void pushDown() 	{ this.data[2] = true; }
 	public void pushLeft() 	{ this.data[3] = true; }
 	
+	public void liftUp() 	{ this.data[0] = false; }
+	public void liftRight() { this.data[1] = false; }
+	public void liftDown() 	{ this.data[2] = false; }
+	public void liftLeft() 	{ this.data[3] = false; }
+	
 	public void clear() {
 		for (int i=0; i<4; i++)
 			this.data[i] = false;

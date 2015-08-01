@@ -7,17 +7,18 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
+import com.neweyjrpg.interfaces.IHandlesInputs;
+import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.models.DirectionalInput;
 
-public class GameActor extends Actor {
-	
-	
+public class GameActor extends Actor implements IHandlesInputs {
 	
 	//Fields
 	private ActorAnimation animation;
 	public ActorAnimation getAnimation() { return animation; }
 	public void setAnimation(ActorAnimation animation) {	this.animation = animation;	}
 	
-	public boolean[] dirs;
+	public IProducesInputs controller;
 	
 	private Dir dir;
 	public Dir getDir() {	return dir;	}
@@ -37,7 +38,6 @@ public class GameActor extends Actor {
 		float width = this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionWidth(); 
 		float height = this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionHeight();
 		
-		this.dirs = new boolean[4];
 		this.setBounds(x, y, width, height);
 		this.dir = Dir.DOWN;
 		this.isMoving = false;
@@ -52,6 +52,12 @@ public class GameActor extends Actor {
 		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), this.getX(), this.getY());
 	}
 	
+	public void draw(Batch batch, float deltaTime, float x, float y) {
+		if (!isMoving)
+			deltaTime = Constants.IDLE_FRAME * Constants.FRAME_DURATION; 
+		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), x, y);
+	}
+	
 	@Override
 	public void setPosition(float x, float y) {
 		this.setX(x);
@@ -60,8 +66,8 @@ public class GameActor extends Actor {
 	
 	@Override
 	public void act(float delta) {
-		if (dirs[0] || dirs[1] || dirs[2] || dirs[3])
-			this.moveFromInput(dirs);
+		if (controller != null && !controller.getDirectionalInput().isEmpty())
+			this.moveFromInput(controller.getDirectionalInput());
 		else
 			this.isMoving = false;
 		
@@ -88,10 +94,12 @@ public class GameActor extends Actor {
 		this.addAction(Actions.moveBy(x, y, this.actionSpeed));
 		//this.act(Gdx.graphics.getDeltaTime());
 	}
-	
-	public void moveFromInput(boolean[] dirs) {
-		float tx=0f, ty=0f;
+
+	@Override
+	public void moveFromInput(DirectionalInput input) {
 		
+		boolean[] dirs = input.getInputs();
+		float tx=0f, ty=0f;
 		if (dirs[0])
 			ty += movespeed;
 		if (dirs[1])
@@ -109,5 +117,11 @@ public class GameActor extends Actor {
 		move(tx, ty);
 
 	
-	}	
+	}
+	
+	@Override
+	public void setController(IProducesInputs controller) {
+		this.controller = controller;
+	}
+
 }

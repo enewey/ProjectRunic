@@ -10,8 +10,13 @@ public class Constants {
 	public final static int TILE_HEIGHT = 16;
 	public final static int TILE_MARGIN = 1;
 	
-	public final static int GAME_WIDTH = 320;
-	public final static int GAME_HEIGHT = 240;
+	public final static float GAME_WIDTH = 320f;
+	public final static float GAME_HEIGHT = 240f;
+	
+	public final static float LOWER_BOUND_X = (320f / 3.0f) - (CHARA_WIDTH/2);
+	public final static float UPPER_BOUND_X = (320f * 2.0f / 3.0f) - (CHARA_WIDTH/2);
+	public final static float LOWER_BOUND_Y = (240f / 3.0f) - (CHARA_HEIGHT/2);
+	public final static float UPPER_BOUND_Y = (240f * 2.0f / 3.0f) - (CHARA_HEIGHT/2);
 	
 	//Actor Animation
 	public final static float FRAME_DURATION = 0.125f;

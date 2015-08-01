@@ -10,6 +10,8 @@ public class GameMap {
 	private Texture tileSet;
 	private MapTile[][] mapData;
 	private int dimX, dimY;
+	public int getDimX() { return dimX; }
+	public int getDimY() { return dimY; }
 	
 	public GameMap(String tileFile, String mapFile) {
 		MapParser mapParser = new MapParser(mapFile);

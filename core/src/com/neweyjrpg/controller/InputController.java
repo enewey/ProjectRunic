@@ -2,33 +2,31 @@ package com.neweyjrpg.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.DirectionalInput;
 
-public class InputController extends InputAdapter {
+public class InputController extends InputAdapter implements IProducesInputs {
 
-	private boolean dirs[];
+	private DirectionalInput dirs;
 	
 	public InputController() {
-		dirs = new boolean[4];
+		dirs = new DirectionalInput();
 	}
 	
 	@Override
 	public boolean keyUp(int keycode) {
 		switch (keycode){
 		case Keys.UP:
-			dirs[0] = false;
+			dirs.liftUp();
 			return true;
 		case Keys.RIGHT:
-			dirs[1] = false;
+			dirs.liftRight();
 			return true;
 		case Keys.DOWN:
-			dirs[2] = false;
+			dirs.liftDown();
 			return true;
 		case Keys.LEFT:
-			dirs[3] = false;
+			dirs.liftLeft();
 			return true;
 	}
 	
@@ -39,30 +37,30 @@ public class InputController extends InputAdapter {
 	public boolean keyDown(int keycode) {
 		switch (keycode){
 			case Keys.UP:
-				dirs[0] = true;
+				dirs.pushUp();
 				return true;
 			case Keys.RIGHT:
-				dirs[1] = true;
+				dirs.pushRight();
 				return true;
 			case Keys.DOWN:
-				dirs[2] = true;
+				dirs.pushDown();
 				return true;
 			case Keys.LEFT:
-				dirs[3] = true;
+				dirs.pushLeft();
 				return true;
 		}
 		
 		return false;
 	}
-	
-	public boolean[] getDirs() {
+
+	@Override
+	public DirectionalInput getDirectionalInput() {
 		return dirs;
 	}
-//
-//	@Override
-//	public boolean[] getButtonInput() {
-//		return new boolean[10];
-//	}
-	
-	
+
+	@Override
+	public boolean[] getButtonInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 }
