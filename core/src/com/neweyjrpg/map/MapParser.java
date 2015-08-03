@@ -2,7 +2,6 @@ package com.neweyjrpg.map;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;

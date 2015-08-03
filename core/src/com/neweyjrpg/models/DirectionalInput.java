@@ -1,9 +1,5 @@
 package com.neweyjrpg.models;
 
-import java.util.Stack;
-
-import com.neweyjrpg.enums.Enums.Dir;
-
 public class DirectionalInput {
 	
 	private boolean[] data;

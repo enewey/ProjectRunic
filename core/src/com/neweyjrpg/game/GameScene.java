@@ -10,7 +10,7 @@ import com.neweyjrpg.map.GameMap;
 public class GameScene {
 	
 	//CHANGE TO PRIVATE
-	public float focusX, focusY; //Camera focus
+	public float scrollX, scrollY; //Camera focus
 	public float maxScrollX, maxScrollY;
 	
 	private Viewport viewport;
@@ -32,11 +32,12 @@ public class GameScene {
 		this.batch = batch;
 		this.viewport = viewport;
 		this.actors = new Array<GameActor>(false, 10, GameActor.class);
+		this.actors.add(playerActor);
 		this.setPlayer(playerActor);
 		this.map = map;
 		
-		this.focusX = 0f;
-		this.focusY = 0f;
+		this.scrollX = 0f;
+		this.scrollY = 0f;
 		
 		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
 		this.maxScrollY = -((map.getDimY() * Constants.TILE_HEIGHT)-Constants.GAME_HEIGHT);
@@ -56,34 +57,51 @@ public class GameScene {
 		
 		for (int x=0; x<map.getDimX(); x++)
 			for (int y=0; y<map.getDimY(); y++)
-				batch.draw(map.getMapTile(x, y).getGraphic(), focusX+(x*16), focusY+(y*16));
+				batch.draw(map.getMapTile(x, y).getGraphic(), scrollX+(x*16), scrollY+(y*16));
 		
-		this.player.draw(batch, deltaTime, player.getX() + focusX, player.getY() + focusY);
+//		this.player.draw(batch, deltaTime, player.getX() + scrollX, player.getY() + scrollY);
 		for (GameActor actor : actors) {
-			actor.draw(batch, deltaTime, actor.getX() + focusX, actor.getY() + focusY);
+			actor.draw(batch, deltaTime, actor.getX() + scrollX, actor.getY() + scrollY);
 		}
 	}
 	
 	public void act(float deltaTime) {
-		this.player.act(deltaTime);
+//		this.player.act(deltaTime);
 		for (GameActor actor : actors){
 			actor.act(deltaTime);
 		}
-		
+		this.detectCollision();
 		this.adjustFocus();
 	}
 	
+	private void detectCollision() {
+		for (int i = 0; i < actors.size; i++) {
+			for (int j = 0; j < actors.size; j++) {
+				if (i == j) {
+					continue;
+				}
+				GameActor actor = actors.get(i);
+				GameActor subject = actors.get(j);
+				if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
+					//TODO check body types here
+					
+					actor.setPosition(actor.getOldPosition().x, actor.getOldPosition().y);
+				}
+			}
+		}
+	}
+	
 	public void adjustFocus() {
-		if (player.getX()+focusX > Constants.UPPER_BOUND_X) {
-			focusX = Math.max(Constants.UPPER_BOUND_X - player.getX(), maxScrollX);
-		} else if (player.getX()+focusX < Constants.LOWER_BOUND_X) {
-			focusX = Math.min(Constants.LOWER_BOUND_X - player.getX(), 0);
+		if (player.getX()+scrollX > Constants.UPPER_BOUND_X) {
+			scrollX = Math.max(Constants.UPPER_BOUND_X - player.getX(), maxScrollX);
+		} else if (player.getX()+scrollX < Constants.LOWER_BOUND_X) {
+			scrollX = Math.min(Constants.LOWER_BOUND_X - player.getX(), 0);
 		}
 		
-		if (player.getY()+focusY > Constants.UPPER_BOUND_Y) {
-			focusY = Math.max(Constants.UPPER_BOUND_Y - player.getY(), maxScrollY);
-		} else if (player.getY()+focusY < Constants.LOWER_BOUND_Y) {
-			focusY = Math.min(Constants.LOWER_BOUND_Y - player.getY(), 0);
+		if (player.getY()+scrollY > Constants.UPPER_BOUND_Y) {
+			scrollY = Math.max(Constants.UPPER_BOUND_Y - player.getY(), maxScrollY);
+		} else if (player.getY()+scrollY < Constants.LOWER_BOUND_Y) {
+			scrollY = Math.min(Constants.LOWER_BOUND_Y - player.getY(), 0);
 		}
 	}
 

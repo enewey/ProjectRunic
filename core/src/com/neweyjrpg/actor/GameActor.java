@@ -2,6 +2,9 @@ package com.neweyjrpg.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.constants.Constants;
@@ -10,6 +13,7 @@ import com.neweyjrpg.graphic.ActorAnimation;
 import com.neweyjrpg.interfaces.IHandlesInputs;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.DirectionalInput;
+import com.neweyjrpg.models.PhysicsModel;
 
 public class GameActor extends Actor implements IHandlesInputs {
 	
@@ -18,7 +22,7 @@ public class GameActor extends Actor implements IHandlesInputs {
 	public ActorAnimation getAnimation() { return animation; }
 	public void setAnimation(ActorAnimation animation) {	this.animation = animation;	}
 	
-	public IProducesInputs controller;
+	private IProducesInputs controller;
 	
 	private Dir dir;
 	public Dir getDir() {	return dir;	}
@@ -29,19 +33,25 @@ public class GameActor extends Actor implements IHandlesInputs {
 	public void setMovespeed(float movespeed) {	this.movespeed = movespeed;	}
 	
 	protected boolean isMoving;
-	protected float actionSpeed = 0.01f;
+	protected float actionSpeed;
 	
+	private float oldX, oldY;
+	private PhysicsModel phys;
+	public PhysicsModel getPhysicsModel() {	return this.phys; }
 	
 	//Constructors
-	public GameActor(Texture charaSet, int pos, float x, float y){
+	public GameActor(Texture charaSet, int pos, float x, float y, PhysicsModel phys){
 		this.animation = new ActorAnimation(charaSet, pos);
-		float width = this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionWidth(); 
-		float height = this.animation.getAnim(Dir.UP).getKeyFrame(0).getRegionHeight();
 		
-		this.setBounds(x, y, width, height);
+		this.oldX = x; //Values for resetting movement on collisions
+		this.oldY = y; 
+		this.phys = phys;
+		
+		this.setPosition(x, y);
 		this.dir = Dir.DOWN;
 		this.isMoving = false;
-		movespeed = 2f;
+		this.movespeed = 2f;
+		this.actionSpeed = 0.01f;
 	}
 	
 	//Methods
@@ -62,6 +72,7 @@ public class GameActor extends Actor implements IHandlesInputs {
 	public void setPosition(float x, float y) {
 		this.setX(x);
 		this.setY(y);
+		this.getPhysicsModel().getBounds().setPosition(x, y);
 	}
 	
 	@Override
@@ -71,14 +82,21 @@ public class GameActor extends Actor implements IHandlesInputs {
 		else
 			this.isMoving = false;
 		
+		this.oldX = this.getX();
+		this.oldY = this.getY();
+		
 		super.act(delta);
+		this.getPhysicsModel().getBounds().setPosition(getX(), getY());
 	}
 	
-	public float[] getPosition() {
-		return new float[]{getX(), getY()};
+	public Vector2 getPosition() {
+		return new Vector2(this.getX(), this.getY());
+	}
+	public Vector2 getOldPosition() {
+		return new Vector2(this.oldX, this.oldY);
 	}
 	
-	public void move(float x, float y){
+	public void move(float x, float y) {
 		this.isMoving = true;
 		
 		if (x<0) 
@@ -115,8 +133,6 @@ public class GameActor extends Actor implements IHandlesInputs {
 		}
 		
 		move(tx, ty);
-
-	
 	}
 	
 	@Override

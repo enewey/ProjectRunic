@@ -2,7 +2,6 @@ package com.neweyjrpg.graphic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
@@ -13,9 +12,6 @@ public class ActorAnimation {
 	private Animation rightAnim;
 	private Animation downAnim;
 	private Animation leftAnim;
-	
-	private float xPos;
-	private float yPos;
 	
 	/**
 	 * 

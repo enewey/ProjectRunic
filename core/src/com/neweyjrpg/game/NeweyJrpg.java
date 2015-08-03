@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.actor.NPCActor;
@@ -16,6 +17,7 @@ import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.controller.InputController;
 import com.neweyjrpg.map.GameMap;
+import com.neweyjrpg.models.PhysicsModel;
 
 public class NeweyJrpg extends ApplicationAdapter {
 	GameActor chara;
@@ -42,10 +44,12 @@ public class NeweyJrpg extends ApplicationAdapter {
 		InputController input = new InputController();
 		Gdx.input.setInputProcessor(input);
 		
-		chara = new GameActor(new Texture("hero.png"), 0, 200f, 200f);
+		chara = new GameActor(new Texture("hero.png"), 0, 200f, 200f, 
+				new PhysicsModel(BodyType.DynamicBody, new Rectangle(200f, 200f, 16f, 16f)));
 		chara.setController(input);
 		
-		npc = new NPCActor(new Texture("hero.png"), 0, 120f, 40f);
+		npc = new NPCActor(new Texture("hero.png"), 0, 120f, 40f,
+				new PhysicsModel(BodyType.StaticBody, new Rectangle(120f, 40f, 16f, 16f)));
 		//npc.setController(new BadAIController());
 		
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
@@ -64,12 +68,13 @@ public class NeweyJrpg extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		stateTime += deltaTime;
-				
+
 		scene.getBatch().begin();
-		scene.draw(stateTime);
+		scene.draw(stateTime); //Will draw all actors/tiles in the scene
 		
-		font.draw(scene.getBatch(), "Chara pos: " + chara.getX() + ", " + chara.getY(), 0, 220);
-		font.draw(scene.getBatch(), "Focus: " + scene.focusX + ", " + scene.focusY, 0, 240);
+		//Draw overlays here
+		font.draw(scene.getBatch(), "Chara: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
+		font.draw(scene.getBatch(), "NPC: " + npc.getPhysicsModel().getBounds().x + ", " + npc.getPhysicsModel().getBounds().y, 0, 220);
 
 		scene.getBatch().end();
 		
