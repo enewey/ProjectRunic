@@ -7,7 +7,7 @@ public class NPCActor extends GameActor {
 	
 	public NPCActor(Texture charaSet, int pos, float x, float y, PhysicsModel phys) {
 		super(charaSet, pos, x, y, phys);
-		this.movespeed = 2f;
-		this.actionSpeed = 0.1f;
+		this.movespeed = 1f;
+		this.actionSpeed = 0.5f;
 	}
 }

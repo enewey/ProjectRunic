@@ -71,6 +71,7 @@ public class GameScene {
 			actor.act(deltaTime);
 		}
 		this.detectCollision();
+		this.sortActors();
 		this.adjustFocus();
 	}
 	
@@ -80,15 +81,41 @@ public class GameScene {
 				if (i == j) {
 					continue;
 				}
-				GameActor actor = actors.get(i);
 				GameActor subject = actors.get(j);
+				if (subject.getPhysicsModel().getBounds().x < 0)
+					subject.setPosition(0, subject.getY());
+				else if (subject.getPhysicsModel().getBounds().x > map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width)
+					subject.setPosition(map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width, subject.getY());
+				
+				if (subject.getPhysicsModel().getBounds().y < 0)
+					subject.setPosition(subject.getX(), 0);
+				else if (subject.getPhysicsModel().getBounds().y > map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height)
+					subject.setPosition(subject.getX(), map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height);
+				
+				GameActor actor = actors.get(i);
+				if (actor.getX() == actor.getOldPosition().x && actor.getY() == actor.getOldPosition().y)
+					continue;
+				
+				float currX = actor.getX();
+				float currY = actor.getY();
+				float oldX = actor.getOldPosition().x;
+				float oldY = actor.getOldPosition().y;
 				if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
 					//TODO check body types here
-					
-					actor.setPosition(actor.getOldPosition().x, actor.getOldPosition().y);
+					actor.setPosition(currX, oldY);
+					if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
+						actor.setPosition(oldX, currY);
+						if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
+							actor.setPosition(oldX, oldY);
+						}
+					}
 				}
 			}
 		}
+	}
+	
+	private void sortActors() {
+		actors.sort();
 	}
 	
 	public void adjustFocus() {

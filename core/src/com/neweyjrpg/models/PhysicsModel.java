@@ -1,7 +1,6 @@
 package com.neweyjrpg.models;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class PhysicsModel {

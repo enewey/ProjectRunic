@@ -2,9 +2,7 @@ package com.neweyjrpg.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.constants.Constants;
@@ -15,7 +13,7 @@ import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.models.PhysicsModel;
 
-public class GameActor extends Actor implements IHandlesInputs {
+public class GameActor extends Actor implements IHandlesInputs, Comparable<Actor> {
 	
 	//Fields
 	private ActorAnimation animation;
@@ -138,6 +136,11 @@ public class GameActor extends Actor implements IHandlesInputs {
 	@Override
 	public void setController(IProducesInputs controller) {
 		this.controller = controller;
+	}
+	
+	@Override
+	public int compareTo(Actor o) {
+		return (int)((o.getY()*1000) - (this.getY()*1000));
 	}
 
 }

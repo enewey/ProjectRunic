@@ -22,8 +22,6 @@ import com.neweyjrpg.models.PhysicsModel;
 public class NeweyJrpg extends ApplicationAdapter {
 	GameActor chara;
 	NPCActor npc;
-	InputController input;
-	BadAIController ai;
 	GameMap map;
 	Camera camera;
 	float stateTime;
@@ -38,23 +36,27 @@ public class NeweyJrpg extends ApplicationAdapter {
 		//GdxNativesLoader.load(); 
 		
 		camera = new PerspectiveCamera();
-
 		map = new GameMap("dungeon.png", "maps/map1.txt");
+		chara = new GameActor(new Texture("hero.png"), 0, 220f, 220f, 
+				new PhysicsModel(BodyType.DynamicBody, 
+						new Rectangle(208f, 200f, 12f, 12f)));
 		
 		InputController input = new InputController();
 		Gdx.input.setInputProcessor(input);
-		
-		chara = new GameActor(new Texture("hero.png"), 0, 200f, 200f, 
-				new PhysicsModel(BodyType.DynamicBody, new Rectangle(200f, 200f, 16f, 16f)));
 		chara.setController(input);
-		
-		npc = new NPCActor(new Texture("hero.png"), 0, 120f, 40f,
-				new PhysicsModel(BodyType.StaticBody, new Rectangle(120f, 40f, 16f, 16f)));
-		//npc.setController(new BadAIController());
 		
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
 		
-		scene.addActor(npc);
+		//Bunch of random NPCs
+		for (int i=0; i<20; i++) {
+			float x = (int)(Math.random()*1000)%200;
+			float y = (int)(Math.random()*1000)%200;
+			npc = new NPCActor(new Texture("hero.png"), 0, x, y,
+					new PhysicsModel(BodyType.StaticBody, 
+							new Rectangle(x, y, 12f, 12f)));
+			npc.setController(new BadAIController());
+			scene.addActor(npc);
+		}
 		
 		font = new BitmapFont();
 
