@@ -1,6 +1,7 @@
 package com.neweyjrpg.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.GameActor;
@@ -69,44 +70,48 @@ public class GameScene {
 //		this.player.act(deltaTime);
 		for (GameActor actor : actors){
 			actor.act(deltaTime);
+			this.detectCollision(actor); //Detect collision after each individual action; this is key
 		}
-		this.detectCollision();
+		
 		this.sortActors();
 		this.adjustFocus();
 	}
 	
-	private void detectCollision() {
-		for (int i = 0; i < actors.size; i++) {
-			for (int j = 0; j < actors.size; j++) {
-				if (i == j) {
-					continue;
-				}
-				GameActor subject = actors.get(j);
-				if (subject.getPhysicsModel().getBounds().x < 0)
-					subject.setPosition(0, subject.getY());
-				else if (subject.getPhysicsModel().getBounds().x > map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width)
-					subject.setPosition(map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width, subject.getY());
-				
-				if (subject.getPhysicsModel().getBounds().y < 0)
-					subject.setPosition(subject.getX(), 0);
-				else if (subject.getPhysicsModel().getBounds().y > map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height)
-					subject.setPosition(subject.getX(), map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height);
-				
-				GameActor actor = actors.get(i);
-				if (actor.getX() == actor.getOldPosition().x && actor.getY() == actor.getOldPosition().y)
-					continue;
-				
-				float currX = actor.getX();
-				float currY = actor.getY();
-				float oldX = actor.getOldPosition().x;
-				float oldY = actor.getOldPosition().y;
+	private void detectCollision(GameActor actor) {
+		for (int j = 0; j < actors.size; j++) {
+			GameActor subject = actors.get(j);
+			if (subject.equals(actor)) {
+				continue;
+			}
+			
+			//Off-screen boundaries
+			if (subject.getPhysicsModel().getBounds().x < 0)
+				subject.setPhysicalPosition(0, subject.getPhysicsModel().getBounds().y);
+			else if (subject.getPhysicsModel().getBounds().x > map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width)
+				subject.setPhysicalPosition(map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width, subject.getPhysicsModel().getBounds().y);
+			
+			if (subject.getPhysicsModel().getBounds().y < 0)
+				subject.setPhysicalPosition(subject.getPhysicsModel().getBounds().x, 0);
+			else if (subject.getPhysicsModel().getBounds().y > map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height)
+				subject.setPhysicalPosition(subject.getPhysicsModel().getBounds().x, map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height);
+			
+//				if (actor.getX() == actor.getOldPosition().x && actor.getY() == actor.getOldPosition().y)
+//					continue;
+			
+			float currX = actor.getPhysicsModel().getBounds().x;
+			float currY = actor.getPhysicsModel().getBounds().y;
+			float oldX = actor.getOldPosition().x;
+			float oldY = actor.getOldPosition().y;
+			if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
+				//TODO check body types here
+				actor.setPhysicalPosition(currX, oldY);
 				if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
-					//TODO check body types here
-					actor.setPosition(currX, oldY);
+					actor.setPhysicalPosition(oldX, currY);
 					if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
-						actor.setPosition(oldX, currY);
-						if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
-							actor.setPosition(oldX, oldY);
+						actor.setPhysicalPosition(oldX, oldY);
+						Vector2 moveCheck = actor.getPhysicsModel().moveOff(subject.getPhysicsModel());
+						if (moveCheck != null){
+							actor.movePhysicalPosition(moveCheck.x, moveCheck.y);
 						}
 					}
 				}
