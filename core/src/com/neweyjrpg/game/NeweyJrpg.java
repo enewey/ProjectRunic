@@ -48,13 +48,14 @@ public class NeweyJrpg extends ApplicationAdapter {
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
 		
 		//Bunch of random NPCs
-		for (int i=0; i<20; i++) {
-			float x = (int)(Math.random()*1000)%200;
-			float y = (int)(Math.random()*1000)%200;
+		for (int i=0; i<120; i++) {
+			float x = (int)(Math.random()*1000)%300;
+			float y = (int)(Math.random()*1000)%300;
 			npc = new NPCActor(new Texture("hero.png"), 0, x, y,
 					new PhysicsModel(BodyType.StaticBody, 
 							new Rectangle(x, y, 12f, 12f)));
 			npc.setController(new BadAIController());
+			npc.setMovespeed((float)Math.random()*10.0f);
 			scene.addActor(npc);
 		}
 		

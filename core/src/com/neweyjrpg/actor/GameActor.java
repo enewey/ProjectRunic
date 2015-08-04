@@ -32,7 +32,9 @@ public class GameActor extends Actor implements IHandlesInputs, Comparable<Actor
 	
 	protected boolean isMoving;
 	protected float actionSpeed;
-	
+	public float getActionSpeed() {	return actionSpeed;	}
+	public void setActionSpeed(float actionSpeed) {	this.actionSpeed = actionSpeed;	}
+
 	private float oldX, oldY;
 	private PhysicsModel phys;
 	public PhysicsModel getPhysicsModel() {	return this.phys; }
