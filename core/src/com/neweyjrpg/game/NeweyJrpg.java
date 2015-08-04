@@ -11,16 +11,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.actor.NPCActor;
+import com.neweyjrpg.actor.StaticActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.controller.InputController;
+import com.neweyjrpg.graphic.TileGraphic;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.PhysicsModel;
 
 public class NeweyJrpg extends ApplicationAdapter {
-	GameActor chara;
+	CharacterActor chara;
 	NPCActor npc;
 	GameMap map;
 	Camera camera;
@@ -37,7 +40,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		camera = new PerspectiveCamera();
 		map = new GameMap("dungeon.png", "maps/map1.txt");
-		chara = new GameActor(new Texture("hero.png"), 0, 220f, 220f, 
+		chara = new CharacterActor(new Texture("hero.png"), 0, 220f, 220f, 
 				new PhysicsModel(BodyType.DynamicBody, 
 						new Rectangle(208f, 200f, 12f, 12f)));
 		
@@ -48,7 +51,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
 		
 		//Bunch of random NPCs
-		for (int i=0; i<120; i++) {
+		for (int i=0; i<10; i++) {
 			float x = (int)(Math.random()*1000)%300;
 			float y = (int)(Math.random()*1000)%300;
 			npc = new NPCActor(new Texture("hero.png"), 0, x, y,
@@ -57,6 +60,15 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setController(new BadAIController());
 			npc.setMovespeed((float)Math.random()*10.0f);
 			scene.addActor(npc);
+		}
+		
+		for (int i=0; i<10; i++) {
+			StaticActor a = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 5), 
+					48+(i*Constants.TILE_WIDTH), 200,
+					new PhysicsModel(BodyType.StaticBody, 
+							new Rectangle(48+(i*Constants.TILE_WIDTH), 200, Constants.TILE_WIDTH, Constants.TILE_HEIGHT)));
+			
+			scene.addActor(a);
 		}
 		
 		font = new BitmapFont();
