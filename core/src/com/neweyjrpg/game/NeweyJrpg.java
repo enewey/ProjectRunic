@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.neweyjrpg.actor.CharacterActor;
-import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.StaticActor;
 import com.neweyjrpg.constants.Constants;
@@ -51,14 +50,14 @@ public class NeweyJrpg extends ApplicationAdapter {
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
 		
 		//Bunch of random NPCs
-		for (int i=0; i<10; i++) {
+		for (int i=0; i<5; i++) {
 			float x = (int)(Math.random()*1000)%300;
 			float y = (int)(Math.random()*1000)%300;
 			npc = new NPCActor(new Texture("hero.png"), 0, x, y,
-					new PhysicsModel(BodyType.StaticBody, 
+					new PhysicsModel(BodyType.DynamicBody, 
 							new Rectangle(x, y, 12f, 12f)));
 			npc.setController(new BadAIController());
-			npc.setMovespeed((float)Math.random()*10.0f);
+			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
 			scene.addActor(npc);
 		}
 		
@@ -89,7 +88,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		//Draw overlays here
 		font.draw(scene.getBatch(), "Chara: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
-		font.draw(scene.getBatch(), "NPC: " + npc.getPhysicsModel().getBounds().x + ", " + npc.getPhysicsModel().getBounds().y, 0, 220);
+		//font.draw(scene.getBatch(), "NPC: " + npc.getPhysicsModel().getBounds().x + ", " + npc.getPhysicsModel().getBounds().y, 0, 220);
 
 		scene.getBatch().end();
 		

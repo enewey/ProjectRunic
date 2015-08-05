@@ -42,6 +42,9 @@ public class CharacterActor extends GameActor implements IHandlesInputs {
 			this.isMoving = false;
 			this.movespeed = 2f;
 			this.actionSpeed = 0.01f;
+			
+			this.physPaddingX = (Constants.CHARA_WIDTH / 4f);
+			//this.physPaddingY = (Constants.CHARA_HEIGHT / 4f);
 		}
 		
 		//Methods
@@ -106,8 +109,10 @@ public class CharacterActor extends GameActor implements IHandlesInputs {
 				tx *= 0.7071f; //Roughly sqrt(2)/2, 45deg on unit circle
 				ty *= 0.7071f;
 			}
-			
-			move(tx, ty);
+			if (!(tx == 0 && ty == 0))
+				move(tx, ty);
+			else
+				this.isMoving = false;
 		}
 		
 		@Override

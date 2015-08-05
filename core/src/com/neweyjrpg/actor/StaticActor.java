@@ -18,6 +18,11 @@ public class StaticActor extends GameActor {
 	}
 
 	@Override
+	public void draw(Batch batch, float deltaTime) {
+		batch.draw(texture, this.getX(), this.getY());
+	}
+	
+	@Override
 	public void draw(Batch batch, float deltaTime, float x, float y) {
 		batch.draw(texture, x, y);
 	}
@@ -26,7 +31,4 @@ public class StaticActor extends GameActor {
 	public void move(float x, float y) {
 		this.addAction(Actions.moveBy(x, y, 0.25f));
 	}
-	
-	
-
 }

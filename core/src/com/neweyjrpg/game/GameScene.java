@@ -78,44 +78,25 @@ public class GameScene {
 	}
 	
 	private void detectCollision(GameActor actor) {
+		if (actor.getPhysicsModel().getBounds().x < 0)
+			actor.setPhysicalPosition(0, actor.getPhysicsModel().getBounds().y);
+		else if (actor.getPhysicsModel().getBounds().x > map.getDimX()*Constants.TILE_WIDTH - actor.getPhysicsModel().getBounds().width)
+			actor.setPhysicalPosition(map.getDimX()*Constants.TILE_WIDTH - actor.getPhysicsModel().getBounds().width, actor.getPhysicsModel().getBounds().y);
+		
+		if (actor.getPhysicsModel().getBounds().y < 0)
+			actor.setPhysicalPosition(actor.getPhysicsModel().getBounds().x, 0);
+		else if (actor.getPhysicsModel().getBounds().y > map.getDimY()*Constants.TILE_HEIGHT - actor.getPhysicsModel().getBounds().height)
+			actor.setPhysicalPosition(actor.getPhysicsModel().getBounds().x, map.getDimY()*Constants.TILE_HEIGHT - actor.getPhysicsModel().getBounds().height);
+		
+		
 		for (int j = 0; j < actors.size; j++) {
 			GameActor subject = actors.get(j);
 			if (subject.equals(actor)) {
 				continue;
 			}
 			
-			//Off-screen boundaries
-			if (subject.getPhysicsModel().getBounds().x < 0)
-				subject.setPhysicalPosition(0, subject.getPhysicsModel().getBounds().y);
-			else if (subject.getPhysicsModel().getBounds().x > map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width)
-				subject.setPhysicalPosition(map.getDimX()*Constants.TILE_WIDTH - subject.getPhysicsModel().getBounds().width, subject.getPhysicsModel().getBounds().y);
+			actor.getCollider().handleCollision(actor, subject);
 			
-			if (subject.getPhysicsModel().getBounds().y < 0)
-				subject.setPhysicalPosition(subject.getPhysicsModel().getBounds().x, 0);
-			else if (subject.getPhysicsModel().getBounds().y > map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height)
-				subject.setPhysicalPosition(subject.getPhysicsModel().getBounds().x, map.getDimY()*Constants.TILE_HEIGHT - subject.getPhysicsModel().getBounds().height);
-			
-//				if (actor.getX() == actor.getOldPosition().x && actor.getY() == actor.getOldPosition().y)
-//					continue;
-			
-			float currX = actor.getPhysicsModel().getBounds().x;
-			float currY = actor.getPhysicsModel().getBounds().y;
-			float oldX = actor.getOldPosition().x;
-			float oldY = actor.getOldPosition().y;
-			if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
-				//TODO check body types here
-				actor.setPhysicalPosition(currX, oldY);
-				if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
-					actor.setPhysicalPosition(oldX, currY);
-					if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
-						actor.setPhysicalPosition(oldX, oldY);
-						Vector2 moveCheck = actor.getPhysicsModel().moveOff(subject.getPhysicsModel());
-						if (moveCheck != null){
-							actor.movePhysicalPosition(moveCheck.x, moveCheck.y);
-						}
-					}
-				}
-			}
 		}
 	}
 	

@@ -3,7 +3,8 @@ package com.neweyjrpg.actor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.collider.BlockingCollider;
+import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.models.PhysicsModel;
 
 public abstract class GameActor extends Actor implements Comparable<GameActor> {
@@ -13,15 +14,27 @@ public abstract class GameActor extends Actor implements Comparable<GameActor> {
 	public PhysicsModel getPhysicsModel() {	return this.phys; }
 	protected float oldX, oldY;
 	
+	protected float physPaddingX, physPaddingY;
+	
+	protected IHandlesCollision<GameActor> collider;
+	public IHandlesCollision<GameActor> getCollider() { return this.collider; }
+	public void setCollider(IHandlesCollision<GameActor> collider) { this.collider = collider; }
+	
 	//Constructor
 	public GameActor(float x, float y, PhysicsModel phys){
 		this.phys = phys;
 		this.setPosition(x, y);
 		this.oldX = phys.getBounds().x; //Values for resetting movement on collisions
-		this.oldY = phys.getBounds().y; 
+		this.oldY = phys.getBounds().y;
+		
+		physPaddingX = 0f;
+		physPaddingY = 0f;
+		
+		collider = new BlockingCollider();
 	}
 	
 	//Methods
+	public abstract void draw(Batch batch, float deltaTime);
 	public abstract void draw(Batch batch, float deltaTime, float x, float y);
 	public abstract void move(float x, float y);
 	
@@ -41,7 +54,7 @@ public abstract class GameActor extends Actor implements Comparable<GameActor> {
 	}
 	
 	private void alignPhysicsModelToActor() {
-		this.getPhysicsModel().getBounds().setPosition(getX() + (Constants.CHARA_WIDTH / 4), getY());
+		this.getPhysicsModel().getBounds().setPosition(getX() + physPaddingX, getY() + physPaddingY);
 	}
 	
 	public void setPhysicalPosition(float x, float y) {
@@ -56,8 +69,8 @@ public abstract class GameActor extends Actor implements Comparable<GameActor> {
 	}
 	
 	private void alignActorToPhysicsModel() {
-		this.setX(getPhysicsModel().getBounds().x - (Constants.CHARA_WIDTH/4));
-		this.setY(getPhysicsModel().getBounds().y);
+		this.setX(getPhysicsModel().getBounds().x - physPaddingX);
+		this.setY(getPhysicsModel().getBounds().y - physPaddingY);
 	}
 	
 	public Vector2 getPosition() {
