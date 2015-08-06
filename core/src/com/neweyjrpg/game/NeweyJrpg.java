@@ -41,7 +41,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		map = new GameMap("dungeon.png", "maps/map1.txt");
 		chara = new CharacterActor(new Texture("hero.png"), 0, 220f, 220f, 
 				new PhysicsModel(BodyType.DynamicBody, 
-						new Rectangle(208f, 200f, 12f, 12f)));
+						new Rectangle(220f, 220f, 12f, 12f)));
 		
 		InputController input = new InputController();
 		Gdx.input.setInputProcessor(input);
@@ -50,7 +50,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
 		
 		//Bunch of random NPCs
-		for (int i=0; i<5; i++) {
+		for (int i=0; i<25; i++) {
 			float x = (int)(Math.random()*1000)%300;
 			float y = (int)(Math.random()*1000)%300;
 			npc = new NPCActor(new Texture("hero.png"), 0, x, y,
@@ -60,16 +60,16 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
 			scene.addActor(npc);
 		}
-		
-		for (int i=0; i<10; i++) {
-			StaticActor a = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 5), 
-					48+(i*Constants.TILE_WIDTH), 200,
-					new PhysicsModel(BodyType.StaticBody, 
-							new Rectangle(48+(i*Constants.TILE_WIDTH), 200, Constants.TILE_WIDTH, Constants.TILE_HEIGHT)));
-			
-			scene.addActor(a);
+		for (int k=0; k<10; k++) {
+			for (int i=0; i<10; i++) {
+				StaticActor a = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 5), 
+						48+(i*Constants.TILE_WIDTH), 200-(k*Constants.TILE_HEIGHT),
+						new PhysicsModel(BodyType.StaticBody, 
+								new Rectangle(48+(i*Constants.TILE_WIDTH), 200, Constants.TILE_WIDTH, Constants.TILE_HEIGHT)));
+				
+				scene.addActor(a);
+			}	
 		}
-		
 		font = new BitmapFont();
 
 		stateTime = 0f;
@@ -88,14 +88,10 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		//Draw overlays here
 		font.draw(scene.getBatch(), "Chara: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
-		//font.draw(scene.getBatch(), "NPC: " + npc.getPhysicsModel().getBounds().x + ", " + npc.getPhysicsModel().getBounds().y, 0, 220);
 
 		scene.getBatch().end();
 		
 		scene.act(stateTime);
-		
-		
-		//npc.setPositionToBody();
 	}
 	
 	@Override

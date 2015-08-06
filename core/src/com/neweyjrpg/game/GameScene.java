@@ -1,12 +1,13 @@
 package com.neweyjrpg.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.map.GameMap;
+import com.neweyjrpg.util.ClosestPosition;
 
 public class GameScene {
 	
@@ -70,7 +71,8 @@ public class GameScene {
 //		this.player.act(deltaTime);
 		for (GameActor actor : actors){
 			actor.act(deltaTime);
-			this.detectCollision(actor); //Detect collision after each individual action; this is key
+			if (actor.getPhysicsModel().getType() != BodyType.StaticBody)
+				this.detectCollision(actor); //Detect collision after each individual action; this is key
 		}
 		
 		this.sortActors();
@@ -88,15 +90,15 @@ public class GameScene {
 		else if (actor.getPhysicsModel().getBounds().y > map.getDimY()*Constants.TILE_HEIGHT - actor.getPhysicsModel().getBounds().height)
 			actor.setPhysicalPosition(actor.getPhysicsModel().getBounds().x, map.getDimY()*Constants.TILE_HEIGHT - actor.getPhysicsModel().getBounds().height);
 		
+		Array<GameActor> sortedActors = new Array<GameActor>(actors);
+		sortedActors.sort(new ClosestPosition(actor));
 		
-		for (int j = 0; j < actors.size; j++) {
-			GameActor subject = actors.get(j);
+		for (int j = 0; j < sortedActors.size; j++) {
+			GameActor subject = sortedActors.get(j);
 			if (subject.equals(actor)) {
 				continue;
 			}
-			
 			actor.getCollider().handleCollision(actor, subject);
-			
 		}
 	}
 	

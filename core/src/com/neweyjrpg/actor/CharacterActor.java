@@ -44,7 +44,7 @@ public class CharacterActor extends GameActor implements IHandlesInputs {
 			this.actionSpeed = 0.01f;
 			
 			this.physPaddingX = (Constants.CHARA_WIDTH / 4f);
-			//this.physPaddingY = (Constants.CHARA_HEIGHT / 4f);
+			this.physPaddingY = (Constants.CHARA_HEIGHT / 16f);
 		}
 		
 		//Methods
@@ -86,10 +86,7 @@ public class CharacterActor extends GameActor implements IHandlesInputs {
 				this.dir=Dir.UP; 
 			
 			this.addAction(Actions.moveBy(x, y, this.actionSpeed));
-			//this.act(Gdx.graphics.getDeltaTime());
 		}
-
-		//Interface implementations
 		
 		@Override
 		public void moveFromInput(DirectionalInput input) {

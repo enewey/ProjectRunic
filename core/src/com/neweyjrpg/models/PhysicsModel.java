@@ -28,19 +28,14 @@ public class PhysicsModel {
 			float pHeight = Math.max(this.getBounds().height, other.getBounds().height);
 			
 			float moveX = this.getBounds().x - other.getBounds().x;
+			int signX = (int)(moveX / Math.abs(moveX));
 			float moveY = this.getBounds().y - other.getBounds().y;
-			if (moveX == 0 && moveY == 0)
-				return new Vector2(pWidth, 0);
-			
-			if (Math.abs(moveX) > pWidth) moveX = 0;
-			if (Math.abs(moveY) > pHeight) moveY = 0;
-			
-			if (Math.abs(moveX) > Math.abs(moveY) && moveY != 0)
-				moveX = 0;
-			else if (moveX != 0)
-				moveY = 0;
-			
-			return new Vector2(moveX, moveY);
+			int signY = (int)(moveY / Math.abs(moveY));
+
+			if (moveX < moveY)
+				return new Vector2(pWidth * signX, 0); //eject horizontally for base case
+			else
+				return new Vector2(0, pHeight * signY);
 		}
 		
 		return null;
