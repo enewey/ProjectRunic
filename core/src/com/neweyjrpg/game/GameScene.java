@@ -1,11 +1,11 @@
 package com.neweyjrpg.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.util.ClosestPosition;
 
@@ -61,17 +61,15 @@ public class GameScene {
 			for (int y=0; y<map.getDimY(); y++)
 				batch.draw(map.getMapTile(x, y).getGraphic(), scrollX+(x*16), scrollY+(y*16));
 		
-//		this.player.draw(batch, deltaTime, player.getX() + scrollX, player.getY() + scrollY);
 		for (GameActor actor : actors) {
 			actor.draw(batch, deltaTime, actor.getX() + scrollX, actor.getY() + scrollY);
 		}
 	}
 	
 	public void act(float deltaTime) {
-//		this.player.act(deltaTime);
 		for (GameActor actor : actors){
 			actor.act(deltaTime);
-			if (actor.getPhysicsModel().getType() != BodyType.StaticBody)
+			if (actor.getPhysicsModel().getType() != PhysicalState.Static)
 				this.detectCollision(actor); //Detect collision after each individual action; this is key
 		}
 		

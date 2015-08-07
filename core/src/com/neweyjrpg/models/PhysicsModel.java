@@ -2,12 +2,12 @@ package com.neweyjrpg.models;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.neweyjrpg.enums.Enums.PhysicalState;
 
 public class PhysicsModel {
 
-	private BodyType type;
-	public BodyType getType() {
+	private PhysicalState type;
+	public PhysicalState getType() {
 		return type;
 	}
 
@@ -17,7 +17,7 @@ public class PhysicsModel {
 		return bounds;
 	}
 
-	public PhysicsModel(BodyType type, Rectangle bounds) {
+	public PhysicsModel(PhysicalState type, Rectangle bounds) {
 		this.type = type;
 		this.bounds = bounds;
 	}

@@ -11,7 +11,9 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 		float currX, currY, oldX, oldY, subX, subY;
 		if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
 			
-			switch (actor.getPhysicsModel().getType()) {
+			switch (subject.getPhysicsModel().getType()) {
+			//case ()
+			
 			default:		
 				oldX = actor.getOldPosition().x;
 				oldY = actor.getOldPosition().y;
@@ -36,7 +38,7 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 					}
 				}
 				break;
-			}				
+			}
 		}
 	}
 	
