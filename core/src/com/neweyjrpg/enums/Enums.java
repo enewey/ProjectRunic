@@ -4,12 +4,12 @@ public class Enums {
 	
 	public enum Dir { UP, RIGHT, DOWN, LEFT }
 	public enum PhysicalState { 
-		Static,		//Non-moving, blocking
-		Blocking,	//May be moving, blocking
-		Pushable, 	//Moving or non-moving, can be pushed by blocking/elastic types
-		Elastic, 	//Blocking/pushable types bounce off
-		Light,		//Does not
-		Gaseous
+		StaticBlock,		//Never moves, blocks all objects.
+		MovingBlock,		//Can be moving, blocks all objects.
+		StaticPushable,		//Never moves of its own accord, can be pushed by moving objects.
+		MovingPushable,		//Can be moving, can be pushed by moving objects.
+		Open,				//Does not block, nor can be pushed.
+		Custom				//Specifies the object should handle the collision according to its own rules.
 	}
 	
 }

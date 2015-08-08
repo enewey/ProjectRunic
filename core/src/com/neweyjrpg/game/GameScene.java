@@ -69,7 +69,8 @@ public class GameScene {
 	public void act(float deltaTime) {
 		for (GameActor actor : actors){
 			actor.act(deltaTime);
-			if (actor.getPhysicsModel().getType() != PhysicalState.Static)
+			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
+					&& actor.getPhysicsModel().getType() != PhysicalState.StaticPushable)
 				this.detectCollision(actor); //Detect collision after each individual action; this is key
 		}
 		
@@ -96,7 +97,7 @@ public class GameScene {
 			if (subject.equals(actor)) {
 				continue;
 			}
-			actor.getCollider().handleCollision(actor, subject);
+			actor.collideInto(subject);
 		}
 	}
 	

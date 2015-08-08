@@ -9,19 +9,30 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 	@Override
 	public void handleCollision(GameActor actor, GameActor subject) {
 		float currX, currY, oldX, oldY, subX, subY;
+		oldX = actor.getOldPosition().x;
+		oldY = actor.getOldPosition().y;
+		currX = actor.getPhysicsModel().getBounds().x;
+		currY = actor.getPhysicsModel().getBounds().y;
+		subX = subject.getPhysicsModel().getBounds().x;
+		subY = subject.getPhysicsModel().getBounds().y;
+		
 		if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
 			
 			switch (subject.getPhysicsModel().getType()) {
-			//case ()
-			
-			default:		
-				oldX = actor.getOldPosition().x;
-				oldY = actor.getOldPosition().y;
-				currX = actor.getPhysicsModel().getBounds().x;
-				currY = actor.getPhysicsModel().getBounds().y;
-				subX = subject.getPhysicsModel().getBounds().x;
-				subY = subject.getPhysicsModel().getBounds().y;
-				
+			case Open:
+				break;
+			case Custom:
+				subject.collideInto(actor); //this should work, right?
+				break;
+			case MovingPushable:
+			case StaticPushable:
+				float moveX = currX - ((currX + oldX) / 2);
+				float moveY = currY - ((currY + oldY) / 2);
+				actor.setPhysicalPosition(oldX, oldY);
+				actor.movePhysicalPosition(moveX, moveY);
+				subject.movePhysicalPosition(moveX, moveY);
+				break;
+			default:
 				if (Math.abs(subX - currX) > Math.abs(subY - currY)) {
 					if (interpolateY(actor, subject, currX, currY)) break;
 					if (interpolateX(actor, subject, currX, currY)) break;

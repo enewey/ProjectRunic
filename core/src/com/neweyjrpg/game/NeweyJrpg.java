@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.NPCActor;
+import com.neweyjrpg.collider.BlockingCollider;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.controller.InputController;
@@ -39,12 +40,13 @@ public class NeweyJrpg extends ApplicationAdapter {
 		camera = new PerspectiveCamera();
 		map = new GameMap("dungeon.png", "maps/map1.txt");
 		chara = new CharacterActor(new Texture("hero.png"), 0, 220f, 220f, 
-				new PhysicsModel(PhysicalState.Blocking, 
+				new PhysicsModel(PhysicalState.MovingBlock, 
 						new Rectangle(220f, 220f, 12f, 12f)));
 		
 		InputController input = new InputController();
 		Gdx.input.setInputProcessor(input);
 		chara.setController(input);
+		chara.setCollider(new BlockingCollider());
 		
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
 		
@@ -53,10 +55,11 @@ public class NeweyJrpg extends ApplicationAdapter {
 			float x = (int)(Math.random()*1000)%300;
 			float y = (int)(Math.random()*1000)%300;
 			npc = new NPCActor(new Texture("hero.png"), 0, x, y,
-					new PhysicsModel(PhysicalState.Pushable, 
+					new PhysicsModel(PhysicalState.MovingPushable, 
 							new Rectangle(x, y, 12f, 12f)));
 			npc.setController(new BadAIController());
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
+			npc.setCollider(new BlockingCollider());
 			scene.addActor(npc);
 		}
 		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
@@ -65,8 +68,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
 			}	
 		}
-		MassiveActor bigBlock = new MassiveActor(48f, 48f, new PhysicsModel(PhysicalState.Static,
+		MassiveActor bigBlock = new MassiveActor(48f, 48f, new PhysicsModel(PhysicalState.StaticBlock,
 									new Rectangle(48f, 48f, 160f, 160f)), bigBlockGraphics, 16f, 16f);
+		bigBlock.setCollider(new BlockingCollider());
 		scene.addActor(bigBlock);
 		
 		font = new BitmapFont();

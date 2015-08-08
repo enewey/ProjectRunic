@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.neweyjrpg.collider.BlockingCollider;
+import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.models.PhysicsModel;
 
-public abstract class GameActor extends Actor implements Comparable<GameActor> {
+public abstract class GameActor extends Actor implements Comparable<GameActor>, ICanCollide<GameActor> {
 	
 	//Fields
 	protected PhysicsModel phys;
@@ -29,8 +30,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor> {
 		
 		physPaddingX = 0f;
 		physPaddingY = 0f;
-		
-		collider = new BlockingCollider();
 	}
 	
 	//Methods
@@ -83,10 +82,20 @@ public abstract class GameActor extends Actor implements Comparable<GameActor> {
 		return new Vector2(this.oldX, this.oldY);
 	}
 	
-	
 	@Override
 	public int compareTo(GameActor o) {
 		return (int)((o.getY()*1000) - (this.getY()*1000));
+	}
+	
+	@Override
+	public void collideInto(GameActor obj) {
+		this.getCollider().handleCollision(this, obj);
+		
+	}
+	@Override
+	public void collisionFrom(GameActor obj) {
+		obj.getCollider().handleCollision(obj, this);
+		
 	}
 
 }
