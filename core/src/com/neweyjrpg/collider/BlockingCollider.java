@@ -29,8 +29,8 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 				float moveX = currX - ((currX + oldX) / 2);
 				float moveY = currY - ((currY + oldY) / 2);
 				actor.setPhysicalPosition(oldX, oldY);
-				actor.movePhysicalPosition(moveX, moveY);
-				subject.movePhysicalPosition(moveX, moveY);
+				actor.move(moveX, moveY);
+				subject.move(moveX, moveY);
 				break;
 			default:
 				if (Math.abs(subX - currX) > Math.abs(subY - currY)) {
