@@ -17,7 +17,6 @@ import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.PlayerActor;
 import com.neweyjrpg.collider.BlockingCollider;
 import com.neweyjrpg.constants.Constants;
-import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.controller.InputController;
 import com.neweyjrpg.controller.PatternController;
 import com.neweyjrpg.enums.Enums.PhysicalState;
@@ -27,7 +26,6 @@ import com.neweyjrpg.models.PhysicsModel;
 
 public class NeweyJrpg extends ApplicationAdapter {
 	CharacterActor chara;
-	NPCActor npc;
 	GameMap map;
 	Camera camera;
 	float stateTime;
@@ -43,18 +41,17 @@ public class NeweyJrpg extends ApplicationAdapter {
 				new PhysicsModel(PhysicalState.MovingBlock, 
 						new Rectangle(220f, 220f, 12f, 12f)));
 		
-		InputController input = new InputController();
-		Gdx.input.setInputProcessor(input);
-		chara.setController(input);
+		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
+		Gdx.input.setInputProcessor(scene);
 		chara.setCollider(new BlockingCollider());
 		
-		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
+		
 		
 		//Bunch of random NPCs
 		for (int i=0; i<25; i++) {
 			float x = (int)(Math.random()*1000)%300;
 			float y = (int)(Math.random()*1000)%300;
-			npc = new NPCActor(new Texture("hero.png"), 0, x, y,
+			NPCActor npc = new NPCActor(new Texture("hero.png"), 0, x, y,
 					new PhysicsModel(PhysicalState.MovingPushable, 
 							new Rectangle(x, y, 12f, 12f)));
 			npc.setController(new PatternController(false));

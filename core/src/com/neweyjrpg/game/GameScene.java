@@ -1,15 +1,20 @@
 package com.neweyjrpg.game;
 
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.controller.InputController;
 import com.neweyjrpg.enums.Enums.PhysicalState;
+import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.map.GameMap;
+import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.util.ClosestPosition;
 
-public class GameScene {
+public class GameScene extends InputAdapter implements IProducesInputs {
 	
 	//CHANGE TO PRIVATE
 	public float scrollX, scrollY; //Camera focus
@@ -28,16 +33,21 @@ public class GameScene {
 	private Array<GameActor> actors;
 	public Array<GameActor> getActors() { return actors; }
 	
-	private GameActor player;
+	private CharacterActor player;
+	private InputController inputController;
 	
-	public GameScene(Viewport viewport, Batch batch, GameActor playerActor, GameMap map) {
+	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.batch = batch;
 		this.viewport = viewport;
 		this.actors = new Array<GameActor>(false, 10, GameActor.class);
-		this.actors.add(playerActor);
-		this.setPlayer(playerActor);
-		this.map = map;
 		
+		this.player = playerActor;
+		this.player.setController(this);
+		this.actors.add(this.player);
+		
+		this.inputController = new InputController();
+		
+		this.map = map;
 		this.scrollX = 0f;
 		this.scrollY = 0f;
 		
@@ -49,7 +59,7 @@ public class GameScene {
 		actors.add(actor);
 	}
 	
-	public void setPlayer(GameActor actor) {
+	public void setPlayer(CharacterActor actor) {
 		this.player = actor;
 	}
 	
@@ -117,6 +127,34 @@ public class GameScene {
 		} else if (player.getY()+scrollY < Constants.LOWER_BOUND_Y) {
 			scrollY = Math.min(Constants.LOWER_BOUND_Y - player.getY(), 0);
 		}
+	}
+	
+	@Override
+	public boolean keyUp(int keycode) {
+		if (inputController != null)
+			return inputController.keyUp(keycode);
+		return super.keyUp(keycode);
+	}
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		if (inputController != null)
+			return inputController.keyDown(keycode);
+		return super.keyDown(keycode);
+	}
+	
+	@Override
+	public DirectionalInput getDirectionalInput() {
+		if (inputController != null)
+			return inputController.getDirectionalInput();
+		return null;
+	}
+	
+	@Override
+	public boolean[] getButtonInput() {
+		if (inputController != null)
+			return inputController.getButtonInput();
+		return null;
 	}
 
 }

@@ -26,10 +26,14 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 				break;
 			case MovingPushable:
 			case StaticPushable:
+				float diffX = subX - currX;
+				float diffY = subY - currY;
 				float moveX = currX - ((currX + oldX) / 2);
 				float moveY = currY - ((currY + oldY) / 2);
 				actor.setPhysicalPosition(oldX, oldY);
 				actor.move(moveX, moveY);
+				if (Math.abs(diffX) > Math.abs(diffY)) moveY = 0;
+				else if (Math.abs(diffX) < Math.abs(diffY)) moveX = 0;
 				subject.move(moveX, moveY);
 				break;
 			default:

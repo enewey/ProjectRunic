@@ -5,7 +5,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.DirectionalInput;
 
-public class InputController extends InputAdapter implements IProducesInputs {
+public class InputController implements IProducesInputs {
 
 	private DirectionalInput dirs;
 	
@@ -13,7 +13,6 @@ public class InputController extends InputAdapter implements IProducesInputs {
 		dirs = new DirectionalInput();
 	}
 	
-	@Override
 	public boolean keyUp(int keycode) {
 		switch (keycode){
 		case Keys.UP:
@@ -28,12 +27,11 @@ public class InputController extends InputAdapter implements IProducesInputs {
 		case Keys.LEFT:
 			dirs.liftLeft();
 			return true;
+		}
+	
+		return false;
 	}
 	
-	return false;
-	}
-	
-	@Override
 	public boolean keyDown(int keycode) {
 		switch (keycode){
 			case Keys.UP:
