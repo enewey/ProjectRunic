@@ -3,6 +3,7 @@ package com.neweyjrpg.actor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.neweyjrpg.interaction.InteractionHandler;
 import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.models.PhysicsModel;
@@ -19,6 +20,10 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	protected IHandlesCollision<GameActor> collider;
 	public IHandlesCollision<GameActor> getCollider() { return this.collider; }
 	public void setCollider(IHandlesCollision<GameActor> collider) { this.collider = collider; }
+	
+	protected InteractionHandler interactionHandler;
+	public InteractionHandler getInteractionHandler() { return this.interactionHandler; }
+	public void setInteractionHandler(InteractionHandler handler) { this.interactionHandler = handler; }
 	
 	//Constructor
 	public GameActor(float x, float y, PhysicsModel phys){
@@ -93,8 +98,9 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	@Override
 	public void collisionFrom(GameActor obj) {
-		obj.getCollider().handleCollision(obj, this);
-		
+		obj.getCollider().handleCollision(obj, this);	
 	}
+	
+	
 
 }

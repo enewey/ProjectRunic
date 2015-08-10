@@ -84,7 +84,7 @@ public class GameScene extends InputAdapter implements IProducesInputs {
 				this.detectCollision(actor); //Detect collision after each individual action; this is key
 		}
 		
-		this.sortActors();
+		this.sortActors(); //sort to maintain drawing overlap consistency
 		this.adjustFocus();
 	}
 	
