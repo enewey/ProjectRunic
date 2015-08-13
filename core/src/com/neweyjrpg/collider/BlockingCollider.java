@@ -7,16 +7,18 @@ import com.neweyjrpg.interfaces.IHandlesCollision;
 public class BlockingCollider implements IHandlesCollision<GameActor>{
 
 	@Override
-	public void handleCollision(GameActor actor, GameActor subject) {
-		float currX, currY, oldX, oldY, subX, subY;
-		oldX = actor.getOldPosition().x;
-		oldY = actor.getOldPosition().y;
-		currX = actor.getPhysicsModel().getBounds().x;
-		currY = actor.getPhysicsModel().getBounds().y;
-		subX = subject.getPhysicsModel().getBounds().x;
-		subY = subject.getPhysicsModel().getBounds().y;
-		
+	public boolean handleCollision(GameActor actor, GameActor subject) {
+		boolean ret = false;
 		if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
+			float currX, currY, oldX, oldY, subX, subY;
+			oldX = actor.getOldPosition().x;
+			oldY = actor.getOldPosition().y;
+			currX = actor.getPhysicsModel().getBounds().x;
+			currY = actor.getPhysicsModel().getBounds().y;
+			subX = subject.getPhysicsModel().getBounds().x;
+			subY = subject.getPhysicsModel().getBounds().y;
+			
+			ret = true;
 			
 			switch (subject.getPhysicsModel().getType()) {
 			case Open:
@@ -55,6 +57,8 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 				break;
 			}
 		}
+		
+		return ret;
 	}
 	
 	private boolean interpolateY(GameActor actor, GameActor subject, float currX, float currY) {		

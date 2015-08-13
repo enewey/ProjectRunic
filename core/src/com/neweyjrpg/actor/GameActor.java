@@ -3,12 +3,13 @@ package com.neweyjrpg.actor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.neweyjrpg.interaction.InteractionHandler;
 import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
+import com.neweyjrpg.interfaces.IProducesInteraction;
+import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.models.PhysicsModel;
 
-public abstract class GameActor extends Actor implements Comparable<GameActor>, ICanCollide<GameActor> {
+public abstract class GameActor extends Actor implements Comparable<GameActor>, ICanCollide<GameActor>, IProducesInteraction {
 	
 	//Fields
 	protected PhysicsModel phys;
@@ -21,9 +22,10 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public IHandlesCollision<GameActor> getCollider() { return this.collider; }
 	public void setCollider(IHandlesCollision<GameActor> collider) { this.collider = collider; }
 	
-	protected InteractionHandler interactionHandler;
-	public InteractionHandler getInteractionHandler() { return this.interactionHandler; }
-	public void setInteractionHandler(InteractionHandler handler) { this.interactionHandler = handler; }
+	protected Interaction onTouchInteraction;
+	public void setOnTouchInteraction(Interaction i) { this.onTouchInteraction = i; }
+	protected Interaction onActionInteraction;
+	public void setOnActionInteraction(Interaction i) { this.onActionInteraction = i; }
 	
 	//Constructor
 	public GameActor(float x, float y, PhysicsModel phys){
@@ -92,15 +94,21 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	@Override
-	public void collideInto(GameActor obj) {
-		this.getCollider().handleCollision(this, obj);
+	public boolean collideInto(GameActor obj) {
+		return this.getCollider().handleCollision(this, obj);
 		
 	}
 	@Override
-	public void collisionFrom(GameActor obj) {
-		obj.getCollider().handleCollision(obj, this);	
+	public boolean collisionFrom(GameActor obj) {
+		return obj.getCollider().handleCollision(obj, this);	
 	}
 	
-	
-
+	@Override
+	public Interaction onAction() {
+		return this.onActionInteraction;
+	}
+	@Override
+	public Interaction onTouch() {
+		return this.onTouchInteraction;
+	}
 }

@@ -8,6 +8,7 @@ import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
 import com.neweyjrpg.interfaces.IHandlesInputs;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.models.PhysicsModel;
 

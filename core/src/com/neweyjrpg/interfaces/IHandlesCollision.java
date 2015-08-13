@@ -1,5 +1,12 @@
 package com.neweyjrpg.interfaces;
 
 public interface IHandlesCollision<T> {
-	public void handleCollision(T obj, T obj2);
+	
+	/**
+	 *  Checks if collision occurs between two objects, and then handles the collision. 
+	 * @param obj
+	 * @param obj2
+	 * @return - true if collision occurred.
+	 */
+	public boolean handleCollision(T obj, T obj2);
 }

@@ -17,11 +17,10 @@ import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.PlayerActor;
 import com.neweyjrpg.collider.BlockingCollider;
 import com.neweyjrpg.constants.Constants;
-import com.neweyjrpg.controller.BadAIController;
-import com.neweyjrpg.controller.InputController;
 import com.neweyjrpg.controller.PatternController;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
+import com.neweyjrpg.interaction.MessageInteraction;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.PhysicsModel;
 
@@ -57,6 +56,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 			//npc.setController(new BadAIController());
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
 			npc.setCollider(new BlockingCollider());
+			npc.setOnTouchInteraction(new MessageInteraction("HELLO " + i));
 			scene.addActor(npc);
 		}
 		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];

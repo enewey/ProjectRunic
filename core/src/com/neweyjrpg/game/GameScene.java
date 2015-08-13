@@ -2,6 +2,7 @@ package com.neweyjrpg.game;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.CharacterActor;
@@ -9,12 +10,15 @@ import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.InputController;
 import com.neweyjrpg.enums.Enums.PhysicalState;
+import com.neweyjrpg.interaction.MessageInteraction;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.util.ClosestPosition;
 
-public class GameScene extends InputAdapter implements IProducesInputs {
+public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
 	
 	//CHANGE TO PRIVATE
 	public float scrollX, scrollY; //Camera focus
@@ -36,6 +40,9 @@ public class GameScene extends InputAdapter implements IProducesInputs {
 	private CharacterActor player; //The player-controlled actor
 	private InputController inputController; //Used to relay inputs to the actor
 	
+	private BitmapFont font;
+	private String message = "";
+	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.batch = batch;
 		this.viewport = viewport;
@@ -50,6 +57,8 @@ public class GameScene extends InputAdapter implements IProducesInputs {
 		this.map = map;
 		this.scrollX = 0f;
 		this.scrollY = 0f;
+		
+		this.font = new BitmapFont();
 		
 		//Max scroll dictates how far the camera can scroll, so the edges align to the edge of the GameMap 
 		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
@@ -77,6 +86,8 @@ public class GameScene extends InputAdapter implements IProducesInputs {
 		for (GameActor actor : actors) {
 			actor.draw(batch, deltaTime, actor.getX() + scrollX, actor.getY() + scrollY);
 		}
+		
+		font.draw(this.batch, message, 0, 20);
 	}
 	
 	/**
@@ -114,7 +125,9 @@ public class GameScene extends InputAdapter implements IProducesInputs {
 			if (subject.equals(actor)) {
 				continue;
 			}
-			actor.collideInto(subject);
+			if (actor.collideInto(subject) && this.player == actor) { // TODO: this dont work
+				this.handle(actor.onTouch());
+			}
 		}
 	}
 	
@@ -163,5 +176,15 @@ public class GameScene extends InputAdapter implements IProducesInputs {
 			return inputController.getButtonInput();
 		return null;
 	}
-
+	
+	@Override
+	public boolean handle(Interaction interaction) {
+		if (interaction instanceof MessageInteraction) {
+			this.message = ((MessageInteraction) interaction).getData();
+			return true;
+		}
+		else 
+			return false;
+	}
+	
 }
