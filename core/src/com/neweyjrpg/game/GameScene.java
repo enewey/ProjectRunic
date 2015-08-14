@@ -95,18 +95,28 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	 * @param deltaTime
 	 */
 	public void act(float deltaTime) {
+		player.act(deltaTime);
+		this.detectCollision(player, true); //Detect collision after each individual action; this is key
+		
 		for (GameActor actor : actors){
+			if (actor == this.player) continue;
+			
 			actor.act(deltaTime);
 			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
 					&& actor.getPhysicsModel().getType() != PhysicalState.StaticPushable)
-				this.detectCollision(actor); //Detect collision after each individual action; this is key
+				this.detectCollision(actor, false); //Detect collision after each individual action; this is key
 		}
 		
 		this.sortActors(); //sort to maintain drawing overlap consistency
 		this.adjustFocus();
 	}
 	
-	private void detectCollision(GameActor actor) {
+	/**
+	 * Checks if a given actor is colliding with any other actors in the scene.
+	 * @param actor - the actor that is colliding into another actor.
+	 * 			NOTE: Static Actors should not be specified as the parameter for this method.
+	 */
+	private void detectCollision(GameActor actor, boolean doInteract) {
 		if (actor.getPhysicsModel().getBounds().x < 0)
 			actor.setPhysicalPosition(0, actor.getPhysicsModel().getBounds().y);
 		else if (actor.getPhysicsModel().getBounds().x > map.getDimX()*Constants.TILE_WIDTH - actor.getPhysicsModel().getBounds().width)
@@ -125,8 +135,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 			if (subject.equals(actor)) {
 				continue;
 			}
-			if (actor.collideInto(subject) && this.player == actor) { // TODO: this dont work
-				this.handle(actor.onTouch());
+			if (actor.collideInto(subject) && doInteract) {
+				this.handle(subject.onTouch());
 			}
 		}
 	}
@@ -135,6 +145,9 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		actors.sort();
 	}
 	
+	/**
+	 * Sets the camera to be focused on the player.
+	 */
 	public void adjustFocus() {
 		if (player.getX()+scrollX > Constants.UPPER_BOUND_X) {
 			scrollX = Math.max(Constants.UPPER_BOUND_X - player.getX(), maxScrollX);
@@ -186,5 +199,4 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		else 
 			return false;
 	}
-	
 }
