@@ -2,6 +2,7 @@ package com.neweyjrpg.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
 public class BadAIController implements IProducesInputs {
@@ -9,10 +10,10 @@ public class BadAIController implements IProducesInputs {
 	private float timeBetweenInputs;
 	private float timeSinceLastInput;
 	private DirectionalInput dirs;
-	private boolean[] buttons;
+	private ButtonInput buttons;
 	
 	public BadAIController() {
-		buttons = new boolean[10];
+		buttons = new ButtonInput();
 		dirs = new DirectionalInput();
 		timeSinceLastInput = 0f;
 		timeBetweenInputs = 1f;
@@ -25,7 +26,7 @@ public class BadAIController implements IProducesInputs {
 	}
 
 	@Override
-	public boolean[] getButtonInput() {
+	public ButtonInput getButtonInput() {
 		randomizeInputs();
 		return buttons;
 	}
@@ -37,8 +38,7 @@ public class BadAIController implements IProducesInputs {
 			timeSinceLastInput = 0f;
 		else if (timeSinceLastInput >= timeBetweenInputs * 3 / 4) {
 			dirs.clear();
-			for (int i=0; i<buttons.length; i++)
-				buttons[i] = false;
+			buttons.clear();
 			return;
 		}
 		else

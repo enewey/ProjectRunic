@@ -1,16 +1,18 @@
 package com.neweyjrpg.controller;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
 public class InputController implements IProducesInputs {
 
 	private DirectionalInput dirs;
+	private ButtonInput buttons;
 	
 	public InputController() {
 		dirs = new DirectionalInput();
+		buttons = new ButtonInput();
 	}
 	
 	public boolean keyUp(int keycode) {
@@ -46,6 +48,9 @@ public class InputController implements IProducesInputs {
 			case Keys.LEFT:
 				dirs.pushLeft();
 				return true;
+			case Keys.Z:
+			case Keys.X:
+			case Keys.C:
 		}
 		
 		return false;
@@ -57,8 +62,7 @@ public class InputController implements IProducesInputs {
 	}
 
 	@Override
-	public boolean[] getButtonInput() {
-		// TODO Auto-generated method stub
-		return null;
+	public ButtonInput getButtonInput() {
+		return buttons;
 	}	
 }

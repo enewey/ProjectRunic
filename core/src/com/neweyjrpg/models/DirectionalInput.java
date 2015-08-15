@@ -2,7 +2,7 @@ package com.neweyjrpg.models;
 
 import com.neweyjrpg.enums.Enums.Dir;
 
-public class DirectionalInput {
+public class DirectionalInput extends Input {
 	
 	private boolean[] data;
 	
@@ -38,15 +38,6 @@ public class DirectionalInput {
 			this.data[2] = false;
 		else if (d == Dir.LEFT)
 			this.data[3] = false;
-	}
-	
-	public void clear() {
-		for (int i=0; i<4; i++)
-			this.data[i] = false;
-	}
-	
-	public boolean[] getInputs() {
-		return data;
 	}
 	
 	public boolean isEmpty() {

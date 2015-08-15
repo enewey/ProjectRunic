@@ -15,6 +15,7 @@ import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.map.GameMap;
+import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.util.ClosestPosition;
 
@@ -184,7 +185,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	}
 	
 	@Override
-	public boolean[] getButtonInput() {
+	public ButtonInput getButtonInput() {
 		if (inputController != null)
 			return inputController.getButtonInput();
 		return null;

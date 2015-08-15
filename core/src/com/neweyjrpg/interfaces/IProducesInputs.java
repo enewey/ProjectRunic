@@ -1,5 +1,6 @@
 package com.neweyjrpg.interfaces;
 
+import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
 public interface IProducesInputs {
@@ -13,6 +14,5 @@ public interface IProducesInputs {
 	/**
 	 *  NOT DONE!
 	 */
-	public boolean[] getButtonInput();
-	
+	public ButtonInput getButtonInput();
 }

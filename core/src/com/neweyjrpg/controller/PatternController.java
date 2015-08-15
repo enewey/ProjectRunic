@@ -2,6 +2,7 @@ package com.neweyjrpg.controller;
 
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
 public class PatternController implements IProducesInputs {
@@ -46,7 +47,7 @@ public class PatternController implements IProducesInputs {
 	}
 
 	@Override
-	public boolean[] getButtonInput() {
+	public ButtonInput getButtonInput() {
 		// TODO Auto-generated method stub
 		return null;
 	}
