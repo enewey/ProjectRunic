@@ -16,12 +16,14 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public PhysicsModel getPhysicsModel() {	return this.phys; }
 	protected float oldX, oldY;
 	
-	protected float physPaddingX, physPaddingY;
+	protected float physPaddingX, physPaddingY; //Where the physics model sits relative to the sprite/animation
 	
+	//Object that handles collision events
 	protected IHandlesCollision<GameActor> collider;
 	public IHandlesCollision<GameActor> getCollider() { return this.collider; }
 	public void setCollider(IHandlesCollision<GameActor> collider) { this.collider = collider; }
 	
+	//Interactions are a way for actors to transfer unique instructions to its interaction handler
 	protected Interaction onTouchInteraction;
 	public void setOnTouchInteraction(Interaction i) { this.onTouchInteraction = i; }
 	protected Interaction onActionInteraction;

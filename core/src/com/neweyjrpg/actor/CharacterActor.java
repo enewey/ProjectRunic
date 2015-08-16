@@ -8,7 +8,6 @@ import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
 import com.neweyjrpg.interfaces.IHandlesInputs;
 import com.neweyjrpg.interfaces.IProducesInputs;
-import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.models.PhysicsModel;
 
@@ -21,15 +20,17 @@ public class CharacterActor extends GameActor implements IHandlesInputs {
 		
 		private IProducesInputs controller;
 		
+		//The direction this character is facing
 		private Dir dir;
 		public Dir getDir() {	return dir;	}
 		public void setDir(Dir dir) {	this.dir = dir;	}
 		
+		//Distance that a single move call will move this actor, in pixels.
 		protected float movespeed;
 		public float getMovespeed() { return movespeed;	}
 		public void setMovespeed(float movespeed) {	this.movespeed = movespeed;	}
 		
-		protected boolean isMoving;
+		protected boolean isMoving; //used for determining state of animation.
 		protected float actionSpeed;
 		public float getActionSpeed() {	return actionSpeed;	}
 		public void setActionSpeed(float actionSpeed) {	this.actionSpeed = actionSpeed;	}
