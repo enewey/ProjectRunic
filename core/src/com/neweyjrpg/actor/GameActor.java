@@ -90,6 +90,10 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		return new Vector2(this.oldX, this.oldY);
 	}
 	
+	public float getDistance(GameActor subject) {
+		return (float)Math.sqrt(Math.pow(subject.getX() - this.getX(), 2) + Math.pow(subject.getY() - this.getY(), 2));
+	}
+	
 	@Override
 	public int compareTo(GameActor o) {
 		return (int)((o.getY()*1000) - (this.getY()*1000));

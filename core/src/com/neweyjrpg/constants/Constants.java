@@ -30,4 +30,9 @@ public class Constants {
 	
 	public final static float MAX_MOVEMENT_SPEED = 2f;
 	
+	public final static float CHARA_PHYS_WIDTH = 12f;
+	public final static float CHARA_PHYS_HEIGHT = 12f;
+	
+	public final static float CHARA_PHYS_SIZE = (float) Math.sqrt(288);
+	
 }

@@ -99,18 +99,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	 * @param deltaTime
 	 */
 	public void act(float deltaTime) {
-		ButtonInput butts = this.getButtonInput();
-		buttonDebug = "";
-		if (butts.getInputs()[0]) {
-			buttonDebug += "Z";
-		}
-		if (butts.getInputs()[1]) {
-			buttonDebug += "X";
-		}
-		if (butts.getInputs()[2]) {
-			buttonDebug += "C";
-		}
-		
+		buttonPressing();
 		
 		player.act(deltaTime);
 		this.detectCollision(player, true); //Detect collision after each individual action; this is key
@@ -124,7 +113,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 				this.detectCollision(actor, false); //Detect collision after each individual action; this is key
 		}
 		
-		this.sortActors(); //sort to maintain drawing overlap consistency
+		this.actors.sort(); //sorts by Y position, top to bottom; sort to maintain drawing overlap consistency
 		this.adjustFocus();
 	}
 	
@@ -158,8 +147,60 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		}
 	}
 	
-	private void sortActors() {
-		actors.sort();
+	private void buttonPressing() {
+		ButtonInput butts = this.getButtonInput();
+		buttonDebug = "";
+		if (butts.getInputs()[0]) {
+			playerInteract();
+			buttonDebug += "Z";
+		}
+		if (butts.getInputs()[1]) {
+			buttonDebug += "X";
+		}
+		if (butts.getInputs()[2]) {
+			buttonDebug += "C";
+		}
+	}
+	
+	private void playerInteract() {
+		Array<GameActor> sortedActors = new Array<GameActor>(actors);		
+		switch (player.getDir()) {
+		case UP:
+			for (int i = 0; i<sortedActors.size; i++) {
+				if (sortedActors.get(i).getY() < player.getY() || sortedActors.get(i) == player)
+					sortedActors.removeIndex(i--);
+			}
+			break;
+		case RIGHT:
+			for (int i = 0; i<sortedActors.size; i++) {
+				if (sortedActors.get(i).getX() < player.getX() || sortedActors.get(i) == player)
+					sortedActors.removeIndex(i--);
+			}
+			break;
+		case LEFT:
+			for (int i = 0; i<sortedActors.size; i++) {
+				if (sortedActors.get(i).getX() > player.getX() || sortedActors.get(i) == player)
+					sortedActors.removeIndex(i--);
+			}
+			break;
+		case DOWN:
+			for (int i = 0; i<sortedActors.size; i++) {
+				if (sortedActors.get(i).getY() > player.getY() || sortedActors.get(i) == player)
+					sortedActors.removeIndex(i--);
+			}
+			break;
+		}
+		
+		sortedActors.sort(new ClosestPosition(player));
+		for (int i=0; /*i<5 &&*/ i<sortedActors.size; i++) {
+			if (sortedActors.get(i).onAction() != null && sortedActors.get(i) != null) {
+				if (sortedActors.get(i).getDistance(player) < Constants.CHARA_PHYS_SIZE + 2f) {
+					this.handle(sortedActors.get(i).onAction());
+				}
+				break;
+			}
+		}
+		
 	}
 	
 	/**
@@ -209,6 +250,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	
 	@Override
 	public boolean handle(Interaction interaction) {
+		if (interaction == null) return false;
+		
 		if (interaction instanceof MessageInteraction) {
 			this.message = ((MessageInteraction) interaction).getData();
 			return true;

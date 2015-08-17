@@ -39,7 +39,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		map = new GameMap("dungeon.png", "maps/map1.txt");
 		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f, 
 				new PhysicsModel(PhysicalState.MovingBlock, 
-						new Rectangle(220f, 220f, 12f, 12f)));
+						new Rectangle(220f, 220f, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)));
 		
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
 		Gdx.input.setInputProcessor(scene);
@@ -51,12 +51,13 @@ public class NeweyJrpg extends ApplicationAdapter {
 			float y = (int)(Math.random()*1000)%300;
 			NPCActor npc = new NPCActor(new Texture("hero.png"), 0, x, y,
 					new PhysicsModel(PhysicalState.MovingPushable, 
-							new Rectangle(x, y, 12f, 12f)));
+							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)));
 //			npc.setController(new PatternController(true));
 			npc.setController(new BadAIController());
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
 			npc.setCollider(new BlockingCollider());
-			npc.setOnTouchInteraction(new MessageInteraction("HELLO " + i));
+//			npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
+			npc.setOnActionInteraction(new MessageInteraction("ACTION " + i));
 			scene.addActor(npc);
 		}
 		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
