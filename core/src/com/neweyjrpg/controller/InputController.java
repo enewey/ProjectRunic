@@ -29,6 +29,15 @@ public class InputController implements IProducesInputs {
 		case Keys.LEFT:
 			dirs.liftLeft();
 			return true;
+		case Keys.Z:
+			buttons.lift(0);
+			return true;
+		case Keys.X:
+			buttons.lift(1);
+			return true;
+		case Keys.C:
+			buttons.lift(2);
+			return true;
 		}
 	
 		return false;
@@ -49,8 +58,14 @@ public class InputController implements IProducesInputs {
 				dirs.pushLeft();
 				return true;
 			case Keys.Z:
+				buttons.push(0);
+				return true;
 			case Keys.X:
+				buttons.push(1);
+				return true;
 			case Keys.C:
+				buttons.push(2);
+				return true;
 		}
 		
 		return false;

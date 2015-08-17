@@ -43,6 +43,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	
 	private BitmapFont font;
 	private String message = "";
+	private String buttonDebug = "";
 	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.batch = batch;
@@ -71,6 +72,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	}
 	
 	public void setPlayer(CharacterActor actor) {
+		actor.setController(this);
 		this.player = actor;
 	}
 	
@@ -89,6 +91,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		}
 		
 		font.draw(this.batch, message, 0, 20);
+		font.draw(this.batch, buttonDebug, 0, 40);
 	}
 	
 	/**
@@ -96,6 +99,19 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	 * @param deltaTime
 	 */
 	public void act(float deltaTime) {
+		ButtonInput butts = this.getButtonInput();
+		buttonDebug = "";
+		if (butts.getInputs()[0]) {
+			buttonDebug += "Z";
+		}
+		if (butts.getInputs()[1]) {
+			buttonDebug += "X";
+		}
+		if (butts.getInputs()[2]) {
+			buttonDebug += "C";
+		}
+		
+		
 		player.act(deltaTime);
 		this.detectCollision(player, true); //Detect collision after each individual action; this is key
 		

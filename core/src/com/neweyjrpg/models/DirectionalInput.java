@@ -4,8 +4,6 @@ import com.neweyjrpg.enums.Enums.Dir;
 
 public class DirectionalInput extends Input {
 	
-	private boolean[] data;
-	
 	public DirectionalInput() {
 		this.data = new boolean[4];
 	}
