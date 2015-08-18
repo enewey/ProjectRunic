@@ -10,4 +10,12 @@ public class MessageInteraction implements Interaction {
 	public MessageInteraction(String message) { 
 		this.message = message;
 	}
+
+	@Override
+	public boolean equals(Interaction i) {
+		if (i instanceof MessageInteraction){
+			return (this.message.equals((MessageInteraction)i.getData()));
+		}
+		return false;
+	}
 }

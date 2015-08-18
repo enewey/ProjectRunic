@@ -1,5 +1,6 @@
 package com.neweyjrpg.game;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,7 +19,6 @@ import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.models.MessageSequence;
-import com.neweyjrpg.models.Sequence;
 import com.neweyjrpg.util.ClosestPosition;
 
 public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
@@ -160,18 +160,21 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	}
 	
 	private void buttonPressing() {
-		ButtonInput butts = this.getButtonInput();
-		buttonDebug = "";
-		if (butts.getInputs()[0]) {
-			playerInteract();
-			buttonDebug += "Z";
+		while (!this.inputController.getQueue().isEmpty())
+		{
+			int pop = this.inputController.getQueue().pop(); 
+			if (pop == Keys.Z) {
+				playerInteract();
+			} 
+			else if (pop == Keys.X) {
+				
+			} 
+			else if (pop == Keys.X) {
+				
+			}
 		}
-		if (butts.getInputs()[1]) {
-			buttonDebug += "X";
-		}
-		if (butts.getInputs()[2]) {
-			buttonDebug += "C";
-		}
+		
+		
 	}
 	
 	private void playerInteract() {
