@@ -19,6 +19,7 @@ public class StaticActor extends GameActor {
 
 	@Override
 	public void draw(Batch batch, float deltaTime) {
+		super.draw(batch, deltaTime);
 		batch.draw(texture, this.getX(), this.getY());
 	}
 	

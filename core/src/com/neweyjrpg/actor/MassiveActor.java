@@ -19,6 +19,7 @@ public class MassiveActor extends GameActor {
 
 	@Override
 	public void draw(Batch batch, float deltaTime) {
+		super.draw(batch, deltaTime);
 		for(int i=0; i < graphics.length; i++) {
 			for(int j=0; j < graphics[i].length; j++) {
 				batch.draw(graphics[i][j], getX() + (j * gWidth), getY() + (i * gHeight));
@@ -28,6 +29,7 @@ public class MassiveActor extends GameActor {
 
 	@Override
 	public void draw(Batch batch, float deltaTime, float x, float y) {
+		super.draw(batch, deltaTime, x, y);
 		for(int i=0; i < graphics.length; i++) {
 			for(int j=0; j < graphics[i].length; j++) {
 				batch.draw(graphics[i][j], x + (j * gWidth), y + (i * gHeight));

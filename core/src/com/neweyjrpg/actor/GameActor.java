@@ -41,8 +41,12 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	//Methods
-	public abstract void draw(Batch batch, float deltaTime);
-	public abstract void draw(Batch batch, float deltaTime, float x, float y);
+	public void draw(Batch batch, float deltaTime) {
+		batch.setColor(this.getColor());
+	}
+	public void draw(Batch batch, float deltaTime, float x, float y) {
+		batch.setColor(this.getColor());
+	}
 	public abstract void move(float x, float y);
 	
 	@Override

@@ -17,6 +17,8 @@ import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
+import com.neweyjrpg.models.MessageSequence;
+import com.neweyjrpg.models.Sequence;
 import com.neweyjrpg.util.ClosestPosition;
 
 public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
@@ -44,6 +46,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	private BitmapFont font;
 	private String message = "";
 	private String buttonDebug = "";
+	private MessageSequence sequence;
 	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.batch = batch;
@@ -115,6 +118,15 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		
 		this.actors.sort(); //sorts by Y position, top to bottom; sort to maintain drawing overlap consistency
 		this.adjustFocus();
+		
+		if (sequence != null) {
+			if (sequence.isDone())
+				sequence = null;
+			else
+				message = sequence.stepMessage();
+		} else {
+			message = "";
+		}
 	}
 	
 	/**
@@ -208,15 +220,15 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	 */
 	public void adjustFocus() {
 		if (player.getX()+scrollX > Constants.UPPER_BOUND_X) {
-			scrollX = Math.max(Constants.UPPER_BOUND_X - player.getX(), maxScrollX);
+			scrollX = Math.max(Math.round(Constants.UPPER_BOUND_X - player.getX()), maxScrollX);
 		} else if (player.getX()+scrollX < Constants.LOWER_BOUND_X) {
-			scrollX = Math.min(Constants.LOWER_BOUND_X - player.getX(), 0);
+			scrollX = Math.min(Math.round(Constants.LOWER_BOUND_X - player.getX()), 0);
 		}
 		
 		if (player.getY()+scrollY > Constants.UPPER_BOUND_Y) {
-			scrollY = Math.max(Constants.UPPER_BOUND_Y - player.getY(), maxScrollY);
+			scrollY = Math.max(Math.round(Constants.UPPER_BOUND_Y - player.getY()), maxScrollY);
 		} else if (player.getY()+scrollY < Constants.LOWER_BOUND_Y) {
-			scrollY = Math.min(Constants.LOWER_BOUND_Y - player.getY(), 0);
+			scrollY = Math.min(Math.round(Constants.LOWER_BOUND_Y - player.getY()), 0);
 		}
 	}
 	
@@ -253,7 +265,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		if (interaction == null) return false;
 		
 		if (interaction instanceof MessageInteraction) {
-			this.message = ((MessageInteraction) interaction).getData();
+			sequence = new MessageSequence(((MessageInteraction) interaction).getData(), 3, 30);
 			return true;
 		}
 		else 
