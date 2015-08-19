@@ -2,7 +2,6 @@ package com.neweyjrpg.game;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.CharacterActor;
@@ -19,6 +18,7 @@ import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.models.MessageSequence;
 import com.neweyjrpg.util.ClosestPosition;
+import com.neweyjrpg.window.MessageWindow;
 
 public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
 	
@@ -42,10 +42,11 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	private CharacterActor player; //The player-controlled actor
 	private InputController inputController; //Used to relay inputs to the actor
 	
-	private BitmapFont font;
-	private String message = "";
-	private String buttonDebug = "";
-	private MessageSequence sequence;
+//	private BitmapFont font;
+//	private String message = "";
+////	private String buttonDebug = "";
+//	private MessageSequence sequence;
+	private MessageWindow message;
 	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.batch = batch;
@@ -62,7 +63,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.scrollX = 0f;
 		this.scrollY = 0f;
 		
-		this.font = new BitmapFont();
+//		this.font = new BitmapFont();
 		
 		//Max scroll dictates how far the camera can scroll, so the edges align to the edge of the GameMap 
 		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
@@ -92,8 +93,10 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 			actor.draw(batch, deltaTime, actor.getX() + scrollX, actor.getY() + scrollY);
 		}
 		
-		font.draw(this.batch, message, 0, 20);
-		font.draw(this.batch, buttonDebug, 0, 40);
+		if (message != null) message.draw(batch, deltaTime);
+		
+//		font.draw(this.batch, message, 0, 20);
+//		font.draw(this.batch, buttonDebug, 0, 40);
 	}
 	
 	/**
@@ -109,13 +112,10 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		//	Another flow might be for a menu, or for some sort of text display.
 		//	Perhaps these should be in separate Scene classes all together...
 		
-		if (sequence != null) {
-			if (sequence.isDone())
-				sequence = null;
-			else
-				message = sequence.stepMessage();
+		if (message != null) {
+			if (message.isDone())
+				message = null;
 		} else {
-			message = "";
 			buttonPressing();
 			player.act(deltaTime);
 			this.detectCollision(player, true); //Detect collision after each individual action; this is key
@@ -130,12 +130,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 			}
 		}
 		
-		
-		
 		this.actors.sort(); //sorts by Y position, top to bottom; sort to maintain drawing overlap consistency
 		this.adjustFocus();
-		
-		
 	}
 	
 	/**
@@ -277,7 +273,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		if (interaction == null) return false;
 		
 		if (interaction instanceof MessageInteraction) {
-			sequence = new MessageSequence(((MessageInteraction) interaction).getData(), 3, 60);
+			message = new MessageWindow(0,0,320,80, ((MessageInteraction) interaction).getData());
 			return true;
 		}
 		else 
