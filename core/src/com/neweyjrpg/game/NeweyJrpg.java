@@ -88,7 +88,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		scene.draw(stateTime); //Will draw all actors/tiles in the scene
 		
 		//Draw overlays here
-		font.draw(scene.getBatch(), "X/Y: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
+		//font.draw(scene.getBatch(), "X/Y: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
 
 		scene.getBatch().end();
 		

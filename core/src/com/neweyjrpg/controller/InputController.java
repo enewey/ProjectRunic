@@ -21,6 +21,48 @@ public class InputController implements IProducesInputs {
 		inputQueue = new LinkedList<Integer>();
 	}
 	
+	public int getButton(int keycode) {
+		switch (keycode) {
+		case Keys.Z:
+			return 0;
+		case Keys.X:
+			return 1;
+		case Keys.C:
+			return 2;
+		case Keys.A:
+			return 3;
+		case Keys.S:
+			return 4;
+		case Keys.D:
+			return 5;
+		case Keys.Q:
+			return 6;
+		case Keys.W:
+			return 7;
+		case Keys.E:
+			return 8;
+		case Keys.R:
+			return 9;
+		default:
+			return -1;
+		}
+	}
+	
+	public int getDirection(int keycode) {
+		switch (keycode) {
+		case Keys.UP:
+			return 0;
+		case Keys.RIGHT:
+			return 1;
+		case Keys.DOWN:
+			return 2;
+		case Keys.LEFT:
+			return 3;
+		default:
+			return -1;
+		}
+	}
+	
 	public boolean keyUp(int keycode) {
 		switch (keycode){
 		case Keys.UP:

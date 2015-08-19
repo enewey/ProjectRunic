@@ -1,6 +1,5 @@
 package com.neweyjrpg.game;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -102,22 +101,13 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	 * @param deltaTime
 	 */
 	public void act(float deltaTime) {
-		buttonPressing();
 		
-		player.act(deltaTime);
-		this.detectCollision(player, true); //Detect collision after each individual action; this is key
 		
-		for (GameActor actor : actors){
-			if (actor == this.player) continue;
-			
-			actor.act(deltaTime);
-			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
-					&& actor.getPhysicsModel().getType() != PhysicalState.StaticPushable)
-				this.detectCollision(actor, false); //Detect collision after each individual action; this is key
-		}
-		
-		this.actors.sort(); //sorts by Y position, top to bottom; sort to maintain drawing overlap consistency
-		this.adjustFocus();
+		//TODO: Consider the flow of the act method.
+		//	Need to figure out a way to have different flows of control here.
+		//	Should have one 'flow' be for when the game is 'alive', and all Actors are in play.
+		//	Another flow might be for a menu, or for some sort of text display.
+		//	Perhaps these should be in separate Scene classes all together...
 		
 		if (sequence != null) {
 			if (sequence.isDone())
@@ -126,7 +116,26 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 				message = sequence.stepMessage();
 		} else {
 			message = "";
+			buttonPressing();
+			player.act(deltaTime);
+			this.detectCollision(player, true); //Detect collision after each individual action; this is key
+			
+			for (GameActor actor : actors){
+				if (actor == this.player) continue;
+				
+				actor.act(deltaTime);
+				if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
+						&& actor.getPhysicsModel().getType() != PhysicalState.StaticPushable)
+					this.detectCollision(actor, false); //Detect collision after each individual action; this is key
+			}
 		}
+		
+		
+		
+		this.actors.sort(); //sorts by Y position, top to bottom; sort to maintain drawing overlap consistency
+		this.adjustFocus();
+		
+		
 	}
 	
 	/**
@@ -163,13 +172,13 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		while (!this.inputController.getQueue().isEmpty())
 		{
 			int pop = this.inputController.getQueue().pop(); 
-			if (pop == Keys.Z) {
+			if (inputController.getButton(pop) == 0) {
 				playerInteract();
 			} 
-			else if (pop == Keys.X) {
+			else if (inputController.getButton(pop) == 1) {
 				
 			} 
-			else if (pop == Keys.X) {
+			else if (inputController.getButton(pop) == 2) {
 				
 			}
 		}
@@ -268,7 +277,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		if (interaction == null) return false;
 		
 		if (interaction instanceof MessageInteraction) {
-			sequence = new MessageSequence(((MessageInteraction) interaction).getData(), 3, 30);
+			sequence = new MessageSequence(((MessageInteraction) interaction).getData(), 3, 60);
 			return true;
 		}
 		else 
