@@ -6,6 +6,7 @@ public class MessageSequence extends Sequence<Character> {
 	private int idlingTime;
 	private boolean done;
 	private String fullMessage;
+	public String getMessage() { return this.fullMessage; } 
 	public boolean isDone() { return this.done; }
 	
 	public MessageSequence(String s, int repeats, int idle) {

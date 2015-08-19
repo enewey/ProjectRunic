@@ -6,16 +6,17 @@ import com.neweyjrpg.models.MessageSequence;
 
 public class MessageWindow extends GameWindow {
 
-	private static int repeats = 3;
-	private static int idleTime = 60;
+	private static int letterDelay = 1;
+	private static int idleTime = 5; //TODO: make these constants
 	private static int padding = 5;
 
 	private BitmapFont font;
 	private MessageSequence message;
+	public MessageSequence getSequence() { return this.message; }
 	
 	public MessageWindow(int x, int y, int width, int height, String str) {
 		super(x, y, width, height);
-		this.message = new MessageSequence(str, repeats, idleTime);
+		this.message = new MessageSequence(str, letterDelay, idleTime);
 		this.font = new BitmapFont();
 	}
 	
@@ -28,6 +29,25 @@ public class MessageWindow extends GameWindow {
 	
 	public boolean isDone() {
 		return message.isDone();
+	}
+	
+	public void skip() {
+		
+	}
+	
+	@Override
+	public void dispose() {
+		this.font.dispose();
+		super.dispose();
+	}
+
+	@Override
+	public void interact() {
+		if (this.isDone())
+			this.dispose();
+		else {
+			this.getSequence().skip();
+		}
 	}
 
 }

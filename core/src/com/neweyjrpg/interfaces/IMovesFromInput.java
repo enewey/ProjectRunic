@@ -7,7 +7,7 @@ import com.neweyjrpg.models.DirectionalInput;
  * @author erichnewey
  *
  */
-public interface IHandlesInputs {
+public interface IMovesFromInput {
 	
 	public void setController(IProducesInputs controller);
 	public void moveFromInput(DirectionalInput dirs);

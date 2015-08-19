@@ -7,11 +7,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class GameWindow {
+public abstract class GameWindow {
 	
 	protected int width, height, x, y; //x and y are the bottom-left corner of window
 	private TextureRegion windowSkin;
-	
+	private boolean disposed;
+	public boolean isDisposed() { return this.disposed; }
 	
 	public GameWindow(int x, int y, int width, int height) {
 		this.width = width;
@@ -19,7 +20,7 @@ public class GameWindow {
 		this.x = x;
 		this.y = y;
 		Pixmap pxm = new Pixmap(width, height, Format.RGB888);
-		pxm.setColor(Color.BLACK);
+		pxm.setColor(new Color(0,0,0,0.5f));
 		pxm.fillRectangle(x, y, width, height);
 		
 		this.windowSkin = new TextureRegion(new Texture(pxm));
@@ -29,5 +30,12 @@ public class GameWindow {
 	public void draw(Batch batch, float deltaTime) {
 		batch.draw(windowSkin, x, y);
 	}
+	
+	public void dispose() {
+		this.windowSkin.getTexture().dispose();
+		this.disposed = true;
+	}
+	
+	public abstract void interact();
 
 }

@@ -1,5 +1,7 @@
 package com.neweyjrpg.game;
 
+import java.util.LinkedList;
+
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
@@ -16,8 +18,8 @@ import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
-import com.neweyjrpg.models.MessageSequence;
 import com.neweyjrpg.util.ClosestPosition;
+import com.neweyjrpg.window.GameWindow;
 import com.neweyjrpg.window.MessageWindow;
 
 public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
@@ -39,6 +41,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	private Array<GameActor> actors; //All actors in this scene
 	public Array<GameActor> getActors() { return actors; }
 	
+	private LinkedList<GameWindow> windows;
+	
 	private CharacterActor player; //The player-controlled actor
 	private InputController inputController; //Used to relay inputs to the actor
 	
@@ -46,7 +50,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 //	private String message = "";
 ////	private String buttonDebug = "";
 //	private MessageSequence sequence;
-	private MessageWindow message;
+//	private MessageWindow message;
 	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.batch = batch;
@@ -56,6 +60,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.player = playerActor;
 		this.player.setController(this);
 		this.actors.add(this.player);
+		
+		this.windows = new LinkedList<GameWindow>();
 		
 		this.inputController = new InputController();
 		
@@ -79,7 +85,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.player = actor;
 	}
 	
-	public void draw(float deltaTime) {
+	public void draw(float deltaTime) {		
 		if (!batch.isDrawing()) //If the batch has not begun, go ahead and begin it
 			batch.begin();
 		
@@ -93,7 +99,15 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 			actor.draw(batch, deltaTime, actor.getX() + scrollX, actor.getY() + scrollY);
 		}
 		
-		if (message != null) message.draw(batch, deltaTime);
+		while (!windows.isEmpty()){
+			if (windows.getFirst().isDisposed()) {
+				windows.removeFirst();
+			}
+			else {
+				windows.getFirst().draw(batch, deltaTime);
+				break;
+			}
+		}
 		
 //		font.draw(this.batch, message, 0, 20);
 //		font.draw(this.batch, buttonDebug, 0, 40);
@@ -112,11 +126,10 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		//	Another flow might be for a menu, or for some sort of text display.
 		//	Perhaps these should be in separate Scene classes all together...
 		
-		if (message != null) {
-			if (message.isDone())
-				message = null;
-		} else {
-			buttonPressing();
+		buttonPressing();
+		
+		if (windows.isEmpty()) 
+		{
 			player.act(deltaTime);
 			this.detectCollision(player, true); //Detect collision after each individual action; this is key
 			
@@ -169,17 +182,35 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		{
 			int pop = this.inputController.getQueue().pop(); 
 			if (inputController.getButton(pop) == 0) {
-				playerInteract();
+				if (!windows.isEmpty()){
+					windowInteract();
+				}
+				else {
+					playerInteract();
+				}
+					
 			} 
 			else if (inputController.getButton(pop) == 1) {
+				if (!windows.isEmpty()){
+					windowCancel();
+				}
 				
-			} 
+			}
 			else if (inputController.getButton(pop) == 2) {
 				
 			}
 		}
-		
-		
+	}
+	
+	private void windowInteract() {
+		if (!windows.isEmpty()){
+			windows.getFirst().interact();
+		}
+	}
+	
+	private void windowCancel() {
+		for (GameWindow w : windows)
+			w.dispose();
 	}
 	
 	private void playerInteract() {
@@ -273,7 +304,9 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		if (interaction == null) return false;
 		
 		if (interaction instanceof MessageInteraction) {
-			message = new MessageWindow(0,0,320,80, ((MessageInteraction) interaction).getData());
+			for (String s : ((MessageInteraction) interaction).getData()) {
+				windows.addLast(new MessageWindow(0,0,320,80,s));
+			}
 			return true;
 		}
 		else 

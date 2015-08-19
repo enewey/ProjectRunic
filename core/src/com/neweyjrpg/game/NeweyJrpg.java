@@ -57,7 +57,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
 			npc.setCollider(new BlockingCollider());
 //			npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
-			npc.setOnActionInteraction(new MessageInteraction("ACTION " + i));
+			npc.setOnActionInteraction(new MessageInteraction("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
 			scene.addActor(npc);
 		}
 		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
@@ -84,6 +84,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		stateTime += deltaTime;
 
+		scene.getBatch().enableBlending();
 		scene.getBatch().begin();
 		scene.draw(stateTime); //Will draw all actors/tiles in the scene
 		

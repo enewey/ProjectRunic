@@ -55,6 +55,10 @@ public class Sequence<T> {
 		}
 		return ret;
 	}
+	
+	public void skip() {
+		this.pointer = data.size - 1;
+	}
 }
 
 class Step<T> {
