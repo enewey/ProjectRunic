@@ -45,7 +45,7 @@ public class ActorManager extends Manager {
 	public boolean handleButtonPress(int button) {
 		switch(button) {
 		case 0:
-			return playerInteract();
+			return interact();
 		case 1:
 		case 2:
 		case 3:
@@ -58,6 +58,11 @@ public class ActorManager extends Manager {
 	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch) {
 		//Draw all actors in the scene at their given position, taking into account the camera scrolling
 		for (GameActor actor : actors) {
+			Vector2 actorSize = actor.getSpriteSize();
+			if (actor.getX() + offsetX + actorSize.x < 0 || actor.getX() + offsetX > Constants.GAME_WIDTH + actorSize.x
+			 || actor.getY() + offsetY + actorSize.y < 0 || actor.getY() + offsetY > Constants.GAME_HEIGHT + actorSize.y)
+				continue;
+			
 			actor.draw(batch, deltaTime, actor.getX() + offsetX, actor.getY() + offsetY);
 		}
 	}
@@ -114,7 +119,7 @@ public class ActorManager extends Manager {
 		}
 	}
 	
-	private boolean playerInteract() {
+	private boolean interact() {
 		if (actors == null || actors.size == 0)
 			return false;
 		
@@ -158,9 +163,9 @@ public class ActorManager extends Manager {
 		
 		return true;
 	}
+	
 	@Override
 	public boolean handle(Interaction interaction) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

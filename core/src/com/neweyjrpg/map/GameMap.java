@@ -3,6 +3,8 @@ package com.neweyjrpg.map;
 import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.neweyjrpg.constants.Constants;
 
 public class GameMap {
 
@@ -38,5 +40,18 @@ public class GameMap {
 	
 	public MapTile getMapTile(int x, int y) {
 		return this.mapData[x][y];
+	}
+	
+	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY) {
+		int startX = Math.max((int)Math.floor(-offsetX/Constants.TILE_WIDTH), 0),
+			startY = Math.max((int)Math.floor(-offsetY/Constants.TILE_HEIGHT), 0);
+		int endX = Math.min(startX + (int)Math.round((Constants.GAME_WIDTH / Constants.TILE_WIDTH)+1), dimX),
+			endY = Math.min(startY + (int)Math.round((Constants.GAME_HEIGHT / Constants.TILE_HEIGHT)+1), dimX);
+		
+		for (int x=startX; x<endX; x++) {
+			for (int y=startY; y<endY; y++){
+				batch.draw(mapData[x][y].getGraphic(), offsetX+(x*16), offsetY+(y*16));
+			}
+		}
 	}
 }

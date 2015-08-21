@@ -2,6 +2,7 @@ package com.neweyjrpg.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
@@ -119,5 +120,10 @@ public class CharacterActor extends GameActor implements IMovesFromInput {
 		@Override
 		public void setController(IProducesInputs controller) {
 			this.controller = controller;
+		}
+		
+		public Vector2 getSpriteSize() {
+			return new Vector2(this.animation.getFrame(0, getDir(), false).getRegionWidth(), 
+							   this.animation.getFrame(0, getDir(), false).getRegionHeight());
 		}
 }

@@ -121,4 +121,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public Interaction onTouch() {
 		return this.onTouchInteraction;
 	}
+	
+	public abstract Vector2 getSpriteSize();
 }

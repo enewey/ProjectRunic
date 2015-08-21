@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
@@ -24,9 +24,14 @@ import com.neweyjrpg.models.DirectionalInput;
 
 public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
 	
+	private float stateTime;
+	public void incrementStateTime(float deltaTime) {
+		stateTime += deltaTime;
+	}
+	
 	//CHANGE TO PRIVATE
-	public float scrollX, scrollY; //Camera focus
-	public float maxScrollX, maxScrollY;
+	private float scrollX, scrollY; //Represents how far the camera has scrolled, justified at the bottom-left corner.
+	private float maxScrollX, maxScrollY; //How far the camera is allowed to scroll = (mapWidth-screenWidth, mapHeight-screenHeight)
 	
 	private Viewport viewport; //Used for drawing to the screen
 	public Viewport getViewport() {	return viewport; }
@@ -45,9 +50,10 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	private InputController inputController; //Used to relay inputs to the actor
 	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
+		this.stateTime = 0f;
+		
 		this.batch = batch;
 		this.viewport = viewport;
-		this.inputController = new InputController();
 		
 		this.map = map;
 		this.scrollX = 0f;
@@ -62,6 +68,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.managers = new LinkedList<Manager>();
 		managers.addLast(actorManager);
 		managers.addLast(windowManager);
+		
+		this.inputController = new InputController();
 	}
 	
 	public void addActor(GameActor actor) {
@@ -73,35 +81,39 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.actorManager.setPlayer(actor);
 	}
 	
-	public void draw(float deltaTime) {		
+	/**
+	 * Draws everything within this scene.
+	 * NOTE: MAKE SURE TO UPDATE STATETIME BEFORE CALLING
+	 */
+	public void draw() {
 		if (!batch.isDrawing()) //If the batch has not begun, go ahead and begin it
 			batch.begin();
 		
+		batch.setColor(Color.WHITE);
 		//Draw each tile from the map -- TODO: draw only tiles within the viewport!
-		for (int x=0; x<map.getDimX(); x++)
-			for (int y=0; y<map.getDimY(); y++)
-				batch.draw(map.getMapTile(x, y).getGraphic(), scrollX+(x*16), scrollY+(y*16));
+		map.draw(batch, stateTime, scrollX, scrollY);
 		
 		for (Manager m : managers) {
-			m.draw(deltaTime, scrollX, scrollY, batch);
+			m.draw(stateTime, scrollX, scrollY, batch);
 		}
 	}
 	
 	/**
-	 * 	Calls each actor's 'act' method, and then immediately checks for collision
-	 * @param deltaTime
+	 *  First handles any button presses within the InputController queue.
+	 * 	Then calls each actor's 'act' method, and immediately checks for collision afterwards.
+	 * NOTE: UPDATE THE STATETIME BEFORE CALLING
 	 */
-	public void act(float deltaTime) {
+	public void act() {
 		buttonPressing();
 		
 		ListIterator<Manager> li = managers.listIterator(managers.size());
 		while (li.hasPrevious()) {
-			if (li.previous().act(deltaTime)) {
+			if (li.previous().act(stateTime)) {
 				break;
 			}
 		}
 		
-		this.adjustFocus();
+		this.adjustFocus(actorManager.getPlayerPos());
 	}
 	
 	private void buttonPressing() {
@@ -118,11 +130,9 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	}
 	
 	/**
-	 * Sets the camera to be focused on the player.
+	 * Sets the camera to be centered on a specific spot.
 	 */
-	public void adjustFocus() {
-		Vector2 pos = actorManager.getPlayerPos();
-		
+	public void adjustFocus(Vector2 pos) {		
 		if (pos.x+scrollX > Constants.UPPER_BOUND_X) {
 			scrollX = Math.max(Math.round(Constants.UPPER_BOUND_X - pos.x), maxScrollX);
 		} else if (pos.x+scrollX < Constants.LOWER_BOUND_X) {

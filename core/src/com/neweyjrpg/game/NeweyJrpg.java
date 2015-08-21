@@ -3,6 +3,7 @@ package com.neweyjrpg.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -28,7 +29,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 	CharacterActor chara;
 	GameMap map;
 	Camera camera;
-	float stateTime;
+//	float stateTime;
 	BitmapFont font;
 	GameScene scene;
 	float focusX, focusY;
@@ -46,12 +47,13 @@ public class NeweyJrpg extends ApplicationAdapter {
 		chara.setCollider(new BlockingCollider());
 		
 		//Bunch of random NPCs
-		for (int i=0; i<25; i++) {
+		for (int i=0; i<10; i++) {
 			float x = (int)(Math.random()*1000)%300;
 			float y = (int)(Math.random()*1000)%300;
 			NPCActor npc = new NPCActor(new Texture("hero.png"), 0, x, y,
 					new PhysicsModel(PhysicalState.MovingPushable, 
 							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)));
+			npc.setColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),(float)Math.min(Math.random()+0.25, 1.0)));
 //			npc.setController(new PatternController(true));
 			npc.setController(new BadAIController());
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
@@ -73,7 +75,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		font = new BitmapFont();
 
-		stateTime = 0f;
+//		stateTime = 0f;
 		System.out.println("Create method done");
 	}
 
@@ -82,18 +84,19 @@ public class NeweyJrpg extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		float deltaTime = Gdx.graphics.getDeltaTime();
-		stateTime += deltaTime;
+		scene.incrementStateTime(deltaTime);
+//		stateTime += deltaTime;
 
 		scene.getBatch().enableBlending();
 		scene.getBatch().begin();
-		scene.draw(stateTime); //Will draw all actors/tiles in the scene
+		scene.draw(); //Will draw all actors/tiles in the scene
 		
 		//Draw overlays here
 		//font.draw(scene.getBatch(), "X/Y: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
 
 		scene.getBatch().end();
 		
-		scene.act(stateTime);
+		scene.act();
 	}
 	
 	@Override

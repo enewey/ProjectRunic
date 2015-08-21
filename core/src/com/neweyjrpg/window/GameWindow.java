@@ -20,7 +20,7 @@ public abstract class GameWindow {
 		this.x = x;
 		this.y = y;
 		Pixmap pxm = new Pixmap(width, height, Format.RGB888);
-		pxm.setColor(new Color(0,0,0,0.5f));
+		pxm.setColor(new Color(0,0,0,1f));
 		pxm.fillRectangle(x, y, width, height);
 		
 		this.windowSkin = new TextureRegion(new Texture(pxm));
@@ -28,6 +28,7 @@ public abstract class GameWindow {
 	}
 	
 	public void draw(Batch batch, float deltaTime) {
+		batch.setColor(Color.WHITE);
 		batch.draw(windowSkin, x, y);
 	}
 	

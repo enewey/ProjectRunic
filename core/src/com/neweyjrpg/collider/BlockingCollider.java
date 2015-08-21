@@ -24,7 +24,7 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 			case Open:
 				break;
 			case Custom:
-				subject.collideInto(actor); //this should work, right?
+				subject.collideInto(actor); //TODO: this should work, right?
 				break;
 			case MovingPushable:
 			case StaticPushable:
