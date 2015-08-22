@@ -3,6 +3,7 @@ package com.neweyjrpg.actor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.models.PhysicsModel;
 
 public class MassiveActor extends GameActor {
@@ -41,7 +42,13 @@ public class MassiveActor extends GameActor {
 		super.draw(batch, deltaTime, x, y);
 		for(int i=0; i < graphics.length; i++) {
 			for(int j=0; j < graphics[i].length; j++) {
-				batch.draw(graphics[i][j], x + (j * gWidth), y + (i * gHeight));
+				float dx = j * gWidth;
+				float dy = i * gHeight;
+				if (x+dx+gWidth < 0 || x > Constants.GAME_WIDTH + dx + gWidth
+				 || y+dy+gHeight < 0 || y > Constants.GAME_HEIGHT + dy + gHeight)
+					continue;
+				
+				batch.draw(graphics[i][j], x + dx, y + dy);
 			}
 		}
 	}
@@ -55,5 +62,13 @@ public class MassiveActor extends GameActor {
 	public Vector2 getSpriteSize() {
 		// TODO Auto-generated method stub
 		return new Vector2(totalWidth, totalHeight);
+	}
+	
+	public void dispose() {
+		for (int i=0; i<graphics.length; i++) {
+			for (int j=0; j<graphics[i].length; j++) {
+				graphics[i][j].getTexture().dispose();
+			}
+		}
 	}
 }

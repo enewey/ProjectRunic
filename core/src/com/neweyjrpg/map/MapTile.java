@@ -24,4 +24,8 @@ public class MapTile {
 		return this.graphic;
 	}
 	
+	public void dispose() {
+		this.graphic.getTexture().dispose();
+	}
+	
 }

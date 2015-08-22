@@ -68,8 +68,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
 			}	
 		}
-		MassiveActor bigBlock = new MassiveActor(48f, 48f, new PhysicsModel(PhysicalState.StaticBlock,
-									new Rectangle(48f, 48f, 160f, 160f)), bigBlockGraphics, 16f, 16f);
+		MassiveActor bigBlock = new MassiveActor(176f, 112f, new PhysicsModel(PhysicalState.StaticBlock,
+									new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f, 16f);
 		bigBlock.setCollider(new BlockingCollider());
 		scene.addActor(bigBlock);
 		

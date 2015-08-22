@@ -38,4 +38,8 @@ public class StaticActor extends GameActor {
 	public Vector2 getSpriteSize() {
 		return new Vector2(this.texture.getRegionWidth(), this.texture.getRegionHeight());
 	}
+	
+	public void dispose() {
+		this.texture.getTexture().dispose();
+	}
 }

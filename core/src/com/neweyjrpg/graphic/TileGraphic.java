@@ -10,4 +10,7 @@ public class TileGraphic extends TextureRegion {
 		super(tileSet, x*17, y*17, 16, 16);
 	}
 
+	public void dispose() {
+		this.getTexture().dispose();
+	}
 }

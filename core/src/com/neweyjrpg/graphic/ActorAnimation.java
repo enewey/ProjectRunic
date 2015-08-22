@@ -108,4 +108,20 @@ public class ActorAnimation {
 			return leftAnim.getKeyFrame(stateTime, loop);
 		}
 	}
+	
+	public void dispose() {
+		for (TextureRegion t : this.downAnim.getKeyFrames()) {
+			t.getTexture().dispose();
+		}
+		for (TextureRegion t : this.upAnim.getKeyFrames()) {
+			t.getTexture().dispose();
+		}
+		for (TextureRegion t : this.rightAnim.getKeyFrames()) {
+			t.getTexture().dispose();
+		}
+		for (TextureRegion t : this.leftAnim.getKeyFrames()) {
+			t.getTexture().dispose();
+		}
+		
+	}
 }

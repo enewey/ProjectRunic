@@ -15,4 +15,7 @@ public class ActorGraphic extends Sprite {
 				Constants.CHARA_HEIGHT);
 	}
 
+	public void dispose() {
+		this.getTexture().dispose();
+	}
 }

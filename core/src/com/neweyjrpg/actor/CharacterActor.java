@@ -126,4 +126,8 @@ public class CharacterActor extends GameActor implements IMovesFromInput {
 			return new Vector2(this.animation.getFrame(0, getDir(), false).getRegionWidth(), 
 							   this.animation.getFrame(0, getDir(), false).getRegionHeight());
 		}
+		
+		public void dispose() {
+			this.animation.dispose();
+		}
 }

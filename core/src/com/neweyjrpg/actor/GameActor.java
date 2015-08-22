@@ -123,4 +123,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	public abstract Vector2 getSpriteSize();
+	
+	public abstract void dispose();
 }

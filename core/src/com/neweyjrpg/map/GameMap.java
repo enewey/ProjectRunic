@@ -54,4 +54,12 @@ public class GameMap {
 			}
 		}
 	}
+	
+	public void dispose() {
+		for (int i=0; i < mapData.length; i++) {
+			for (int j=0; j < mapData[i].length; j++) {
+				mapData[i][j].dispose();
+			}
+		}
+	}
 }
