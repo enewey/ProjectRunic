@@ -31,7 +31,7 @@ public class PatternController implements IProducesInputs {
 	}
 	
 	@Override
-	public DirectionalInput getDirectionalInput() {
+	public DirectionalInput getDirectionalState() {
 		dirs.clear();
 		
 		if (++callCounter >= pattern.length && looping) {
@@ -47,7 +47,7 @@ public class PatternController implements IProducesInputs {
 	}
 
 	@Override
-	public ButtonInput getButtonInput() {
+	public ButtonInput getButtonState() {
 		// TODO Auto-generated method stub
 		return null;
 	}

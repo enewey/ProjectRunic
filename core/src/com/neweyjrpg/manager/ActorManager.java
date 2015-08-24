@@ -168,5 +168,10 @@ public class ActorManager extends Manager {
 	public boolean handle(Interaction interaction) {
 		return false;
 	}
+	
+	@Override
+	public boolean handleDirectionPress(int button) {
+		return false;
+	}
 
 }

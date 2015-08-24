@@ -20,13 +20,13 @@ public class BadAIController implements IProducesInputs {
 	}
 	
 	@Override
-	public DirectionalInput getDirectionalInput() {
+	public DirectionalInput getDirectionalState() {
 		randomizeInputs();
 		return dirs;
 	}
 
 	@Override
-	public ButtonInput getButtonInput() {
+	public ButtonInput getButtonState() {
 		randomizeInputs();
 		return buttons;
 	}

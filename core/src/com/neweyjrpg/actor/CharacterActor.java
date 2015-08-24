@@ -14,7 +14,7 @@ import com.neweyjrpg.models.PhysicsModel;
 
 public class CharacterActor extends GameActor implements IMovesFromInput {
 
-	//Fields
+		//Fields
 		private ActorAnimation animation;
 		public ActorAnimation getAnimation() { return animation; }
 		public void setAnimation(ActorAnimation animation) {	this.animation = animation;	}
@@ -68,8 +68,8 @@ public class CharacterActor extends GameActor implements IMovesFromInput {
 		
 		@Override
 		public void act(float delta) {
-			if (controller != null && !controller.getDirectionalInput().isEmpty())
-				this.moveFromInput(controller.getDirectionalInput());
+			if (controller != null && !controller.getDirectionalState().isEmpty())
+				this.moveFromInput(controller.getDirectionalState());
 			else
 				this.isMoving = false;
 			

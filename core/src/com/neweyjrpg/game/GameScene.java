@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
-import com.neweyjrpg.controller.InputController;
+import com.neweyjrpg.controller.InputState;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.Interaction;
@@ -47,7 +47,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	private WindowManager windowManager;
 	private LinkedList<Manager> managers;
 
-	private InputController inputController; //Used to relay inputs to the actor
+	private InputState input; //Used to relay inputs to the actor
 	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.stateTime = 0f;
@@ -69,7 +69,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		managers.addLast(actorManager);
 		managers.addLast(windowManager);
 		
-		this.inputController = new InputController();
+		this.input = new InputState();
 	}
 	
 	public void addActor(GameActor actor) {
@@ -117,15 +117,28 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	}
 	
 	private void buttonPressing() {
-		while (!this.inputController.getQueue().isEmpty())
+		while (!this.input.getQueue().isEmpty())
 		{
-			int pop = InputController.getButton(this.inputController.getQueue().pop());
-			ListIterator<Manager> li = managers.listIterator(managers.size());
-			while (li.hasPrevious()) {
-				if (li.previous().handleButtonPress(pop)) {
-					break;
+			int keycode = this.input.getQueue().pop();
+			if (InputState.isButton(keycode)) { //handle button presses
+				int pop = InputState.getButton(keycode);
+				ListIterator<Manager> li = managers.listIterator(managers.size());
+				while (li.hasPrevious()) {
+					if (li.previous().handleButtonPress(pop)) {
+						break;
+					}
+				}
+			} else if (InputState.isDirection(keycode)) { //handle arrow presses
+				int pop = InputState.getButton(keycode);
+				ListIterator<Manager> li = managers.listIterator(managers.size());
+				while (li.hasPrevious()) {
+					if (li.previous().handleButtonPress(pop)) {
+						break;
+					}
 				}
 			}
+					
+			
 		}
 	}
 	
@@ -148,29 +161,31 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	
 	@Override
 	public boolean keyUp(int keycode) {
-		if (inputController != null)
-			return inputController.keyUp(keycode);
+		if (input != null) {
+			return input.lift(keycode);
+		}
 		return super.keyUp(keycode);
 	}
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		if (inputController != null)
-			return inputController.keyDown(keycode);
+		if (input != null) {
+			return input.push(keycode);
+		}
 		return super.keyDown(keycode);
 	}
 	
 	@Override
-	public DirectionalInput getDirectionalInput() {
-		if (inputController != null)
-			return inputController.getDirectionalInput();
+	public DirectionalInput getDirectionalState() {
+		if (input != null)
+			return input.getDirectionalState();
 		return null;
 	}
 	
 	@Override
-	public ButtonInput getButtonInput() {
-		if (inputController != null)
-			return inputController.getButtonInput();
+	public ButtonInput getButtonState() {
+		if (input != null)
+			return input.getButtonState();
 		return null;
 	}
 	

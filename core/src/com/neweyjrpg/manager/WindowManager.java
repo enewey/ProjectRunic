@@ -87,4 +87,9 @@ public class WindowManager extends Manager {
 			return false;
 	}
 
+	@Override
+	public boolean handleDirectionPress(int button) {
+		return false;
+	}
+
 }
