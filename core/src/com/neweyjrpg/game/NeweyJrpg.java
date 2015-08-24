@@ -55,7 +55,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)));
 			npc.setColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),(float)Math.min(Math.random()+0.25, 1.0)));
 //			npc.setController(new PatternController(true));
-			npc.setController(new BadAIController());
+//			npc.setController(new BadAIController());
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
 			npc.setCollider(new BlockingCollider());
 //			npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));

@@ -10,7 +10,10 @@ import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.Interaction;
+import com.neweyjrpg.models.ButtonInput;
+import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.util.ClosestPosition;
+import com.neweyjrpg.util.Conversion;
 
 public class ActorManager extends Manager {
 
@@ -34,7 +37,7 @@ public class ActorManager extends Manager {
 	public ActorManager(CharacterActor player, float boundX, float boundY, IProducesInputs controller, IHandlesInteraction handler) {
 		this.handler = handler;
 		this.player = player;
-		this.player.setController(controller);
+//		this.player.setController(controller);
 		this.boundX = boundX;
 		this.boundY = boundY;
 		this.actors = new Array<GameActor>(false, 10, GameActor.class);
@@ -52,6 +55,11 @@ public class ActorManager extends Manager {
 		default:
 			return false;
 		}
+	}
+	
+	@Override
+	public boolean handleDirectionPress(int button) {
+		return false;
 	}
 
 	@Override
@@ -170,8 +178,13 @@ public class ActorManager extends Manager {
 	}
 	
 	@Override
-	public boolean handleDirectionPress(int button) {
+	public boolean handleButtonState(ButtonInput button) {
 		return false;
 	}
-
+	
+	@Override
+	public boolean handleDirectionState(DirectionalInput dir) {
+		this.player.move(Conversion.dirToVec(dir.getInputs()));
+		return true;
+	}
 }

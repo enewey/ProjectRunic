@@ -77,7 +77,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	}
 	
 	public void setPlayer(CharacterActor actor) {
-		actor.setController(this);
+//		actor.setController(this);
 		this.actorManager.setPlayer(actor);
 	}
 	
@@ -116,7 +116,31 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.adjustFocus(actorManager.getPlayerPos());
 	}
 	
+	/**
+	 * Cycles through the Managers, and handles the state of all inputs.
+	 */
 	private void buttonPressing() {
+		//Handle direction state
+		if (!this.input.getDirectionalState().isEmpty()) {
+			ListIterator<Manager> li = managers.listIterator(managers.size());
+			while (li.hasPrevious()) {
+				if (li.previous().handleDirectionState(this.input.getDirectionalState())) {
+					break;
+				}
+			}
+		}
+		
+		//Handle button state
+		if (!this.input.getButtonState().isEmpty()) {
+			ListIterator<Manager> li = managers.listIterator(managers.size());
+			while (li.hasPrevious()) {
+				if (li.previous().handleButtonState(this.input.getButtonState())) {
+					break;
+				}
+			}
+		}
+			
+		//Handle one-off keypresses
 		while (!this.input.getQueue().isEmpty())
 		{
 			int keycode = this.input.getQueue().pop();
@@ -129,16 +153,14 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 					}
 				}
 			} else if (InputState.isDirection(keycode)) { //handle arrow presses
-				int pop = InputState.getButton(keycode);
+				int pop = InputState.getDirection(keycode);
 				ListIterator<Manager> li = managers.listIterator(managers.size());
 				while (li.hasPrevious()) {
-					if (li.previous().handleButtonPress(pop)) {
+					if (li.previous().handleDirectionPress(pop)) {
 						break;
 					}
 				}
 			}
-					
-			
 		}
 	}
 	

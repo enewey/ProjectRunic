@@ -12,7 +12,7 @@ import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.models.PhysicsModel;
 
-public class CharacterActor extends GameActor implements IMovesFromInput {
+public class CharacterActor extends GameActor {
 
 		//Fields
 		private ActorAnimation animation;
@@ -68,18 +68,16 @@ public class CharacterActor extends GameActor implements IMovesFromInput {
 		
 		@Override
 		public void act(float delta) {
-			if (controller != null && !controller.getDirectionalState().isEmpty())
-				this.moveFromInput(controller.getDirectionalState());
-			else
-				this.isMoving = false;
+//			if (controller != null && !controller.getDirectionalState().isEmpty())
+//				this.moveFromInput(controller.getDirectionalState());
+//			else
+//				this.isMoving = false;
 			
 			super.act(delta);
 		}
 		
 		@Override
 		public void move(float x, float y) {
-			this.isMoving = true;
-			
 			if (x<0) 
 				this.dir=Dir.LEFT;
 			else if (x>0) 
@@ -90,38 +88,44 @@ public class CharacterActor extends GameActor implements IMovesFromInput {
 			else if (y>0) 
 				this.dir=Dir.UP; 
 			
+			if (x==0 && y==0)
+				this.isMoving = false;
+			else
+				this.isMoving = true;
+			
 			this.addAction(Actions.moveBy(x, y, this.actionSpeed));
 		}
 		
-		@Override
-		public void moveFromInput(DirectionalInput input) {
-			
-			boolean[] dirs = input.getInputs();
-			float tx=0f, ty=0f;
-			if (dirs[0])
-				ty += movespeed;
-			if (dirs[1])
-				tx += movespeed;
-			if (dirs[2])
-				ty -= movespeed;
-			if (dirs[3])
-				tx -= movespeed;
-			
-			if (Math.abs(tx) > 0 && Math.abs(ty) > 0) {
-				tx *= 0.7071f; //Roughly sqrt(2)/2, 45deg on unit circle
-				ty *= 0.7071f;
-			}
-			if (!(tx == 0 && ty == 0))
-				move(tx, ty);
-			else
-				this.isMoving = false;
-		}
 		
-		@Override
-		public void setController(IProducesInputs controller) {
-			this.controller = controller;
-		}
+//		@Override
+//		public void moveFromInput(DirectionalInput input) {
+//			
+//			boolean[] dirs = input.getInputs();
+//			float tx=0f, ty=0f;
+//			if (dirs[0])
+//				ty += movespeed;
+//			if (dirs[1])
+//				tx += movespeed;
+//			if (dirs[2])
+//				ty -= movespeed;
+//			if (dirs[3])
+//				tx -= movespeed;
+//			
+//			if (Math.abs(tx) > 0 && Math.abs(ty) > 0) {
+//				tx *= 0.7071f; //Roughly sqrt(2)/2, 45deg on unit circle
+//				ty *= 0.7071f;
+//			}
+//			if (!(tx == 0 && ty == 0))
+//				move(tx, ty);
+//			else
+//				this.isMoving = false;
+//		}
 		
+//		@Override
+//		public void setController(IProducesInputs controller) {
+//			this.controller = controller;
+//		}
+//		
 		public Vector2 getSpriteSize() {
 			return new Vector2(this.animation.getFrame(0, getDir(), false).getRegionWidth(), 
 							   this.animation.getFrame(0, getDir(), false).getRegionHeight());

@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.neweyjrpg.interaction.MessageInteraction;
 import com.neweyjrpg.interfaces.Interaction;
+import com.neweyjrpg.models.ButtonInput;
+import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.window.GameWindow;
 import com.neweyjrpg.window.MessageWindow;
 
@@ -89,6 +91,18 @@ public class WindowManager extends Manager {
 
 	@Override
 	public boolean handleDirectionPress(int button) {
+		return false;
+	}
+
+	@Override
+	public boolean handleButtonState(ButtonInput button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean handleDirectionState(DirectionalInput dir) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

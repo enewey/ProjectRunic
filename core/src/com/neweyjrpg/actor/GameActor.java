@@ -48,6 +48,9 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		batch.setColor(this.getColor());
 	}
 	public abstract void move(float x, float y);
+	public void move(Vector2 vec) {
+		this.move(vec.x, vec.y);
+	}
 	
 	@Override
 	public void act(float deltaTime) {
