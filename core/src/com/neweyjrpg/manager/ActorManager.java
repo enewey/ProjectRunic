@@ -184,7 +184,11 @@ public class ActorManager extends Manager {
 	
 	@Override
 	public boolean handleDirectionState(DirectionalInput dir) {
-		this.player.move(Conversion.dirToVec(dir.getInputs()));
+		
+		Vector2 vec =Conversion.dirToVec(dir.getInputs());
+		vec.x *= this.player.getMovespeed();
+		vec.y *= this.player.getMovespeed();
+		this.player.move(vec);
 		return true;
 	}
 }

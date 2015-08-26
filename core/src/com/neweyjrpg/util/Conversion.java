@@ -14,6 +14,11 @@ public class Conversion {
 		if (dirs[2]) ret.y -= 1f;
 		if (dirs[3]) ret.x -= 1f;
 		
+		if (ret.x != 0 && ret.y != 0) {
+			ret.x *= 0.7071f;
+			ret.y *= 0.7071f;
+		}
+		
 		return ret;
 	}
 	

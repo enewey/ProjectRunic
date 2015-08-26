@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
-import com.neweyjrpg.interfaces.IMovesFromInput;
 import com.neweyjrpg.interfaces.IProducesInputs;
-import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.models.PhysicsModel;
 
 public class CharacterActor extends GameActor {
@@ -68,6 +68,15 @@ public class CharacterActor extends GameActor {
 		
 		@Override
 		public void act(float delta) {
+			
+			this.isMoving = false;
+			if (this.hasActions()){
+				if (this.getActions().get(0) instanceof MoveToAction ||
+					this.getActions().get(0) instanceof MoveByAction) {
+					this.isMoving = true;
+				}
+			}
+			
 //			if (controller != null && !controller.getDirectionalState().isEmpty())
 //				this.moveFromInput(controller.getDirectionalState());
 //			else
@@ -77,7 +86,7 @@ public class CharacterActor extends GameActor {
 		}
 		
 		@Override
-		public void move(float x, float y) {
+		public void move(float x, float y) {			
 			if (x<0) 
 				this.dir=Dir.LEFT;
 			else if (x>0) 
