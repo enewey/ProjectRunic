@@ -28,6 +28,7 @@ public class ButtonInput extends Input {
 	
 	public ButtonInput() {
 		this.data = new boolean[10];
+		this.time = new float[10];
 	}
 	
 	@Override

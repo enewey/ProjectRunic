@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.PhysicsModel;
 
 public class MassiveActor extends GameActor {
@@ -70,5 +71,10 @@ public class MassiveActor extends GameActor {
 				graphics[i][j].getTexture().dispose();
 			}
 		}
+	}
+
+	@Override
+	public IProducesInputs getController() {
+		return null;
 	}
 }

@@ -20,6 +20,8 @@ public class CharacterActor extends GameActor {
 		public void setAnimation(ActorAnimation animation) {	this.animation = animation;	}
 		
 		private IProducesInputs controller;
+		public IProducesInputs getController() { return this.controller; }
+		public void setController(IProducesInputs controller) {	this.controller = controller; }
 		
 		//The direction this character is facing
 		private Dir dir;
@@ -77,11 +79,6 @@ public class CharacterActor extends GameActor {
 				}
 			}
 			
-//			if (controller != null && !controller.getDirectionalState().isEmpty())
-//				this.moveFromInput(controller.getDirectionalState());
-//			else
-//				this.isMoving = false;
-			
 			super.act(delta);
 		}
 		
@@ -130,11 +127,6 @@ public class CharacterActor extends GameActor {
 //				this.isMoving = false;
 //		}
 		
-//		@Override
-//		public void setController(IProducesInputs controller) {
-//			this.controller = controller;
-//		}
-//		
 		public Vector2 getSpriteSize() {
 			return new Vector2(this.animation.getFrame(0, getDir(), false).getRegionWidth(), 
 							   this.animation.getFrame(0, getDir(), false).getRegionHeight());

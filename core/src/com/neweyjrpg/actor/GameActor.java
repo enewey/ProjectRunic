@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
+import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.IProducesInteraction;
 import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.models.PhysicsModel;
@@ -126,6 +127,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	public abstract Vector2 getSpriteSize();
-	
 	public abstract void dispose();
+	public abstract IProducesInputs getController();
 }

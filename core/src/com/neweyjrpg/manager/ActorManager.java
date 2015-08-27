@@ -1,11 +1,14 @@
 package com.neweyjrpg.manager;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
@@ -85,6 +88,10 @@ public class ActorManager extends Manager {
 		
 		for (GameActor actor : actors){
 			if (actor == this.player) continue;
+			
+			//If actor has a controller attached, allow the controller to work.
+			if (actor.getController() != null)
+				actor.move(Conversion.dirToVecWithMovespeed(actor.getController().getDirectionalState().getInputs(),2f));
 			
 			actor.act(deltaTime);
 			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
