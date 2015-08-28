@@ -19,7 +19,6 @@ import com.neweyjrpg.actor.PlayerActor;
 import com.neweyjrpg.collider.BlockingCollider;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.BadAIController;
-import com.neweyjrpg.controller.ControllerFactory;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
 import com.neweyjrpg.interaction.MessageInteraction;
@@ -55,7 +54,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 					new PhysicsModel(PhysicalState.MovingPushable, 
 							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)));
 			npc.setColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),(float)Math.min(Math.random()+0.25, 1.0)));
-			npc.setController(ControllerFactory.getInstance().getBadAI());
+			npc.setController(new BadAIController());
 			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
 			npc.setCollider(new BlockingCollider());
 //			npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
