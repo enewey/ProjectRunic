@@ -16,7 +16,7 @@ public class BadAIController implements IProducesInputs {
 		buttons = new ButtonInput();
 		dirs = new DirectionalInput();
 		timeSinceLastInput = 0f;
-		timeBetweenInputs = 1f;
+		timeBetweenInputs = (float)((Math.round((Math.random() * 100)) % 4) * Math.random());
 	}
 	
 	@Override
@@ -34,8 +34,10 @@ public class BadAIController implements IProducesInputs {
 	private void randomizeInputs() {
 		timeSinceLastInput += Gdx.graphics.getDeltaTime();
 		
-		if (timeSinceLastInput >= timeBetweenInputs)
+		if (timeSinceLastInput >= timeBetweenInputs) {
 			timeSinceLastInput = 0f;
+			timeBetweenInputs = (float)(Math.random() * 2);	
+		}
 		else if (timeSinceLastInput >= timeBetweenInputs * 3 / 4) {
 			dirs.clear();
 			buttons.clear();

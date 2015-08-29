@@ -90,8 +90,9 @@ public class ActorManager extends Manager {
 			if (actor == this.player) continue;
 			
 			//If actor has a controller attached, allow the controller to work.
-			if (actor.getController() != null)
-				actor.move(Conversion.dirToVecWithMovespeed(actor.getController().getDirectionalState().getInputs(),2f));
+			if (actor instanceof CharacterActor && actor.getController() != null)
+				actor.move(Conversion.dirToVecWithMovespeed(actor.getController().getDirectionalState().getInputs(),
+						((CharacterActor)actor).getMovespeed()));
 			
 			actor.act(deltaTime);
 			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
