@@ -29,7 +29,6 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		stateTime += deltaTime;
 	}
 	
-	//CHANGE TO PRIVATE
 	private float scrollX, scrollY; //Represents how far the camera has scrolled, justified at the bottom-left corner.
 	private float maxScrollX, maxScrollY; //How far the camera is allowed to scroll = (mapWidth-screenWidth, mapHeight-screenHeight)
 	

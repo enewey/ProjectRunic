@@ -23,19 +23,14 @@ public class WindowManager extends Manager {
 		this.halting = halting;
 	}
 	
-	@Override
-	public boolean handleButtonPress(int button) {
-		switch(button) {
-		case 0:
-			return interact();
-		case 1:
-			return cancel();
-		case 2:
-		case 3:
-		default:
+	private boolean determineHalting() {
+		if (!this.windows.isEmpty())
+			return halting;
+		else
 			return false;
-		}
 	}
+	
+	
 
 	@Override
 	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch) {
@@ -76,6 +71,8 @@ public class WindowManager extends Manager {
 		
 		return true;
 	}
+	
+	
 
 	@Override
 	public boolean handle(Interaction interaction) {
@@ -88,22 +85,34 @@ public class WindowManager extends Manager {
 		else 
 			return false;
 	}
+	
+	@Override
+	public boolean handleButtonPress(int button) {
+		switch(button) {
+		case 0:
+			return interact();
+		case 1:
+			return cancel();
+		case 2:
+		case 3:
+		default:
+			return false;
+		}
+	}
 
 	@Override
 	public boolean handleDirectionPress(int button) {
-		return false;
+		return determineHalting();
 	}
 
 	@Override
 	public boolean handleButtonState(ButtonInput button) {
-		// TODO Auto-generated method stub
-		return false;
+		return determineHalting();
 	}
 
 	@Override
 	public boolean handleDirectionState(DirectionalInput dir) {
-		// TODO Auto-generated method stub
-		return false;
+		return determineHalting();
 	}
 
 }

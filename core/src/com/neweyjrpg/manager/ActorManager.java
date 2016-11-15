@@ -1,14 +1,11 @@
 package com.neweyjrpg.manager;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
-import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;

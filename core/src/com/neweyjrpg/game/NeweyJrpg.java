@@ -65,7 +65,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		for (int k=0; k<10; k++) {
 			for (int i=0; i<10; i++) {
 				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
-			}	
+			}
 		}
 		MassiveActor bigBlock = new MassiveActor(176f, 112f, new PhysicsModel(PhysicalState.StaticBlock,
 									new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f, 16f);
