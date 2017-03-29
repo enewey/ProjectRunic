@@ -63,39 +63,7 @@ public class ActorAnimation {
 				return leftAnim;
 		}
 	}
-	
-//	public void setPosition(float x, float y){
-//		this.xPos = x;
-//		this.yPos = y;
-//	}
-//	
-//	public void translate(float x, float y) {
-//		this.xPos += x;
-//		this.yPos += y;
-//		
-//	}
-	
-//	public float[] getPosition() {
-//		return new float[] { xPos, yPos };
-//	}
-	
-//	public void draw(Batch batch, float deltaTime, Dir dir, boolean loop) {
-//		switch(dir){
-//	case UP:
-//	batch.draw(upAnim.getKeyFrame(deltaTime, loop), this.xPos, this.yPos);
-//	break;
-//case RIGHT: 
-//	batch.draw(rightAnim.getKeyFrame(deltaTime, loop), this.xPos, this.yPos);
-//	break;
-//case DOWN:
-//	batch.draw(downAnim.getKeyFrame(deltaTime, loop), this.xPos, this.yPos);
-//	break;
-//default:
-//	batch.draw(leftAnim.getKeyFrame(deltaTime, loop), this.xPos, this.yPos);
-//	break;
-//}
-//	}
-	
+		
 	public TextureRegion getFrame(float stateTime, Dir dir, boolean loop) {
 		switch(dir){
 		case UP:

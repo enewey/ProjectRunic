@@ -3,6 +3,7 @@ package com.neweyjrpg.actor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.interfaces.IProducesInputs;
@@ -30,12 +31,16 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	protected Interaction onActionInteraction;
 	public void setOnActionInteraction(Interaction i) { this.onActionInteraction = i; }
 	
+	private Enums.Priority priority;
+	public Enums.Priority getPriority() { return this.priority; }
+	
 	//Constructor
-	public GameActor(float x, float y, PhysicsModel phys){
+	public GameActor(float x, float y, PhysicsModel phys, Enums.Priority priority) {
 		this.phys = phys;
 		this.setPosition(x, y);
 		this.oldX = phys.getBounds().x; //Values for resetting movement on collisions
 		this.oldY = phys.getBounds().y;
+		this.priority = priority;
 		
 		physPaddingX = 0f;
 		physPaddingY = 0f;
@@ -56,7 +61,7 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	@Override
 	public void act(float deltaTime) {
 		this.oldX = this.phys.getBounds().x;
-		this.oldY = this.phys.getBounds().y;
+		this.oldY = this.phys.getBounds().y;		
 		super.act(deltaTime);
 		alignPhysicsModelToActor();
 	}
@@ -103,6 +108,10 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	@Override
+	/**
+	 * Comparator sorts by Y position on screen
+	 * sorted in order to draw items closer to bottom last
+	 */
 	public int compareTo(GameActor o) {
 		return (int)((o.getY()*1000) - (this.getY()*1000));
 	}
@@ -127,6 +136,8 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	public abstract Vector2 getSpriteSize();
+
 	public abstract void dispose();
+
 	public abstract IProducesInputs getController();
 }

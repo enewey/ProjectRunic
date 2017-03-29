@@ -12,4 +12,47 @@ public class Enums {
 		Custom				//Specifies the object should handle the collision according to its own rules.
 	}
 	
+	/**
+	 * Collision body types for tiles
+	 */
+	public enum TileBody {
+		Open,
+		Block,
+		Circle
+	}
+	public static TileBody tileBody(String in) {
+		String str = in.toUpperCase();
+		if (str.equals("OPEN")) {
+			return TileBody.Open;
+		} else if (str.equals("BLOCK")) {
+			return TileBody.Block;
+		} else if (str.equals("CIRCLE")) {
+			return TileBody.Circle;
+		}
+		
+		//default?
+		return TileBody.Open;
+	}
+	
+	/**
+	 * Draw priority for tiles in relation to actors
+	 */
+	public enum Priority {
+		Below,
+		Same,
+		Above
+	}
+	public static Priority priority(String in) {
+		String str = in.toUpperCase();
+		if (str.equals("BELOW")) {
+			return Priority.Below;
+		} else if (str.equals("SAME")) {
+			return Priority.Same;
+		} else if (str.equals("ABOVE")) {
+			return Priority.Above;
+		}
+		
+		//default?
+		return Priority.Below;
+	}
 }

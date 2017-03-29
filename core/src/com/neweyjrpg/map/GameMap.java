@@ -1,65 +1,72 @@
 package com.neweyjrpg.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.enums.Enums;
 
 public class GameMap {
 
-	private HashMap<String, MapTile> tileCache;
-	private Texture tileSet;
-	private MapTile[][] mapData;
+	private ArrayList<MapLayer> mapData = null;
 	private int dimX, dimY;
-	public int getDimX() { return dimX; }
-	public int getDimY() { return dimY; }
-	
-	public GameMap(String tileFile, String mapFile) {
-		MapParser mapParser = new MapParser(mapFile);
-		String[][] data = mapParser.getMapData();
-		tileSet = new Texture(tileFile);
-		dimX = data.length;
-		dimY = data[0].length;
-		mapData = new MapTile[dimY][dimX];
-		tileCache = new HashMap<String, MapTile>();
-		
-		for (int i = 0; i<data.length; i++)	{
-			for (int j = 0; j<data[i].length; j++) {
-				if (!tileCache.containsKey(data[i][j])){
-					tileCache.put(data[i][j], new MapTile(tileSet, data[i][j]));
-				}
-				mapData[j][i] = tileCache.get(data[i][j]);
-			}
-		}		
+	public int getDimX() { 
+		if (this.dimX == 0) {
+			this.dimX = mapData.get(0).dimX;
+		}
+		return this.dimX; 
+	}
+	public int getDimY() { 
+		if (this.dimY == 0) {
+			this.dimY = mapData.get(0).dimY;
+		}
+		return this.dimY; 
 	}
 	
-	public MapTile[][] getMapData(){
+	public GameMap(String mapFile) {
+		mapData = Maps.parseMap(mapFile);				
+	}
+	
+	public ArrayList<MapLayer> getMapData(){
 		return this.mapData;
 	}
 	
-	public MapTile getMapTile(int x, int y) {
-		return this.mapData[x][y];
+	public MapTile[] getTileLayers(int x, int y) {
+		MapTile[] ret = new MapTile[this.mapData.size()];
+		for (int i=0; i<ret.length; i++) {
+			ret[i] = this.mapData.get(0).getTile(x,y);
+		}
+		return ret;
 	}
 	
-	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY) {
+	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY, Enums.Priority priority) {
 		int startX = Math.max((int)Math.floor(-offsetX/Constants.TILE_WIDTH), 0),
 			startY = Math.max((int)Math.floor(-offsetY/Constants.TILE_HEIGHT), 0);
-		int endX = Math.min(startX + (int)Math.round((Constants.GAME_WIDTH / Constants.TILE_WIDTH)+1), dimX),
-			endY = Math.min(startY + (int)Math.round((Constants.GAME_HEIGHT / Constants.TILE_HEIGHT)+1), dimX);
+		int endX = Math.min(startX + (int)Math.round((Constants.GAME_WIDTH / Constants.TILE_WIDTH)+1), this.dimX),
+			endY = Math.min(startY + (int)Math.round((Constants.GAME_HEIGHT / Constants.TILE_HEIGHT)+1), this.dimX);
 		
-		for (int x=startX; x<endX; x++) {
-			for (int y=startY; y<endY; y++){
-				batch.draw(mapData[x][y].getGraphic(), offsetX+(x*16), offsetY+(y*16));
+		for (int i=0; i<mapData.size(); i++) {
+			MapLayer layer = mapData.get(i);
+			if (layer.getPriority() != priority) { 
+				continue; 
+			}
+			for (int x=startX; x<endX; x++) {
+				for (int y=startY; y<endY; y++){
+					MapTile tile = layer.getTile(x, y);
+					if (!tile.isBlank()) {
+						batch.draw(tile.getGraphic(), offsetX+(x*16), offsetY+(y*16));
+					}
+				}
 			}
 		}
+		
 	}
 	
 	public void dispose() {
-		for (int i=0; i < mapData.length; i++) {
-			for (int j=0; j < mapData[i].length; j++) {
-				mapData[i][j].dispose();
-			}
+		for (int i=0; i < mapData.size(); i++) {
+			mapData.get(i).dispose();
 		}
 	}
 }

@@ -26,18 +26,25 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 			case Custom:
 				subject.collideInto(actor); //TODO: this should work, right?
 				break;
+			//Pushable behavior	
 			case MovingPushable:
 			case StaticPushable:
-				float diffX = subX - currX;
-				float diffY = subY - currY;
-				float moveX = currX - ((currX + oldX) / 2);
-				float moveY = currY - ((currY + oldY) / 2);
+				float moveX = currX - oldX;
+				float moveY = currY - oldY;
 				actor.setPhysicalPosition(oldX, oldY);
-				actor.move(moveX, moveY);
-				if (Math.abs(diffX) > Math.abs(diffY)) moveY = 0;
-				else if (Math.abs(diffX) < Math.abs(diffY)) moveX = 0;
+				
+				Vector2 ac = actor.getPhysicsModel().getCenter();
+				Vector2 sc = subject.getPhysicsModel().getCenter();
+				float diffX = sc.x - ac.x;
+				float diffY = sc.y - ac.y;				
+				if (Math.abs(diffX) > Math.abs(diffY)) 
+					moveY = 0;
+				else 
+					moveX = 0;
+				
 				subject.move(moveX, moveY);
 				break;
+				
 			default:
 				if (Math.abs(subX - currX) > Math.abs(subY - currY)) {
 					if (interpolateY(actor, subject, currX, currY)) break;
@@ -83,7 +90,7 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 		
 		while (Math.abs(interpX - oldX) > 0.01f){
 			if (!actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())) {
-				return false;
+				return true;
 			}
 			interpX = (interpX+oldX) / 2f;
 			actor.setPhysicalPosition(interpX, currY);

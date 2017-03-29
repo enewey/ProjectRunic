@@ -16,6 +16,12 @@ public class PhysicsModel {
 	public Rectangle getBounds() {
 		return bounds;
 	}
+	
+	public Vector2 getCenter() {
+		Vector2 ret = new Vector2();
+		this.bounds.getCenter(ret);
+		return ret;
+	}
 
 	public PhysicsModel(PhysicalState type, Rectangle bounds) {
 		this.type = type;
@@ -24,18 +30,32 @@ public class PhysicsModel {
 	
 	public Vector2 moveOff(PhysicsModel other) {
 		if (this.getBounds().overlaps(other.getBounds())) {
-			float pWidth = Math.max(this.getBounds().width, other.getBounds().width);
-			float pHeight = Math.max(this.getBounds().height, other.getBounds().height);
 			
-			float moveX = this.getBounds().x - other.getBounds().x;
-			int signX = (int)(moveX / Math.abs(moveX));
-			float moveY = this.getBounds().y - other.getBounds().y;
-			int signY = (int)(moveY / Math.abs(moveY));
-
-			if (moveX < moveY)
-				return new Vector2(pWidth * signX, 0); //eject horizontally for base case
-			else
-				return new Vector2(0, pHeight * signY);
+			float xdiff = this.getBounds().x - other.getBounds().x;
+			float ydiff = this.getBounds().y - other.getBounds().y;
+			
+			if (Math.abs(xdiff) < Math.abs(ydiff)) {
+				float twidth  = this.getBounds().width;
+				float owidth  = other.getBounds().width;
+				if (xdiff < other.getBounds().width / 2.0) {
+					//eject left
+					return new Vector2(-(twidth + xdiff), 0);
+				} else {
+					//eject right
+					return new Vector2((owidth - xdiff), 0);
+				}
+				
+			} else {
+				float theight = this.getBounds().height;
+				float oheight = other.getBounds().height;
+				if (ydiff < other.getBounds().height / 2.0) {
+					//eject down
+					return new Vector2(-(theight + ydiff), 0);
+				} else {
+					//eject up
+					return new Vector2((oheight - ydiff), 0);
+				}
+			}
 		}
 		
 		return null;

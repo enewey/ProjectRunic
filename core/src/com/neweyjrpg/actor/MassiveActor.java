@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.PhysicsModel;
 
@@ -13,8 +14,8 @@ public class MassiveActor extends GameActor {
 	private float gWidth, gHeight; //Height of each individual texture; must all be same size!
 	private float totalWidth, totalHeight;
 	
-	public MassiveActor(float x, float y, PhysicsModel phys, TextureRegion[][] graphics, float gWidth, float gHeight) {
-		super(x, y, phys);
+	public MassiveActor(float x, float y, PhysicsModel phys, TextureRegion[][] graphics, float gWidth, float gHeight, Enums.Priority priority) {
+		super(x, y, phys, priority);
 		
 		this.gWidth = gWidth;
 		this.gHeight = gHeight;

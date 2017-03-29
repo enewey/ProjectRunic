@@ -16,9 +16,11 @@ import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.PlayerActor;
+import com.neweyjrpg.actor.StaticActor;
 import com.neweyjrpg.collider.BlockingCollider;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.BadAIController;
+import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
 import com.neweyjrpg.interaction.MessageInteraction;
@@ -29,77 +31,114 @@ public class NeweyJrpg extends ApplicationAdapter {
 	CharacterActor chara;
 	GameMap map;
 	Camera camera;
-//	float stateTime;
+	// float stateTime;
 	BitmapFont font;
 	GameScene scene;
 	float focusX, focusY;
-	
+
 	@Override
-	public void create () {		
+	public void create() {
 		camera = new PerspectiveCamera();
-		map = new GameMap("dungeon.png", "maps/map1.txt");
-		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f, 
-				new PhysicsModel(PhysicalState.MovingBlock, 
-						new Rectangle(220f, 220f, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)));
-		
-		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH,Constants.GAME_HEIGHT,camera), new SpriteBatch(), chara, map);
+		map = new GameMap("maps/map1.map");
+		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f,
+				new PhysicsModel(PhysicalState.MovingBlock,
+						new Rectangle(220f, 220f, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
+				Enums.Priority.Same);
+		chara.setName("PLAYER");
+
+		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, camera), new SpriteBatch(),
+				chara, map);
 		Gdx.input.setInputProcessor(scene);
 		chara.setCollider(new BlockingCollider());
+
+		//addNPCs(scene);
 		
-		//Bunch of random NPCs
-		for (int i=0; i<10; i++) {
-			float x = (int)(Math.random()*1000)%300;
-			float y = (int)(Math.random()*1000)%300;
-			NPCActor npc = new NPCActor(new Texture("hero.png"), 0, x, y,
-					new PhysicsModel(PhysicalState.MovingPushable, 
-							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)));
-			npc.setColor(new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),(float)Math.min(Math.random()+0.25, 1.0)));
-			npc.setController(new BadAIController());
-			npc.setMovespeed((float)(Math.random()+0.5f)*2.0f);
-			npc.setCollider(new BlockingCollider());
-//			npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
-			npc.setOnActionInteraction(new MessageInteraction("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
-			scene.addActor(npc);
-		}
 		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
-		for (int k=0; k<10; k++) {
-			for (int i=0; i<10; i++) {
+		for (int k = 0; k < 10; k++) {
+			for (int i = 0; i < 10; i++) {
 				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
 			}
 		}
-		MassiveActor bigBlock = new MassiveActor(176f, 112f, new PhysicsModel(PhysicalState.StaticBlock,
-									new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f, 16f);
+		MassiveActor bigBlock = new MassiveActor(176f, 112f,
+				new PhysicsModel(PhysicalState.StaticBlock, new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f,
+				16f, Enums.Priority.Same);
 		bigBlock.setCollider(new BlockingCollider());
+		bigBlock.setName("BIGBLOCK");
 		scene.addActor(bigBlock);
+
+		addBlock(scene, 128f, 128f);
+		addBlock(scene, 128f, 156f);
 		
+		
+
 		font = new BitmapFont();
 
-//		stateTime = 0f;
 		System.out.println("Create method done");
+	}
+	
+	private void addBlock(GameScene s, float x, float y) {
+		StaticActor block = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 6), x, y,
+				new PhysicsModel(PhysicalState.StaticPushable,
+						new Rectangle(x, y, Constants.TILE_WIDTH, Constants.TILE_HEIGHT)),
+				Enums.Priority.Same);
+		block.setCollider(new BlockingCollider());
+		block.setColor(Color.WHITE);
+		block.setName("BLOCK");
+		s.addActor(block);
+	}
+	
+	private void addNPCs(GameScene s) {
+		// Bunch of random NPCs
+		for (int i = 0; i < 10; i++) {
+			float x = (int) (Math.random() * 1000) % 300;
+			float y = (int) (Math.random() * 1000) % 300;
+			NPCActor npc = new NPCActor(new Texture("hero.png"), 0, x, y,
+					new PhysicsModel(PhysicalState.MovingPushable,
+							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
+					Enums.Priority.Same);
+			npc.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(),
+					(float) Math.min(Math.random() + 0.25, 1.0)));
+			npc.setController(new BadAIController());
+			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
+			npc.setCollider(new BlockingCollider());
+			// npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
+			npc.setOnActionInteraction(new MessageInteraction(
+					"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+			s.addActor(npc);
+		}
 	}
 
 	@Override
-	public void render () {
+	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		scene.incrementStateTime(deltaTime);
-//		stateTime += deltaTime;
+		// stateTime += deltaTime;
 
 		scene.getBatch().enableBlending();
 		scene.getBatch().begin();
-		scene.draw(); //Will draw all actors/tiles in the scene
-		
-		//Draw overlays here
-		//font.draw(scene.getBatch(), "X/Y: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
+		scene.draw(); // Will draw all actors/tiles in the scene
+
+		// Draw overlays here
+		font.draw(scene.getBatch(),
+				"X/Y: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
 
 		scene.getBatch().end();
-		
+
 		scene.act();
 	}
-	
+
 	@Override
 	public void resize(int width, int height) {
 		scene.getViewport().update(width, height);
 	}
+
+	public void dispose() {
+		chara.dispose();
+		map.dispose();
+		font.dispose();
+		scene.dispose();
+	}
+
 }

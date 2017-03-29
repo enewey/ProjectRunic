@@ -3,6 +3,7 @@ package com.neweyjrpg.manager;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interaction.MessageInteraction;
 import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.models.ButtonInput;
@@ -33,7 +34,11 @@ public class WindowManager extends Manager {
 	
 
 	@Override
-	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch) {
+	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
+		if (priority != Enums.Priority.Above) { //TODO: Windows will draw above all else for now...
+			return;
+		}
+		
 		while (!windows.isEmpty()){
 			if (windows.getFirst().isDisposed()) {
 				windows.removeFirst();
@@ -114,5 +119,11 @@ public class WindowManager extends Manager {
 	public boolean handleDirectionState(DirectionalInput dir) {
 		return determineHalting();
 	}
-
+	
+	@Override
+	public void dispose() {
+		for (GameWindow window : windows) {
+			window.dispose();
+		}
+	}
 }

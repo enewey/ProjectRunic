@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.neweyjrpg.enums.Enums;
 
 public abstract class GameWindow {
 	
@@ -13,8 +14,10 @@ public abstract class GameWindow {
 	private TextureRegion windowSkin;
 	private boolean disposed;
 	public boolean isDisposed() { return this.disposed; }
+	private Enums.Priority priority;
+	public Enums.Priority getPriority() { return this.priority; }
 	
-	public GameWindow(int x, int y, int width, int height) {
+	public GameWindow(int x, int y, int width, int height, Enums.Priority priority) {
 		this.width = width;
 		this.height = height;
 		this.x = x;

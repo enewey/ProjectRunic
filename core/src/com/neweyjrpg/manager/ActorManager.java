@@ -1,11 +1,17 @@
 package com.neweyjrpg.manager;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
@@ -63,15 +69,21 @@ public class ActorManager extends Manager {
 	}
 
 	@Override
-	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch) {
+	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
 		//Draw all actors in the scene at their given position, taking into account the camera scrolling
+		actors.sort();
 		for (GameActor actor : actors) {
+			if (actor.getPriority() != priority) { 
+				continue; 
+			}
+			
 			Vector2 actorSize = actor.getSpriteSize();
 			if (actor.getX() + offsetX + actorSize.x < 0 || actor.getX() + offsetX > Constants.GAME_WIDTH + actorSize.x
 			 || actor.getY() + offsetY + actorSize.y < 0 || actor.getY() + offsetY > Constants.GAME_HEIGHT + actorSize.y)
 				continue;
-			
+			batch.setColor(actor.getColor());
 			actor.draw(batch, deltaTime, actor.getX() + offsetX, actor.getY() + offsetY);
+			batch.setColor(Color.WHITE);
 		}
 	}
 
@@ -85,15 +97,16 @@ public class ActorManager extends Manager {
 		
 		for (GameActor actor : actors){
 			if (actor == this.player) continue;
-			
+						
 			//If actor has a controller attached, allow the controller to work.
 			if (actor instanceof CharacterActor && actor.getController() != null)
 				actor.move(Conversion.dirToVecWithMovespeed(actor.getController().getDirectionalState().getInputs(),
 						((CharacterActor)actor).getMovespeed()));
 			
 			actor.act(deltaTime);
+			
 			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
-					&& actor.getPhysicsModel().getType() != PhysicalState.StaticPushable) {
+					/*&& actor.getPhysicsModel().getType() != PhysicalState.StaticPushable*/) {
 				this.detectCollision(actor, false); //Detect collision after each individual action; this is key
 			}
 		}
@@ -103,6 +116,7 @@ public class ActorManager extends Manager {
 
 	/**
 	 * Checks if a given actor is colliding with any other actors in the scene.
+	 * Also prevents actors from going out of bounds. TODO: tie boundaries to the map model
 	 * @param actor - the actor that is colliding into another actor.
 	 * 			NOTE: Static Actors should not be specified as the parameter for this method.
 	 */
@@ -117,12 +131,12 @@ public class ActorManager extends Manager {
 		else if (actor.getPhysicsModel().getBounds().y > boundY - actor.getPhysicsModel().getBounds().height)
 			actor.setPhysicalPosition(actor.getPhysicsModel().getBounds().x, boundY - actor.getPhysicsModel().getBounds().height);
 		
-		actors.sort();
+		
 		Array<GameActor> sortedActors = new Array<GameActor>(actors);
 		sortedActors.sort(new ClosestPosition(actor));
 		
 		for (int j = 0; j < sortedActors.size; j++) {
-			GameActor subject = sortedActors.get(j);
+			GameActor subject = sortedActors.get(j);			
 			if (subject.equals(actor)) {
 				continue;
 			}
@@ -189,11 +203,17 @@ public class ActorManager extends Manager {
 	
 	@Override
 	public boolean handleDirectionState(DirectionalInput dir) {
-		
-		Vector2 vec =Conversion.dirToVec(dir.getInputs());
+		Vector2 vec = Conversion.dirToVec(dir.getInputs());
 		vec.x *= this.player.getMovespeed();
 		vec.y *= this.player.getMovespeed();
 		this.player.move(vec);
 		return true;
+	}
+	
+	@Override
+	public void dispose() {
+		for (GameActor actor : actors) {
+			actor.dispose();
+		}
 	}
 }

@@ -12,6 +12,7 @@ import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.InputState;
+import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.Interaction;
@@ -89,11 +90,17 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 			batch.begin();
 		
 		batch.setColor(Color.WHITE);
-		//Draw each tile from the map -- TODO: draw only tiles within the viewport!
-		map.draw(batch, stateTime, scrollX, scrollY);
 		
-		for (Manager m : managers) {
-			m.draw(stateTime, scrollX, scrollY, batch);
+		//enum.values() guaranteed to iterate over the enum in the order of declaration.
+		for (Enums.Priority p : Enums.Priority.values()) {
+			batch.setColor(1.0f, 1.0f, 1.0f, 1.0f); //reset batch setcolor to allow each manager handle their own coloring
+			//Draw each tile from the map -- TODO: draw only tiles within the viewport!
+			map.draw(batch, stateTime, scrollX, scrollY, p);
+			
+			for (Manager m : managers) {
+				batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+				m.draw(stateTime, scrollX, scrollY, batch, p);
+			}
 		}
 	}
 	
@@ -220,5 +227,9 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 			}
 		}
 		return false;
+	}
+	
+	public void dispose() {
+		
 	}
 }
