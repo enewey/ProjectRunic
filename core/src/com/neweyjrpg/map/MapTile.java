@@ -3,12 +3,12 @@ package com.neweyjrpg.map;
 import com.badlogic.gdx.graphics.Texture;
 import com.neweyjrpg.enums.Enums.TileBody;
 import com.neweyjrpg.graphic.TileGraphic;
-import com.neweyjrpg.models.PhysicsModel;
+import com.neweyjrpg.physics.BlockBody;
 
 public class MapTile {
 	
 	TileGraphic graphic;
-	PhysicsModel phys;
+	TileBody body;
 	
 	public MapTile(Texture tileSet, String c, TileBody body) {
 		if (c.length() != 4)
@@ -21,6 +21,8 @@ public class MapTile {
 			int y = (dims & 0x00FF);
 			graphic = new TileGraphic(tileSet, x, y);
 		}
+		
+		this.body = body;
 	}
 	
 	public MapTile(Texture tileSet, int x, int y) {
@@ -39,9 +41,5 @@ public class MapTile {
 		if (this.graphic != null) {
 			this.graphic.getTexture().dispose();
 		}
-	}
-	
-	public PhysicsModel getPhysicsModel() {
-		return this.phys;
 	}
 }

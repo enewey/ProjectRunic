@@ -1,5 +1,7 @@
 package com.neweyjrpg.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.neweyjrpg.actor.CharacterActor;
+import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.PlayerActor;
@@ -25,7 +28,7 @@ import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
 import com.neweyjrpg.interaction.MessageInteraction;
 import com.neweyjrpg.map.GameMap;
-import com.neweyjrpg.models.PhysicsModel;
+import com.neweyjrpg.physics.BlockBody;
 
 public class NeweyJrpg extends ApplicationAdapter {
 	CharacterActor chara;
@@ -41,7 +44,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		camera = new PerspectiveCamera();
 		map = new GameMap("maps/map1.map");
 		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f,
-				new PhysicsModel(PhysicalState.MovingBlock,
+				new BlockBody(PhysicalState.MovingBlock,
 						new Rectangle(220f, 220f, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
 				Enums.Priority.Same);
 		chara.setName("PLAYER");
@@ -50,8 +53,13 @@ public class NeweyJrpg extends ApplicationAdapter {
 				chara, map);
 		Gdx.input.setInputProcessor(scene);
 		chara.setCollider(new BlockingCollider());
+		
+		ArrayList<GhostActor> mapBlocks = map.getBlocks();
+		for (GhostActor block : mapBlocks) {
+			scene.addActor(block);
+		}
 
-		//addNPCs(scene);
+		addNPCs(scene, 6);
 		
 		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
 		for (int k = 0; k < 10; k++) {
@@ -60,25 +68,28 @@ public class NeweyJrpg extends ApplicationAdapter {
 			}
 		}
 		MassiveActor bigBlock = new MassiveActor(176f, 112f,
-				new PhysicsModel(PhysicalState.StaticBlock, new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f,
+				new BlockBody(PhysicalState.StaticBlock, new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f,
 				16f, Enums.Priority.Same);
 		bigBlock.setCollider(new BlockingCollider());
 		bigBlock.setName("BIGBLOCK");
 		scene.addActor(bigBlock);
 
-		addBlock(scene, 128f, 128f);
-		addBlock(scene, 128f, 156f);
+		addStaticBlock(scene, 32f, 32f);
+		addStaticBlock(scene, 32f, 16f);
+		addStaticBlock(scene, 48f, 32f);
+		addStaticBlock(scene, 48f, 16f);
 		
+		addPushBlock(scene, 128f, 128f);
+		addPushBlock(scene, 128f, 156f);
 		
-
 		font = new BitmapFont();
 
 		System.out.println("Create method done");
 	}
 	
-	private void addBlock(GameScene s, float x, float y) {
-		StaticActor block = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 6), x, y,
-				new PhysicsModel(PhysicalState.StaticPushable,
+	private void addStaticBlock(GameScene s, float x, float y) {
+		StaticActor block = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 5), x, y,
+				new BlockBody(PhysicalState.StaticBlock,
 						new Rectangle(x, y, Constants.TILE_WIDTH, Constants.TILE_HEIGHT)),
 				Enums.Priority.Same);
 		block.setCollider(new BlockingCollider());
@@ -87,13 +98,24 @@ public class NeweyJrpg extends ApplicationAdapter {
 		s.addActor(block);
 	}
 	
-	private void addNPCs(GameScene s) {
+	private void addPushBlock(GameScene s, float x, float y) {
+		StaticActor block = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 6), x, y,
+				new BlockBody(PhysicalState.StaticPushable,
+						new Rectangle(x, y, Constants.TILE_WIDTH, Constants.TILE_HEIGHT)),
+				Enums.Priority.Same);
+		block.setCollider(new BlockingCollider());
+		block.setColor(Color.WHITE);
+		block.setName("BLOCK");
+		s.addActor(block);
+	}
+	
+	private void addNPCs(GameScene s, int num) {
 		// Bunch of random NPCs
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < num; i++) {
 			float x = (int) (Math.random() * 1000) % 300;
 			float y = (int) (Math.random() * 1000) % 300;
 			NPCActor npc = new NPCActor(new Texture("hero.png"), 0, x, y,
-					new PhysicsModel(PhysicalState.MovingPushable,
+					new BlockBody(PhysicalState.MovingPushable,
 							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
 					Enums.Priority.Same);
 			npc.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(),

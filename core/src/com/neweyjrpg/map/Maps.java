@@ -7,7 +7,11 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Rectangle;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.enums.Enums.TileBody;
+import com.neweyjrpg.physics.BlockBody;
 import com.sun.media.sound.InvalidFormatException;
 
 public class Maps {
@@ -95,5 +99,19 @@ public class Maps {
 		
 		
 		return ret;
+	}
+	
+	public static BlockBody bodyFromTile(TileBody body, int x, int y) {
+		switch (body) {
+		case Block:
+			return new BlockBody(Enums.PhysicalState.StaticBlock, 
+					new Rectangle(x*Constants.TILE_WIDTH, y*Constants.TILE_HEIGHT, Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
+		case Circle:
+			return new BlockBody(Enums.PhysicalState.StaticBlock, 
+					new Rectangle((x+2)*Constants.TILE_WIDTH, (y+2)*Constants.TILE_HEIGHT, Constants.TILE_WIDTH-4, Constants.TILE_HEIGHT-4));
+		case Open:
+		default:
+			return null;
+		}
 	}
 }

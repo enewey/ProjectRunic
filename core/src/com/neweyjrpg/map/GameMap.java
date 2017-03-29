@@ -1,12 +1,12 @@
 package com.neweyjrpg.map;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.neweyjrpg.actor.GhostActor;
+import com.neweyjrpg.actor.StaticActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.physics.BlockBody;
 
 public class GameMap {
 
@@ -31,6 +31,22 @@ public class GameMap {
 	
 	public ArrayList<MapLayer> getMapData(){
 		return this.mapData;
+	}
+	
+	public ArrayList<GhostActor> getBlocks() {
+		ArrayList<GhostActor> blocks = new ArrayList<GhostActor>();
+		for (MapLayer layer : mapData) {
+			for (int x=0; x<layer.getData().length; x++) {
+				for (int y=0; y<layer.getData()[0].length; y++) {
+					BlockBody block = Maps.bodyFromTile(layer.getData()[x][y].body, x, y);
+					if (block != null) {
+						blocks.add(new GhostActor(block.getBounds().x, block.getBounds().y, block, Enums.Priority.Below));
+					}
+				}
+			}
+		}
+		
+		return blocks;
 	}
 	
 	public MapTile[] getTileLayers(int x, int y) {

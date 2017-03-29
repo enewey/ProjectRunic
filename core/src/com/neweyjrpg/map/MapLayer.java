@@ -47,6 +47,10 @@ public class MapLayer {
 		return this.data[x][y];
 	}
 	
+	public MapTile[][] getData() {
+		return this.data;
+	}
+	
 	public Enums.Priority getPriority() {
 		return this.priority;
 	}

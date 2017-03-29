@@ -11,7 +11,7 @@ import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
 import com.neweyjrpg.interfaces.IProducesInputs;
-import com.neweyjrpg.models.PhysicsModel;
+import com.neweyjrpg.physics.BlockBody;
 
 public class CharacterActor extends GameActor {
 
@@ -70,7 +70,7 @@ public class CharacterActor extends GameActor {
 	}
 
 	// Constructors
-	public CharacterActor(Texture charaSet, int pos, float x, float y, PhysicsModel phys, Enums.Priority priority) {
+	public CharacterActor(Texture charaSet, int pos, float x, float y, BlockBody phys, Enums.Priority priority) {
 		super(x, y, phys, priority);
 		this.animation = new ActorAnimation(charaSet, pos);
 

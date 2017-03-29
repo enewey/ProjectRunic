@@ -9,13 +9,13 @@ import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.IProducesInteraction;
 import com.neweyjrpg.interfaces.Interaction;
-import com.neweyjrpg.models.PhysicsModel;
+import com.neweyjrpg.physics.BlockBody;
 
 public abstract class GameActor extends Actor implements Comparable<GameActor>, ICanCollide<GameActor>, IProducesInteraction {
 	
 	//Fields
-	protected PhysicsModel phys;
-	public PhysicsModel getPhysicsModel() {	return this.phys; }
+	protected BlockBody phys;
+	public BlockBody getPhysicsModel() {	return this.phys; }
 	protected float oldX, oldY;
 	
 	protected float physPaddingX, physPaddingY; //Where the physics model sits relative to the sprite/animation
@@ -35,7 +35,7 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public Enums.Priority getPriority() { return this.priority; }
 	
 	//Constructor
-	public GameActor(float x, float y, PhysicsModel phys, Enums.Priority priority) {
+	public GameActor(float x, float y, BlockBody phys, Enums.Priority priority) {
 		this.phys = phys;
 		this.setPosition(x, y);
 		this.oldX = phys.getBounds().x; //Values for resetting movement on collisions
@@ -63,6 +63,8 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		this.oldX = this.phys.getBounds().x;
 		this.oldY = this.phys.getBounds().y;		
 		super.act(deltaTime);
+		this.setX((float)Math.floor(this.getX() * 100) / 100.0f);
+		this.setY((float)Math.floor(this.getY() * 100) / 100.0f);
 		alignPhysicsModelToActor();
 	}
 	

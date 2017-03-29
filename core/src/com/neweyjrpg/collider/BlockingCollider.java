@@ -36,7 +36,7 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 				Vector2 ac = actor.getPhysicsModel().getCenter();
 				Vector2 sc = subject.getPhysicsModel().getCenter();
 				float diffX = sc.x - ac.x;
-				float diffY = sc.y - ac.y;				
+				float diffY = sc.y - ac.y;
 				if (Math.abs(diffX) > Math.abs(diffY)) 
 					moveY = 0;
 				else 

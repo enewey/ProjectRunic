@@ -6,14 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interfaces.IProducesInputs;
-import com.neweyjrpg.models.PhysicsModel;
+import com.neweyjrpg.physics.BlockBody;
 
 public class StaticActor extends GameActor {
 	
 	private TextureRegion texture;
 	
 	//Constructors
-	public StaticActor(TextureRegion texture, float x, float y, PhysicsModel phys, Enums.Priority priority){
+	public StaticActor(TextureRegion texture, float x, float y, BlockBody phys, Enums.Priority priority){
 		super(x, y, phys, priority);
 		this.texture = texture;
 		this.phys = phys;
@@ -22,12 +22,14 @@ public class StaticActor extends GameActor {
 
 	@Override
 	public void draw(Batch batch, float deltaTime) {
+		if (this.texture == null) return;
 		super.draw(batch, deltaTime);
 		batch.draw(texture, this.getX(), this.getY());
 	}
 	
 	@Override
 	public void draw(Batch batch, float deltaTime, float x, float y) {
+		if (this.texture == null) return;
 		super.draw(batch, deltaTime, x, y);
 		batch.draw(texture, x, y);
 	}

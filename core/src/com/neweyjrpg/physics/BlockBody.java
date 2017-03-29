@@ -1,10 +1,10 @@
-package com.neweyjrpg.models;
+package com.neweyjrpg.physics;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 
-public class PhysicsModel {
+public class BlockBody {
 
 	private PhysicalState type;
 	public PhysicalState getType() {
@@ -23,13 +23,13 @@ public class PhysicsModel {
 		return ret;
 	}
 
-	public PhysicsModel(PhysicalState type, Rectangle bounds) {
+	public BlockBody(PhysicalState type, Rectangle bounds) {
 		this.type = type;
 		this.bounds = bounds;
 	}
 	
-	public Vector2 moveOff(PhysicsModel other) {
-		if (this.getBounds().overlaps(other.getBounds())) {
+	public Vector2 moveOff(BlockBody other) {
+		if (this.getBounds().overlaps((Rectangle) other.getBounds())) {
 			
 			float xdiff = this.getBounds().x - other.getBounds().x;
 			float ydiff = this.getBounds().y - other.getBounds().y;

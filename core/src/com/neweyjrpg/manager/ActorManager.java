@@ -1,15 +1,12 @@
 package com.neweyjrpg.manager;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
+import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
@@ -75,6 +72,9 @@ public class ActorManager extends Manager {
 		for (GameActor actor : actors) {
 			if (actor.getPriority() != priority) { 
 				continue; 
+			}
+			if (actor instanceof GhostActor) {
+				continue;
 			}
 			
 			Vector2 actorSize = actor.getSpriteSize();
