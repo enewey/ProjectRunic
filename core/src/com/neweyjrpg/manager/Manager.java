@@ -12,7 +12,7 @@ public abstract class Manager implements IHandlesInteraction {
 	public abstract boolean handleDirectionPress(int button);
 	public abstract boolean handleButtonState(ButtonInput button);
 	public abstract boolean handleDirectionState(DirectionalInput dir);
-	public abstract void draw(float deltaTime, float offsetX, float offsetY, Batch batch, Enums.Priority priority);
+	public abstract void draw(float deltaTime, int yaxis, float offsetX, float offsetY, Batch batch, Enums.Priority priority);
 	public abstract boolean act(float deltaTime);
 	public abstract void dispose();
 	

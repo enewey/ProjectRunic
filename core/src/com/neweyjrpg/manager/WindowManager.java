@@ -34,7 +34,10 @@ public class WindowManager extends Manager {
 	
 
 	@Override
-	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
+	public void draw(float deltaTime, int yaxis, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
+		if (yaxis != 0) //only wanna draw once, so draw when drawing hits bottom of screen. 
+			return;
+		
 		if (priority != Enums.Priority.Above) { //TODO: Windows will draw above all else for now...
 			return;
 		}

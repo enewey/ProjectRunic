@@ -89,17 +89,18 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		if (!batch.isDrawing()) //If the batch has not begun, go ahead and begin it
 			batch.begin();
 		
-		batch.setColor(Color.WHITE);
-		
 		//enum.values() guaranteed to iterate over the enum in the order of declaration.
 		for (Enums.Priority p : Enums.Priority.values()) {
-			batch.setColor(1.0f, 1.0f, 1.0f, 1.0f); //reset batch setcolor to allow each manager handle their own coloring
-			//Draw each tile from the map -- TODO: draw only tiles within the viewport!
-			map.draw(batch, stateTime, scrollX, scrollY, p);
-			
-			for (Manager m : managers) {
-				batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-				m.draw(stateTime, scrollX, scrollY, batch, p);
+			//draw graphics row by row, in order to maintain depth illusion
+			for (int yaxis = map.getDimY()-1; yaxis >= 0; yaxis--) {
+				batch.setColor(Color.WHITE); //reset batch setcolor to allow each manager handle their own coloring
+				
+				for (Manager m : managers) {
+					batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+					m.draw(stateTime, yaxis, scrollX, scrollY, batch, p);
+				}
+				
+				map.draw(batch, yaxis, stateTime, scrollX, scrollY, p);
 			}
 		}
 	}

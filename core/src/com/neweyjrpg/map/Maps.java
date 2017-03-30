@@ -105,7 +105,7 @@ public class Maps {
 		switch (body) {
 		case Block:
 			return new BlockBody(Enums.PhysicalState.StaticBlock, 
-					new Rectangle(x*Constants.TILE_WIDTH, y*Constants.TILE_HEIGHT, Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
+					new Rectangle(x*Constants.TILE_WIDTH + 1, y*Constants.TILE_HEIGHT + 1, Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
 		case Circle:
 			return new BlockBody(Enums.PhysicalState.StaticBlock, 
 					new Rectangle((x+2)*Constants.TILE_WIDTH, (y+2)*Constants.TILE_HEIGHT, Constants.TILE_WIDTH-4, Constants.TILE_HEIGHT-4));

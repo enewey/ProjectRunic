@@ -33,10 +33,9 @@ import com.neweyjrpg.physics.BlockBody;
 public class NeweyJrpg extends ApplicationAdapter {
 	CharacterActor chara;
 	GameMap map;
-	Camera camera;
-	// float stateTime;
-	BitmapFont font;
 	GameScene scene;
+	BitmapFont font;
+	Camera camera;
 	float focusX, focusY;
 
 	@Override
@@ -48,11 +47,11 @@ public class NeweyJrpg extends ApplicationAdapter {
 						new Rectangle(220f, 220f, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
 				Enums.Priority.Same);
 		chara.setName("PLAYER");
-
+		chara.setCollider(new BlockingCollider());
+		
 		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, camera), new SpriteBatch(),
 				chara, map);
 		Gdx.input.setInputProcessor(scene);
-		chara.setCollider(new BlockingCollider());
 		
 		ArrayList<GhostActor> mapBlocks = map.getBlocks();
 		for (GhostActor block : mapBlocks) {

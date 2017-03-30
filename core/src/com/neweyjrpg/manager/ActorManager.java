@@ -34,7 +34,23 @@ public class ActorManager extends Manager {
 	private IHandlesInteraction handler;
 	
 	public void addActor(GameActor actor) {
+		if (actor.getName() == null || actor.getName().equals("")) {
+			actor.setName("Actor");
+		}
+		String name = actor.getName();
+		for (int i=0; !actorNameUnique(actor.getName()); i++) {
+			actor.setName(name+i);
+		}
 		this.actors.add(actor);
+	}
+	
+	private boolean actorNameUnique(String name) {
+		for (GameActor actor : this.actors) {
+			if (actor.getName().equals(name)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public ActorManager(CharacterActor player, float boundX, float boundY, IProducesInputs controller, IHandlesInteraction handler) {
@@ -66,7 +82,7 @@ public class ActorManager extends Manager {
 	}
 
 	@Override
-	public void draw(float deltaTime, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
+	public void draw(float deltaTime, int yaxis, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
 		//Draw all actors in the scene at their given position, taking into account the camera scrolling
 		actors.sort();
 		for (GameActor actor : actors) {
@@ -76,14 +92,16 @@ public class ActorManager extends Manager {
 			if (actor instanceof GhostActor) {
 				continue;
 			}
-			
-			Vector2 actorSize = actor.getSpriteSize();
-			if (actor.getX() + offsetX + actorSize.x < 0 || actor.getX() + offsetX > Constants.GAME_WIDTH + actorSize.x
-			 || actor.getY() + offsetY + actorSize.y < 0 || actor.getY() + offsetY > Constants.GAME_HEIGHT + actorSize.y)
-				continue;
-			batch.setColor(actor.getColor());
-			actor.draw(batch, deltaTime, actor.getX() + offsetX, actor.getY() + offsetY);
-			batch.setColor(Color.WHITE);
+			if (actor.getPhysicsModel().getBounds().y >= yaxis * Constants.TILE_HEIGHT && 
+				actor.getPhysicsModel().getBounds().y < (yaxis * Constants.TILE_HEIGHT) + Constants.TILE_HEIGHT ) {
+				Vector2 actorSize = actor.getSpriteSize();
+				if (actor.getX() + offsetX + actorSize.x < 0 || actor.getX() + offsetX > Constants.GAME_WIDTH + actorSize.x
+				 || actor.getY() + offsetY + actorSize.y < 0 || actor.getY() + offsetY > Constants.GAME_HEIGHT + actorSize.y)
+					continue;
+				batch.setColor(actor.getColor());
+				actor.draw(batch, deltaTime, actor.getX() + offsetX, actor.getY() + offsetY);
+				batch.setColor(Color.WHITE);
+			}
 		}
 	}
 
@@ -180,7 +198,7 @@ public class ActorManager extends Manager {
 		
 		sortedActors.sort(new ClosestPosition(player));
 		for (int i=0; /*i<5 &&*/ i<sortedActors.size; i++) {
-			if (sortedActors.get(i).onAction() != null && sortedActors.get(i) != null) {
+			if (sortedActors.get(i) != null && sortedActors.get(i).onAction() != null) {
 				if (sortedActors.get(i).getDistance(player) < Constants.CHARA_PHYS_SIZE + 2f) {
 					handler.handle(sortedActors.get(i).onAction());
 				}

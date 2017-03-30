@@ -61,10 +61,10 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	@Override
 	public void act(float deltaTime) {
 		this.oldX = this.phys.getBounds().x;
-		this.oldY = this.phys.getBounds().y;		
+		this.oldY = this.phys.getBounds().y;
+		this.setX((float)Math.floor(this.getX() * 10) / 10.0f);
+		this.setY((float)Math.floor(this.getY() * 10) / 10.0f);
 		super.act(deltaTime);
-		this.setX((float)Math.floor(this.getX() * 100) / 100.0f);
-		this.setY((float)Math.floor(this.getY() * 100) / 100.0f);
 		alignPhysicsModelToActor();
 	}
 	

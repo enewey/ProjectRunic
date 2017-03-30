@@ -57,11 +57,15 @@ public class GameMap {
 		return ret;
 	}
 	
-	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY, Enums.Priority priority) {
+	public void draw(Batch batch, int yaxis, float deltaTime, float offsetX, float offsetY, Enums.Priority priority) {
 		int startX = Math.max((int)Math.floor(-offsetX/Constants.TILE_WIDTH), 0),
 			startY = Math.max((int)Math.floor(-offsetY/Constants.TILE_HEIGHT), 0);
 		int endX = Math.min(startX + (int)Math.round((Constants.GAME_WIDTH / Constants.TILE_WIDTH)+1), this.dimX),
 			endY = Math.min(startY + (int)Math.round((Constants.GAME_HEIGHT / Constants.TILE_HEIGHT)+1), this.dimX);
+		
+		if (yaxis < startY && yaxis > endY) {
+			return;
+		}
 		
 		for (int i=0; i<mapData.size(); i++) {
 			MapLayer layer = mapData.get(i);
@@ -69,11 +73,9 @@ public class GameMap {
 				continue; 
 			}
 			for (int x=startX; x<endX; x++) {
-				for (int y=startY; y<endY; y++){
-					MapTile tile = layer.getTile(x, y);
-					if (!tile.isBlank()) {
-						batch.draw(tile.getGraphic(), offsetX+(x*16), offsetY+(y*16));
-					}
+				MapTile tile = layer.getTile(x, yaxis);
+				if (!tile.isBlank()) {
+					batch.draw(tile.getGraphic(), offsetX+(x*16), offsetY+(yaxis*16));
 				}
 			}
 		}
