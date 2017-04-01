@@ -3,9 +3,7 @@ package com.neweyjrpg.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.Dir;
@@ -17,57 +15,22 @@ public class CharacterActor extends GameActor {
 
 	// Fields
 	private ActorAnimation animation;
-
-	public ActorAnimation getAnimation() {
-		return animation;
-	}
-
-	public void setAnimation(ActorAnimation animation) {
-		this.animation = animation;
-	}
+	public ActorAnimation getAnimation() { return animation; }
+	public void setAnimation(ActorAnimation animation) { this.animation = animation; }
 
 	private IProducesInputs controller;
-
-	public IProducesInputs getController() {
-		return this.controller;
-	}
-
-	public void setController(IProducesInputs controller) {
-		this.controller = controller;
-	}
+	public IProducesInputs getController() { return this.controller; }
+	public void setController(IProducesInputs controller) { this.controller = controller; }
 
 	// The direction this character is facing
 	private Dir dir;
-
-	public Dir getDir() {
-		return dir;
-	}
-
-	public void setDir(Dir dir) {
-		this.dir = dir;
-	}
+	public Dir getDir() { return dir; }
+	public void setDir(Dir dir) { this.dir = dir; }
 
 	// Distance that a single move call will move this actor, in pixels.
 	protected float movespeed;
-
-	public float getMovespeed() {
-		return movespeed;
-	}
-
-	public void setMovespeed(float movespeed) {
-		this.movespeed = movespeed;
-	}
-
-	protected boolean isMoving; // used for determining state of animation.
-	protected float actionSpeed;
-
-	public float getActionSpeed() {
-		return actionSpeed;
-	}
-
-	public void setActionSpeed(float actionSpeed) {
-		this.actionSpeed = actionSpeed;
-	}
+	public float getMovespeed() { return movespeed;	}
+	public void setMovespeed(float movespeed) { this.movespeed = movespeed;	}
 
 	// Constructors
 	public CharacterActor(Texture charaSet, int pos, float x, float y, BlockBody phys, Enums.Priority priority) {
@@ -77,7 +40,7 @@ public class CharacterActor extends GameActor {
 		this.dir = Dir.DOWN;
 		this.isMoving = false;
 		this.movespeed = 2f;
-		this.actionSpeed = 0.01f;
+		this.actionSpeed = Constants.DEFAULT_ACTION_SPEED;
 
 		this.physPaddingX = (Constants.CHARA_WIDTH / 4f);
 		this.physPaddingY = (Constants.CHARA_HEIGHT / 16f);
@@ -101,19 +64,33 @@ public class CharacterActor extends GameActor {
 
 	@Override
 	public void act(float delta) {
-
-		this.isMoving = false;
-		if (this.hasActions()) {
-			if (this.getActions().get(0) instanceof MoveToAction || this.getActions().get(0) instanceof MoveByAction) {
-				this.isMoving = true;
-			}
+		//Adjust the direction Actor is facing before acting.
+		if (!this.hasActions() && !this.actionQueue.isEmpty() && this.getMoveActionFromQueue() != null) {
+			this.adjustFacing(this.getMoveActionFromQueue().getAmountX(), this.getMoveActionFromQueue().getAmountY());
 		}
-
+		
 		super.act(delta);
 	}
 
 	@Override
 	public void move(float x, float y) {
+		Vector2 v = this.adjustMovement(x, y);
+		super.move(v.x, v.y);
+	}
+	
+	@Override
+	public void moveDistance(float x, float y, float speedScalar) {
+		Vector2 v = this.adjustMovement(x, y);
+		super.moveDistance(v.x, v.y, speedScalar);
+	}
+	
+	private Vector2 adjustMovement(float x, float y) {
+		x *= this.movespeed;
+		y *= this.movespeed;
+		return new Vector2(x, y);
+	}
+	
+	private void adjustFacing(float x, float y) {
 		if (x < 0)
 			this.dir = Dir.LEFT;
 		else if (x > 0)
@@ -128,8 +105,6 @@ public class CharacterActor extends GameActor {
 			this.isMoving = false;
 		else
 			this.isMoving = true;
-
-		this.addAction(Actions.moveBy(x, y, this.actionSpeed));
 	}
 
 	public Vector2 getSpriteSize() {

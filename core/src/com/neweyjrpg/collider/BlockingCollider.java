@@ -1,6 +1,7 @@
 package com.neweyjrpg.collider;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 
@@ -42,7 +43,8 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 				else 
 					moveX = 0;
 				
-				subject.move(moveX, moveY);
+				if (actor.isMoving())
+					subject.forceMove(Actions.moveBy(moveX, moveY, 0f));
 				break;
 				
 			default:

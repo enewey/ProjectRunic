@@ -8,7 +8,6 @@ public class NPCActor extends CharacterActor {
 	
 	public NPCActor(Texture charaSet, int pos, float x, float y, BlockBody phys, Enums.Priority priority) {
 		super(charaSet, pos, x, y, phys, priority);
-		this.movespeed = 1f;
-		this.actionSpeed = 0.5f;
+		//this.movespeed = 1f;
 	}
 }

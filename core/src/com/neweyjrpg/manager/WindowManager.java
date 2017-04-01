@@ -80,8 +80,6 @@ public class WindowManager extends Manager {
 		return true;
 	}
 	
-	
-
 	@Override
 	public boolean handle(Interaction interaction) {
 		if (interaction instanceof MessageInteraction) {

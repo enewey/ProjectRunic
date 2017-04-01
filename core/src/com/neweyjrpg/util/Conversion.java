@@ -1,10 +1,11 @@
 package com.neweyjrpg.util;
 
 import com.badlogic.gdx.math.Vector2;
+import com.neweyjrpg.enums.Enums.Dir;
 
 public class Conversion {
 
-	public static Vector2 dirToVec(boolean[] dirs) {
+	public static Vector2 dpadToVec(boolean[] dirs) {
 		if (dirs.length != 4)
 			return null;
 		
@@ -22,13 +23,32 @@ public class Conversion {
 		return ret;
 	}
 	
-	public static Vector2 dirToVecWithMovespeed(boolean[] dirs, float movespeed) {
-		Vector2 ret = dirToVec(dirs);
+	public static Vector2 dpadToVecWithMovespeed(boolean[] dirs, float movespeed) {
+		Vector2 ret = dpadToVec(dirs);
 		if (ret != null) {
 			ret.x *= movespeed;
 			ret.y *= movespeed;	
 		}
 		
 		return ret;
+	}
+	
+	public static Vector2 dirToVec(Dir dir) {
+		Vector2 v = new Vector2(0,0);
+		switch (dir) {
+		case UP:
+			v.y = 1.0f;
+			break;
+		case DOWN:
+			v.y = -1.0f;
+			break;
+		case LEFT:
+			v.x = -1.0f;
+			break;
+		case RIGHT:
+			v.x = 1.0f;
+			break;
+		}
+		return v;
 	}
 }

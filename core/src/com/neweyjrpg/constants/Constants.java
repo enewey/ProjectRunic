@@ -35,4 +35,5 @@ public class Constants {
 	
 	public final static float CHARA_PHYS_SIZE = (float) Math.sqrt(288);
 	
+	public final static float DEFAULT_ACTION_SPEED = 0.01f;
 }

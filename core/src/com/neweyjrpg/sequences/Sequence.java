@@ -1,4 +1,4 @@
-package com.neweyjrpg.models;
+package com.neweyjrpg.sequences;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -13,7 +13,7 @@ public class Sequence<T> {
 	protected int pointer;
 	
 	private boolean looped;
-	public boolean looped() { return this.looped; }
+	public boolean isLooped() { return this.looped; }
 	protected void setLooped(boolean t) { this.looped = t; } 
 	
 	private boolean giveDuplicates;

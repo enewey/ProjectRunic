@@ -1,15 +1,24 @@
 package com.neweyjrpg.actor;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.IProducesInteraction;
 import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.physics.BlockBody;
+import com.neweyjrpg.util.Conversion;
+import com.neweyjrpg.util.Funcs;
 
 public abstract class GameActor extends Actor implements Comparable<GameActor>, ICanCollide<GameActor>, IProducesInteraction {
 	
@@ -26,10 +35,30 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public void setCollider(IHandlesCollision<GameActor> collider) { this.collider = collider; }
 	
 	//Interactions are a way for actors to transfer unique instructions to its interaction handler
-	protected Interaction onTouchInteraction;
-	public void setOnTouchInteraction(Interaction i) { this.onTouchInteraction = i; }
-	protected Interaction onActionInteraction;
-	public void setOnActionInteraction(Interaction i) { this.onActionInteraction = i; }
+	protected ArrayList<Interaction> onTouchInteraction;
+	public void setOnTouchInteraction(ArrayList<Interaction> i) { this.onTouchInteraction = i; }
+	public void addOnTouchInteraction(Interaction i) {
+		if (this.onTouchInteraction == null) {
+			this.onTouchInteraction = new ArrayList<Interaction>();
+		}
+		this.onTouchInteraction.add(i); 
+	}
+	
+	protected ArrayList<Interaction> onActionInteraction;
+	public void setOnActionInteraction(ArrayList<Interaction> i) { this.onActionInteraction = i; }
+	public void addOnActionInteraction(Interaction i) {
+		if (this.onActionInteraction == null) {
+			this.onActionInteraction = new ArrayList<Interaction>();
+		}
+		this.onActionInteraction.add(i); 
+	}
+	
+	protected float actionSpeed;
+	public float getActionSpeed() {	return actionSpeed;	}
+	public void setActionSpeed(float actionSpeed) {	this.actionSpeed = actionSpeed;	}
+	
+	protected boolean isMoving;
+	public boolean isMoving() { return this.isMoving; }
 	
 	private Enums.Priority priority;
 	public Enums.Priority getPriority() { return this.priority; }
@@ -44,6 +73,8 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		
 		physPaddingX = 0f;
 		physPaddingY = 0f;
+		
+		this.actionQueue = new LinkedList<Action>();
 	}
 	
 	//Methods
@@ -53,17 +84,105 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public void draw(Batch batch, float deltaTime, float x, float y) {
 		batch.setColor(this.getColor());
 	}
-	public abstract void move(float x, float y);
-	public void move(Vector2 vec) {
-		this.move(vec.x, vec.y);
+	
+	/**
+	 * Movement
+	 * 
+	 * GameActors have a queue of move actions. When the actor's act() method is called,
+	 * the game will check if the actor is currently moving (i.e. has movement Actions) before
+	 * adding moves from the moveQueue. If the actor has no Actions, it will take the oldest Action
+	 * from the moveQueue and add it to the actor's Actions.
+	 * 
+	 *  The moveQueue is also used to determine if an actor is moving, what direction to face, etc.
+	 */
+	
+	protected LinkedList<Action> actionQueue;
+	
+	/**
+	 * move - this will move the actor (+x,+y) relative to its location, in actionSpeed seconds.
+	 */
+	public void move(float x, float y) { 
+		this.addMove(Actions.moveBy(x, y, this.actionSpeed));
+	}
+	/**
+	 * move the actor (+x,+y) relative to its location, scaling the actionSpeed by s.
+	 */
+	public void moveDistance(float x, float y, float s) {
+		this.addMove(Actions.moveBy(x*s, y*s, this.actionSpeed*s));
+	}
+	/**
+	 * move the actor (+x,+y) relative to its location in zero seconds.
+	 */
+	public void moveInstant(float x, float y) {
+		this.addMove(Actions.moveBy(x, y, 0f));
+	}
+	public void move(Vector2 v) { this.move(v.x, v.y);	}
+	public void move(Vector2 v, float s) { this.moveDistance(v.x, v.y, s); }
+	public void moveOnce(Dir dir) { this.move(Conversion.dirToVec(dir)); }
+	
+	/**
+	 * Adds a MoveByAction directly to the move queue.
+	 */
+	public void addMove(MoveByAction move) {
+		this.actionQueue.add(move);
+	}
+	/**
+	 * Adds a MoveByAction directly to the actor's Actions.
+	 * Using this method will cause the actor to move instantly, regardless of whether they are moving or not.
+	 * Useful for events that are meant to override control (e.g. damage blowback, pushing objects, etc.)
+	 */
+	public void forceMove(MoveByAction move) {
+		this.addAction(move);
+	}
+	
+	/**
+	 * DO NOT ADD MOVETOACTIONS. WE SAY FUCK MOVETOACTIONS.
+	 * @param a
+	 */
+	public void queueAction(Action a) {
+		this.actionQueue.add(a);
+	}
+	
+	public void advanceQueue() {
+		this.addAction(actionQueue.remove());
+	}
+
+	public MoveByAction getMovementAction() {
+		for (Action a : this.getActions()) {
+			if (a instanceof MoveByAction) {
+				return (MoveByAction)a;
+			}
+		}
+		return null;
+	}
+	
+	public MoveByAction getMoveActionFromQueue() {
+		for (Action a : this.actionQueue) {
+			if (a instanceof MoveByAction) {
+				return (MoveByAction)a;
+			}
+		}
+		return null;
 	}
 	
 	@Override
 	public void act(float deltaTime) {
+		//Determine and set moving state, and place actions from queue into actor actions.
+		this.isMoving = false;
+		if (!this.actionQueue.isEmpty()) {
+			this.isMoving = true;
+			if (!this.hasActions()) {
+				this.advanceQueue();
+			}
+		}
+		
 		this.oldX = this.phys.getBounds().x;
 		this.oldY = this.phys.getBounds().y;
-		this.setX((float)Math.floor(this.getX() * 10) / 10.0f);
-		this.setY((float)Math.floor(this.getY() * 10) / 10.0f);
+		
+		Vector2 roundPos = Funcs.roundPixels(this.getX(), this.getY());
+		this.setX(roundPos.x);
+		this.setY(roundPos.y);
+		
 		super.act(deltaTime);
 		alignPhysicsModelToActor();
 	}
@@ -106,7 +225,10 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	public float getDistance(GameActor subject) {
-		return (float)Math.sqrt(Math.pow(subject.getX() - this.getX(), 2) + Math.pow(subject.getY() - this.getY(), 2));
+		Vector2 a = this.getPhysicsModel().getCenter();
+		Vector2 b = subject.getPhysicsModel().getCenter();
+		
+		return (float)Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 	}
 	
 	@Override
@@ -129,17 +251,21 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	@Override
-	public Interaction onAction() {
+	public ArrayList<Interaction> onAction() {
+		if (this.onActionInteraction == null) {
+			this.onActionInteraction = new ArrayList<Interaction>();
+		}
 		return this.onActionInteraction;
 	}
 	@Override
-	public Interaction onTouch() {
+	public ArrayList<Interaction> onTouch() {
+		if (this.onTouchInteraction == null) {
+			this.onTouchInteraction = new ArrayList<Interaction>();
+		}
 		return this.onTouchInteraction;
 	}
 	
 	public abstract Vector2 getSpriteSize();
-
 	public abstract void dispose();
-
 	public abstract IProducesInputs getController();
 }

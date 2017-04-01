@@ -27,6 +27,7 @@ import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
 import com.neweyjrpg.interaction.MessageInteraction;
+import com.neweyjrpg.interaction.MovementInteraction;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.physics.BlockBody;
 
@@ -81,6 +82,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 		addPushBlock(scene, 128f, 128f);
 		addPushBlock(scene, 128f, 156f);
 		
+		addBlockWithAction(scene, 128f, 210f);
+		
 		font = new BitmapFont();
 
 		System.out.println("Create method done");
@@ -104,8 +107,22 @@ public class NeweyJrpg extends ApplicationAdapter {
 				Enums.Priority.Same);
 		block.setCollider(new BlockingCollider());
 		block.setColor(Color.WHITE);
-		block.setName("BLOCK");
+		block.setName("PUSHBLOCK");
 		s.addActor(block);
+	}
+	
+	private void addBlockWithAction(GameScene s, float x, float y) {
+		StaticActor block = new StaticActor(new TileGraphic(new Texture("dungeon.png"), 0, 6), x, y,
+				new BlockBody(PhysicalState.StaticBlock,
+						new Rectangle(x, y, Constants.TILE_WIDTH, Constants.TILE_HEIGHT)),
+				Enums.Priority.Same);
+		block.setCollider(new BlockingCollider());
+		block.setColor(Color.WHITE);
+		block.setName("ACTIONBLOCK");
+		block.addOnActionInteraction(new MovementInteraction("PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 40f));
+		
+		s.addActor(block);
+		
 	}
 	
 	private void addNPCs(GameScene s, int num) {
@@ -123,8 +140,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
 			// npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
-			npc.setOnActionInteraction(new MessageInteraction(
+			npc.addOnActionInteraction(new MessageInteraction(
 					"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+			npc.addOnActionInteraction(new MessageInteraction("Testing a second message!"));
 			s.addActor(npc);
 		}
 	}

@@ -61,6 +61,11 @@ public class MassiveActor extends GameActor {
 	}
 	
 	@Override
+	public void moveDistance(float x, float y, float speedScalar) {
+		this.move(x*speedScalar, y*speedScalar);
+	}
+	
+	@Override
 	public Vector2 getSpriteSize() {
 		// TODO Auto-generated method stub
 		return new Vector2(totalWidth, totalHeight);

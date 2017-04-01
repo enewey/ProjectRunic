@@ -10,6 +10,7 @@ import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
+import com.neweyjrpg.interaction.MovementInteraction;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.Interaction;
@@ -30,6 +31,15 @@ public class ActorManager extends Manager {
 	private Array<GameActor> actors; //All actors in this scene
 	public Array<GameActor> getActors() { return actors; }
 	public void setActors(Array<GameActor> actors) { this.actors = actors; }
+	
+	public GameActor getActorByName(String s) {
+		for (GameActor a : actors) {
+			if (a.getName().equals(s)) {
+				return a;
+			}
+		}
+		return null;
+	}
 	
 	private IHandlesInteraction handler;
 	
@@ -113,13 +123,12 @@ public class ActorManager extends Manager {
 		player.act(deltaTime);
 		this.detectCollision(player, true); //Detect collision after each individual action; this is key
 		
-		for (GameActor actor : actors){
+		for (GameActor actor : actors) {
 			if (actor == this.player) continue;
 						
 			//If actor has a controller attached, allow the controller to work.
 			if (actor instanceof CharacterActor && actor.getController() != null)
-				actor.move(Conversion.dirToVecWithMovespeed(actor.getController().getDirectionalState().getInputs(),
-						((CharacterActor)actor).getMovespeed()));
+				actor.move(Conversion.dpadToVec(actor.getController().getDirectionalState().getInputs()));
 			
 			actor.act(deltaTime);
 			
@@ -159,7 +168,10 @@ public class ActorManager extends Manager {
 				continue;
 			}
 			if (actor.collideInto(subject) && doInteract) {
-				handler.handle(subject.onTouch());
+				for (Interaction action : subject.onTouch()) {
+					handler.handle(action);
+				}
+				
 			}
 		}
 	}
@@ -199,8 +211,10 @@ public class ActorManager extends Manager {
 		sortedActors.sort(new ClosestPosition(player));
 		for (int i=0; /*i<5 &&*/ i<sortedActors.size; i++) {
 			if (sortedActors.get(i) != null && sortedActors.get(i).onAction() != null) {
-				if (sortedActors.get(i).getDistance(player) < Constants.CHARA_PHYS_SIZE + 2f) {
-					handler.handle(sortedActors.get(i).onAction());
+				if (sortedActors.get(i).getDistance(player) < Constants.CHARA_PHYS_SIZE + 4f) {
+					for (Interaction action : sortedActors.get(i).onAction()) {
+						handler.handle(action);
+					}
 				}
 				break;
 			}
@@ -211,6 +225,13 @@ public class ActorManager extends Manager {
 	
 	@Override
 	public boolean handle(Interaction interaction) {
+		if (interaction instanceof MovementInteraction) {
+			MovementInteraction action = (MovementInteraction)interaction;
+			Vector2 data = action.process(this).getData();
+//			if (data != null) {
+//				action.getTarget().move(data);
+//			}
+		}
 		return false;
 	}
 	
@@ -221,11 +242,12 @@ public class ActorManager extends Manager {
 	
 	@Override
 	public boolean handleDirectionState(DirectionalInput dir) {
-		Vector2 vec = Conversion.dirToVec(dir.getInputs());
-		vec.x *= this.player.getMovespeed();
-		vec.y *= this.player.getMovespeed();
-		this.player.move(vec);
-		return true;
+		if (!player.hasActions()) {
+			Vector2 vec = Conversion.dpadToVec(dir.getInputs());
+			this.player.move(vec);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

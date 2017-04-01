@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.physics.BlockBody;
@@ -17,6 +18,7 @@ public class StaticActor extends GameActor {
 		super(x, y, phys, priority);
 		this.texture = texture;
 		this.phys = phys;
+		this.actionSpeed = Constants.DEFAULT_ACTION_SPEED;
 		this.setPosition(x, y); 
 	}
 
@@ -34,10 +36,15 @@ public class StaticActor extends GameActor {
 		batch.draw(texture, x, y);
 	}
 
-	@Override
-	public void move(float x, float y) {
-		this.addAction(Actions.moveBy(x, y, 0.25f));
-	}
+//	@Override
+//	public void move(float x, float y) {
+//		this.addAction(Actions.moveBy(x, y, this.actionSpeed));
+//	}
+	
+//	@Override
+//	public void moveDistance(float x, float y, float scalar) {
+//		this.addAction(Actions.moveBy(x*scalar, y*scalar, this.actionSpeed*scalar));
+//	}
 
 	@Override
 	public Vector2 getSpriteSize() {

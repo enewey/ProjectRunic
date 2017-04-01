@@ -3,6 +3,7 @@ package com.neweyjrpg.game;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -115,7 +116,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		
 		ListIterator<Manager> li = managers.listIterator(managers.size());
 		while (li.hasPrevious()) {
-			if (li.previous().act(stateTime)) {
+			if (li.previous().act(Gdx.graphics.getDeltaTime())) {
 				break;
 			}
 		}

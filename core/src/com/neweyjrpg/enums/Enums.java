@@ -55,4 +55,11 @@ public class Enums {
 		//default?
 		return Priority.Below;
 	}
+	
+	public enum Move {
+		StepDir, //a step in a cardinal direction
+		StepToVec, // step towards an X,Y coordinate
+		Face, // turn actor in a specific direction with no spatial movement
+		Pause // pause for a tick
+	}
 }

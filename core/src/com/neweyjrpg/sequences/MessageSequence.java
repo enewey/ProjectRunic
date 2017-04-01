@@ -1,4 +1,4 @@
-package com.neweyjrpg.models;
+package com.neweyjrpg.sequences;
 
 public class MessageSequence extends Sequence<Character> {
 
@@ -21,7 +21,7 @@ public class MessageSequence extends Sequence<Character> {
 	
 	public String stepMessage() {
 		this.step();
-		if (!this.looped()) {
+		if (!this.isLooped()) {
 			StringBuilder builder = new StringBuilder();
 			for (int i=0; i<this.pointer; i++)
 				builder.append(this.data.get(i).data);

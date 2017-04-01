@@ -29,7 +29,7 @@ public class BlockBody {
 	}
 	
 	public Vector2 moveOff(BlockBody other) {
-		if (this.getBounds().overlaps((Rectangle) other.getBounds())) {
+		if (this.getBounds().overlaps(other.getBounds())) {
 			
 			float xdiff = this.getBounds().x - other.getBounds().x;
 			float ydiff = this.getBounds().y - other.getBounds().y;

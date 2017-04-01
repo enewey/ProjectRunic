@@ -17,7 +17,12 @@ public class GhostActor extends GameActor {
 
 	@Override
 	public void move(float x, float y) {
-		
+		this.setPosition(this.getX()+x, this.getY()+y);
+	}
+	
+	@Override
+	public void moveDistance(float x, float y, float speedScalar) {
+		this.move(x*speedScalar, y*speedScalar);
 	}
 
 	@Override
@@ -34,5 +39,7 @@ public class GhostActor extends GameActor {
 	public IProducesInputs getController() {
 		return null;
 	}
+
+	
 
 }

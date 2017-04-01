@@ -3,7 +3,7 @@ package com.neweyjrpg.window;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.neweyjrpg.enums.Enums;
-import com.neweyjrpg.models.MessageSequence;
+import com.neweyjrpg.sequences.MessageSequence;
 
 public class MessageWindow extends GameWindow {
 

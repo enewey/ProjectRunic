@@ -2,6 +2,7 @@ package com.neweyjrpg.interaction;
 
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.interfaces.Interaction;
+import com.neweyjrpg.manager.Manager;
 
 public class MessageInteraction implements Interaction {
 	
@@ -28,5 +29,9 @@ public class MessageInteraction implements Interaction {
 			return str.substring(0, 39) + "\n" + str.substring(39, str.length());
 		else
 			return str;
+	}
+	
+	public Interaction process(Manager m) {
+		return this;
 	}
 }
