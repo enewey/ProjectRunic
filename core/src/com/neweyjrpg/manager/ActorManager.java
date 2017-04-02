@@ -10,18 +10,20 @@ import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
+import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interaction.MovementInteraction;
+import com.neweyjrpg.interfaces.IDrawsGraphics;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
-import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.util.ClosestPosition;
 import com.neweyjrpg.util.Conversion;
 
-public class ActorManager extends Manager {
+public class ActorManager extends Manager implements IDrawsGraphics {
 
 	private float boundX, boundY;
+	private IHandlesInteraction handler;
 	
 	private CharacterActor player;
 	public CharacterActor getPlayer() { return this.player; }
@@ -40,8 +42,6 @@ public class ActorManager extends Manager {
 		}
 		return null;
 	}
-	
-	private IHandlesInteraction handler;
 	
 	public void addActor(GameActor actor) {
 		if (actor.getName() == null || actor.getName().equals("")) {
@@ -63,10 +63,16 @@ public class ActorManager extends Manager {
 		return true;
 	}
 	
+	@Override
+	public void massColorAdd(float r, float g, float b, float a) {
+		for (GameActor actor : this.actors) {
+			actor.setColor(actor.getColor().add(r, g, b, a));
+		}
+	}
+	
 	public ActorManager(CharacterActor player, float boundX, float boundY, IProducesInputs controller, IHandlesInteraction handler) {
 		this.handler = handler;
 		this.player = player;
-//		this.player.setController(controller);
 		this.boundX = boundX;
 		this.boundY = boundY;
 		this.actors = new Array<GameActor>(false, 10, GameActor.class);
@@ -132,8 +138,7 @@ public class ActorManager extends Manager {
 			
 			actor.act(deltaTime);
 			
-			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock
-					/*&& actor.getPhysicsModel().getType() != PhysicalState.StaticPushable*/) {
+			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock) {
 				this.detectCollision(actor, false); //Detect collision after each individual action; this is key
 			}
 		}
@@ -228,9 +233,9 @@ public class ActorManager extends Manager {
 		if (interaction instanceof MovementInteraction) {
 			MovementInteraction action = (MovementInteraction)interaction;
 			Vector2 data = action.process(this).getData();
-//			if (data != null) {
-//				action.getTarget().move(data);
-//			}
+			if (data != null) {
+				action.getTarget().move(data);
+			}
 		}
 		return false;
 	}

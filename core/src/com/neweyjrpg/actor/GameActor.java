@@ -8,17 +8,16 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.Dir;
+import com.neweyjrpg.interaction.Interaction;
+import com.neweyjrpg.interaction.MovementInteraction;
 import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.IProducesInteraction;
-import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.physics.BlockBody;
 import com.neweyjrpg.util.Conversion;
-import com.neweyjrpg.util.Funcs;
 
 public abstract class GameActor extends Actor implements Comparable<GameActor>, ICanCollide<GameActor>, IProducesInteraction {
 	
@@ -79,10 +78,10 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	
 	//Methods
 	public void draw(Batch batch, float deltaTime) {
-		batch.setColor(this.getColor());
+		//batch.setColor(this.getColor());
 	}
 	public void draw(Batch batch, float deltaTime, float x, float y) {
-		batch.setColor(this.getColor());
+		//batch.setColor(this.getColor());
 	}
 	
 	/**
@@ -102,13 +101,17 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	 * move - this will move the actor (+x,+y) relative to its location, in actionSpeed seconds.
 	 */
 	public void move(float x, float y) { 
-		this.addMove(Actions.moveBy(x, y, this.actionSpeed));
+		this.addMove(Actions.moveBy(x,y, this.actionSpeed));
 	}
 	/**
 	 * move the actor (+x,+y) relative to its location, scaling the actionSpeed by s.
 	 */
 	public void moveDistance(float x, float y, float s) {
 		this.addMove(Actions.moveBy(x*s, y*s, this.actionSpeed*s));
+	}
+	public void moveDistance(float x, float y, float s, final MovementInteraction mi) {
+		this.addMove(Actions.moveBy(x*s,  y*s, this.actionSpeed*s));
+		this.addCompletedAction(mi);
 	}
 	/**
 	 * move the actor (+x,+y) relative to its location in zero seconds.
@@ -124,7 +127,7 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	 * Adds a MoveByAction directly to the move queue.
 	 */
 	public void addMove(MoveByAction move) {
-		this.actionQueue.add(move);
+		this.queueAction(move);
 	}
 	/**
 	 * Adds a MoveByAction directly to the actor's Actions.
@@ -135,6 +138,25 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		this.addAction(move);
 	}
 	
+	public void wait(float sec) {
+		this.queueAction(Actions.moveBy(0f, 0f, sec));
+	}
+	
+	public void wait(float sec, MovementInteraction i) {
+		this.wait(sec);
+		this.addCompletedAction(i);
+	}
+	
+	private void addCompletedAction(final MovementInteraction i) {
+		this.queueAction(new Action() {
+			@Override
+			public boolean act(float delta) {
+				i.complete();
+				return true;
+			}
+		});
+	}
+	
 	/**
 	 * DO NOT ADD MOVETOACTIONS. WE SAY FUCK MOVETOACTIONS.
 	 * @param a
@@ -142,7 +164,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public void queueAction(Action a) {
 		this.actionQueue.add(a);
 	}
-	
 	public void advanceQueue() {
 		this.addAction(actionQueue.remove());
 	}
@@ -178,10 +199,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		
 		this.oldX = this.phys.getBounds().x;
 		this.oldY = this.phys.getBounds().y;
-		
-		Vector2 roundPos = Funcs.roundPixels(this.getX(), this.getY());
-		this.setX(roundPos.x);
-		this.setY(roundPos.y);
 		
 		super.act(deltaTime);
 		alignPhysicsModelToActor();

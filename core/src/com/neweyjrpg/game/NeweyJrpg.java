@@ -1,7 +1,6 @@
 package com.neweyjrpg.game;
 
 import java.util.ArrayList;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -28,6 +27,7 @@ import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
 import com.neweyjrpg.interaction.MessageInteraction;
 import com.neweyjrpg.interaction.MovementInteraction;
+import com.neweyjrpg.interaction.SceneInteraction;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.physics.BlockBody;
 
@@ -54,6 +54,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 				chara, map);
 		Gdx.input.setInputProcessor(scene);
 		
+		
 		ArrayList<GhostActor> mapBlocks = map.getBlocks();
 		for (GhostActor block : mapBlocks) {
 			scene.addActor(block);
@@ -79,14 +80,14 @@ public class NeweyJrpg extends ApplicationAdapter {
 		addStaticBlock(scene, 48f, 32f);
 		addStaticBlock(scene, 48f, 16f);
 		
-		addPushBlock(scene, 128f, 128f);
+		addPushBlock(scene, 128f, 234f);
 		addPushBlock(scene, 128f, 156f);
 		
 		addBlockWithAction(scene, 128f, 210f);
 		
 		font = new BitmapFont();
 
-		System.out.println("Create method done");
+		//System.out.println("Create method done");
 	}
 	
 	private void addStaticBlock(GameScene s, float x, float y) {
@@ -119,7 +120,14 @@ public class NeweyJrpg extends ApplicationAdapter {
 		block.setCollider(new BlockingCollider());
 		block.setColor(Color.WHITE);
 		block.setName("ACTIONBLOCK");
-		block.addOnActionInteraction(new MovementInteraction("PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 40f));
+		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 10f));
+		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.1f));
+		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 10f));
+		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.1f));
+		block.addOnActionInteraction(new MessageInteraction(scene, "Testing a second message!"));
+		//TODO: figure out how to make scene interactions wait until all interactions are done..
+		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, -1.0f));
+		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 1.0f));
 		
 		s.addActor(block);
 		
@@ -140,9 +148,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
 			// npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
-			npc.addOnActionInteraction(new MessageInteraction(
+			npc.addOnActionInteraction(new MessageInteraction(scene, 
 					"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
-			npc.addOnActionInteraction(new MessageInteraction("Testing a second message!"));
+			npc.addOnActionInteraction(new MessageInteraction(scene, "Testing a second message!"));
 			s.addActor(npc);
 		}
 	}
@@ -161,7 +169,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 
 		// Draw overlays here
 		font.draw(scene.getBatch(),
-				"X/Y: " + chara.getPhysicsModel().getBounds().x + ", " + chara.getPhysicsModel().getBounds().y, 0, 240);
+				"X/Y: " + scene.getActorManager().getActorByName("PUSHBLOCK").getX() + ", " + scene.getActorManager().getActorByName("PUSHBLOCK").getY()
+				+ "\nFPS: " + Gdx.graphics.getFramesPerSecond(), 0, 240);
 
 		scene.getBatch().end();
 

@@ -3,7 +3,6 @@ package com.neweyjrpg.map;
 import com.badlogic.gdx.graphics.Texture;
 import com.neweyjrpg.enums.Enums.TileBody;
 import com.neweyjrpg.graphic.TileGraphic;
-import com.neweyjrpg.physics.BlockBody;
 
 public class MapTile {
 	

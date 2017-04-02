@@ -3,6 +3,7 @@ package com.neweyjrpg.window;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.sequences.MessageSequence;
 
 public class MessageWindow extends GameWindow {
@@ -15,8 +16,8 @@ public class MessageWindow extends GameWindow {
 	private MessageSequence message;
 	public MessageSequence getSequence() { return this.message; }
 	
-	public MessageWindow(int x, int y, int width, int height, String str) {
-		super(x, y, width, height, Enums.Priority.Above);
+	public MessageWindow(Interaction i, int x, int y, int width, int height, String str) {
+		super(i, x, y, width, height, Enums.Priority.Above);
 		this.message = new MessageSequence(str, letterDelay, idleTime);
 		this.font = new BitmapFont();
 	}

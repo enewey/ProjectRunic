@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.interaction.Interaction;
 
 public abstract class GameWindow {
 	
@@ -17,7 +18,9 @@ public abstract class GameWindow {
 	private Enums.Priority priority;
 	public Enums.Priority getPriority() { return this.priority; }
 	
-	public GameWindow(int x, int y, int width, int height, Enums.Priority priority) {
+	private Interaction interaction;
+	
+	public GameWindow(Interaction i, int x, int y, int width, int height, Enums.Priority priority) {
 		this.width = width;
 		this.height = height;
 		this.x = x;
@@ -28,6 +31,8 @@ public abstract class GameWindow {
 		
 		this.windowSkin = new TextureRegion(new Texture(pxm));
 		pxm.dispose();
+		
+		this.interaction = i;
 	}
 	
 	public void draw(Batch batch, float deltaTime) {
@@ -37,6 +42,7 @@ public abstract class GameWindow {
 	
 	public void dispose() {
 		this.windowSkin.getTexture().dispose();
+		this.interaction.complete();
 		this.disposed = true;
 	}
 	

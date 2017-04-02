@@ -62,4 +62,8 @@ public class Enums {
 		Face, // turn actor in a specific direction with no spatial movement
 		Pause // pause for a tick
 	}
+	
+	public enum SceneAction {
+		ChangeColor
+	}
 }

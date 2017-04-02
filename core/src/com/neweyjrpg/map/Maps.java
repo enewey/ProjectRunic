@@ -12,7 +12,6 @@ import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.TileBody;
 import com.neweyjrpg.physics.BlockBody;
-import com.sun.media.sound.InvalidFormatException;
 
 public class Maps {
 	

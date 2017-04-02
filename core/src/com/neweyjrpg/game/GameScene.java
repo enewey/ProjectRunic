@@ -14,9 +14,11 @@ import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.InputState;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.interaction.Interaction;
+import com.neweyjrpg.interaction.SceneInteraction;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
-import com.neweyjrpg.interfaces.Interaction;
+import com.neweyjrpg.interfaces.InteractionDoneListener;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;
 import com.neweyjrpg.manager.WindowManager;
@@ -24,7 +26,7 @@ import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
-public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
+public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction, InteractionDoneListener {
 	
 	private float stateTime;
 	public void incrementStateTime(float deltaTime) {
@@ -45,10 +47,14 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	public void setMap(GameMap map) { this.map = map; }
 	
 	private ActorManager actorManager;
+	public ActorManager getActorManager() { return this.actorManager; }
 	private WindowManager windowManager;
+	public WindowManager getWindowManager() { return this.windowManager; }
 	private LinkedList<Manager> managers;
 
 	private InputState input; //Used to relay inputs to the actor
+	
+	private LinkedList<Interaction> interactionQueue;
 	
 	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
 		this.stateTime = 0f;
@@ -71,6 +77,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		managers.addLast(windowManager);
 		
 		this.input = new InputState();
+		
+		this.interactionQueue = new LinkedList<Interaction>();
 	}
 	
 	public void addActor(GameActor actor) {
@@ -109,11 +117,14 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	/**
 	 *  First handles any button presses within the InputController queue.
 	 * 	Then calls each actor's 'act' method, and immediately checks for collision afterwards.
-	 * NOTE: UPDATE THE STATETIME BEFORE CALLING
 	 */
 	public void act() {
-		buttonPressing();
+		if (this.handleQueuedInteraction()) {
+			return;
+		}
 		
+		buttonPressing();
+				
 		ListIterator<Manager> li = managers.listIterator(managers.size());
 		while (li.hasPrevious()) {
 			if (li.previous().act(Gdx.graphics.getDeltaTime())) {
@@ -221,17 +232,66 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	
 	@Override
 	public boolean handle(Interaction interaction) {
-		if (interaction == null) return false;
+		if (interaction == null) 
+			return false;
 		
-		for (Manager m : managers){
-			if (m.handle(interaction)){
-				return true;
+		interaction.init();
+		this.interactionQueue.add(interaction);
+		return true;
+	}
+	
+	/**
+	 * Queued interaction will return true if no other actions are to take place after this is handled.
+	 * @return boolean
+	 */
+	private boolean handleQueuedInteraction() {
+		this.cleanUpQueue();
+		if (!this.interactionQueue.isEmpty()) {
+			Interaction interaction = this.interactionQueue.get(0);
+			if (interaction.isStarted() && !interaction.isCompleted()) {
+				return false;
+			}
+			
+			if (interaction instanceof SceneInteraction) {
+				SceneInteraction sin = (SceneInteraction)interaction;
+				for (Manager m : managers) { //the interaction needs to process each manager individually.
+					interaction.process(m);
+				}
+				sin.processMap(this.map);
+				if (sin.getData()) {
+					sin.complete();
+				}
+				if (sin.isBlocking()) {
+					return true;
+				}
+			} else {
+				for (Manager m : managers){
+					if (m.handle(interaction)){
+						return true;
+					}
+				}
 			}
 		}
 		return false;
 	}
 	
+	private void cleanUpQueue() {
+		for (int i=0; i<this.interactionQueue.size(); i++) {
+			if (this.interactionQueue.get(i).isCompleted()) {
+				this.interactionQueue.remove(i--);
+			}
+		}
+	}
+	
 	public void dispose() {
-		
+		for (Manager m : managers) {
+			m.dispose();
+		}
+		map.dispose();
+	}
+	
+	@Override
+	public void onInteractionComplete(Interaction interaction) {
+		//this.interactionQueue.remove(interaction);
 	}
 }

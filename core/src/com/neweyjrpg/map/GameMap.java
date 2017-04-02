@@ -1,14 +1,16 @@
 package com.neweyjrpg.map;
 
 import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.neweyjrpg.actor.GhostActor;
-import com.neweyjrpg.actor.StaticActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.interfaces.IDrawsGraphics;
 import com.neweyjrpg.physics.BlockBody;
 
-public class GameMap {
+public class GameMap implements IDrawsGraphics {
 
 	private ArrayList<MapLayer> mapData = null;
 	private int dimX, dimY;
@@ -25,8 +27,13 @@ public class GameMap {
 		return this.dimY; 
 	}
 	
+	private Color color;
+	public Color getColor() { return this.color; }
+	public void setColor(Color color) { this.color = color; }
+	
 	public GameMap(String mapFile) {
-		mapData = Maps.parseMap(mapFile);				
+		this.color = Color.WHITE;
+		mapData = Maps.parseMap(mapFile);			
 	}
 	
 	public ArrayList<MapLayer> getMapData(){
@@ -75,7 +82,9 @@ public class GameMap {
 			for (int x=startX; x<endX; x++) {
 				MapTile tile = layer.getTile(x, yaxis);
 				if (!tile.isBlank()) {
+					batch.setColor(this.color);
 					batch.draw(tile.getGraphic(), offsetX+(x*16), offsetY+(yaxis*16));
+					batch.setColor(Color.WHITE);
 				}
 			}
 		}
@@ -86,5 +95,9 @@ public class GameMap {
 		for (int i=0; i < mapData.size(); i++) {
 			mapData.get(i).dispose();
 		}
+	}
+	@Override
+	public void massColorAdd(float r, float g, float b, float a) {
+		this.color.add(r,g,b,a);
 	}
 }

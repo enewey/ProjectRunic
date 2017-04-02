@@ -4,8 +4,8 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interaction.MessageInteraction;
-import com.neweyjrpg.interfaces.Interaction;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.window.GameWindow;
@@ -84,8 +84,9 @@ public class WindowManager extends Manager {
 	public boolean handle(Interaction interaction) {
 		if (interaction instanceof MessageInteraction) {
 			for (String s : ((MessageInteraction) interaction).getData()) {
-				windows.addLast(new MessageWindow(0,0,320,80,s));
+				windows.addLast(new MessageWindow(interaction, 0,0,320,80,s));
 			}
+			interaction.process(this);
 			return true;
 		}
 		else 

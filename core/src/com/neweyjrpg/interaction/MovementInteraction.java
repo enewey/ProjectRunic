@@ -1,16 +1,15 @@
 package com.neweyjrpg.interaction;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.enums.Enums;
-import com.neweyjrpg.interfaces.Interaction;
+import com.neweyjrpg.game.GameScene;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;
 import com.neweyjrpg.util.Conversion;
 
-public class MovementInteraction implements Interaction {
+public class MovementInteraction extends Interaction {
 	
 	private String targetName; //name of actor this movement interaction should target
 	//public String getTarget() { return this.targetName; }
@@ -24,7 +23,8 @@ public class MovementInteraction implements Interaction {
 	}
 	private Object[] extra; // extra data for processing move type... could be a Vector2, Dir, a secondary target, etc..
 
-	public MovementInteraction(String target, Enums.Move type, Object... extra ) {
+	public MovementInteraction(GameScene scene, String target, Enums.Move type, Object... extra ) {
+		super(scene);
 		this.targetName = target;
 		this.extra = extra;
 		this.type = type;
@@ -38,6 +38,7 @@ public class MovementInteraction implements Interaction {
 
 	@Override
 	public MovementInteraction process(Manager m) {
+		super.process(m);
 		ActorManager mana = (ActorManager)m;
 		this.target = mana.getActorByName(targetName);
 		
@@ -45,7 +46,7 @@ public class MovementInteraction implements Interaction {
 		case StepDir: //extra[0] = Direction, extra[1] = scalar (optional)
 			Vector2 v = Conversion.dirToVec((Enums.Dir)extra[0]);
 			float s = extra.length > 1 ? (Float)extra[1] : 1f;
-			this.target.moveDistance(v.x, v.y, s);
+			this.target.moveDistance(v.x, v.y, s, this);
 			this.data = null;
 			break;
 		case StepToVec: //extra[0] = Vector2 to step towards
@@ -59,7 +60,7 @@ public class MovementInteraction implements Interaction {
 			this.data = null;
 			break;
 		case Pause: //extra[0] = float (time to wait)
-			target.addAction(Actions.delay((Float)extra[0]));
+			target.wait((Float)extra[0], this);
 			this.data = null;
 			break;
 		default:
@@ -69,5 +70,4 @@ public class MovementInteraction implements Interaction {
 		
 		return this;
 	}
-
 }

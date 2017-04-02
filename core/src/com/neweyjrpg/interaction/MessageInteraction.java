@@ -1,15 +1,16 @@
 package com.neweyjrpg.interaction;
 
 import com.badlogic.gdx.utils.Array;
-import com.neweyjrpg.interfaces.Interaction;
+import com.neweyjrpg.game.GameScene;
 import com.neweyjrpg.manager.Manager;
 
-public class MessageInteraction implements Interaction {
+public class MessageInteraction extends Interaction {
 	
 	private Array<String> message;
 	public Array<String> getData() { return message; }
 	
-	public MessageInteraction(String str) { 
+	public MessageInteraction(GameScene scene, String str) {
+		super(scene);
 		this.message = new Array<String>(true, str.length()/156, String.class);
 		while (str.length() > 156) { 
 			this.message.add(formatString(str));
@@ -32,6 +33,7 @@ public class MessageInteraction implements Interaction {
 	}
 	
 	public Interaction process(Manager m) {
+		super.process(m);
 		return this;
 	}
 }

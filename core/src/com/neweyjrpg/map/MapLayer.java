@@ -9,6 +9,8 @@ import com.neweyjrpg.enums.Enums;
 public class MapLayer {
 	
 	private int layer;
+	public int getLayer() { return this.layer; }
+	
 	private MapTile[][] data;
 	private Texture tileSet;
 	private HashMap<String, MapTile> tileCache;
