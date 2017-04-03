@@ -105,7 +105,6 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 				batch.setColor(Color.WHITE); //reset batch setcolor to allow each manager handle their own coloring
 				
 				for (Manager m : managers) {
-					batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 					m.draw(stateTime, yaxis, scrollX, scrollY, batch, p);
 				}
 				

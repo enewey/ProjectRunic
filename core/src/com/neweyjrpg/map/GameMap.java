@@ -67,8 +67,8 @@ public class GameMap implements IDrawsGraphics {
 	public void draw(Batch batch, int yaxis, float deltaTime, float offsetX, float offsetY, Enums.Priority priority) {
 		int startX = Math.max((int)Math.floor(-offsetX/Constants.TILE_WIDTH), 0),
 			startY = Math.max((int)Math.floor(-offsetY/Constants.TILE_HEIGHT), 0);
-		int endX = Math.min(startX + (int)Math.round((Constants.GAME_WIDTH / Constants.TILE_WIDTH)+1), this.dimX),
-			endY = Math.min(startY + (int)Math.round((Constants.GAME_HEIGHT / Constants.TILE_HEIGHT)+1), this.dimX);
+		int endX = Math.min(startX + (int)Math.round((Constants.GAME_WIDTH / Constants.TILE_WIDTH)+2), this.dimX),
+			endY = Math.min(startY + (int)Math.round((Constants.GAME_HEIGHT / Constants.TILE_HEIGHT)+2), this.dimY);
 		
 		if (yaxis < startY && yaxis > endY) {
 			return;
@@ -97,7 +97,7 @@ public class GameMap implements IDrawsGraphics {
 		}
 	}
 	@Override
-	public void massColorAdd(float r, float g, float b, float a) {
-		this.color.add(r,g,b,a);
+	public void massColorLerp(float r, float g, float b, float a, float factor) {
+		this.color.lerp(r,g,b,a, factor);
 	}
 }

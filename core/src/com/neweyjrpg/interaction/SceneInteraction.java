@@ -16,6 +16,7 @@ public class SceneInteraction extends Interaction {
 	public boolean isBlocking() { return this.isBlocking; }
 	
 	private float elapsed;
+	private float delta;
 	
 	public SceneInteraction(GameScene scene, SceneAction action, float duration, boolean isBlocking, Object ...args) {
 		super(scene);
@@ -39,13 +40,15 @@ public class SceneInteraction extends Interaction {
 
 	@Override
 	public Interaction process(Manager m) {
-		this.elapsed += Gdx.graphics.getDeltaTime();
+		this.delta = Gdx.graphics.getDeltaTime();
+		this.elapsed += delta;
 		
 		switch(action) {
 		case ChangeColor:
+		//include all graphics drawing cases here
 			if (IDrawsGraphics.class.isAssignableFrom(m.getClass())) {
 				IDrawsGraphics g = (IDrawsGraphics)m;
-				g.massColorAdd(0, 0, 0, (Float)args[0] * (elapsed / duration > 1 ? 1 : elapsed / duration));
+				return this.processDraw(g);
 			}
 			break;
 		default:
@@ -55,16 +58,26 @@ public class SceneInteraction extends Interaction {
 		return this;
 	}
 	
-	public void processMap(GameMap m) {
+	public Interaction processMap(GameMap m) {
 		switch(action) {
 		case ChangeColor:
-			if (IDrawsGraphics.class.isAssignableFrom(m.getClass())) {
-				IDrawsGraphics g = (IDrawsGraphics)m;
-				g.massColorAdd(0, 0, 0, (Float)args[0] * (elapsed / duration > 1 ? 1 : elapsed / duration));
-			}
+		//include all graphics drawing cases here
+			return this.processDraw(m);
+		default:
+			break;
+		}
+		return this;
+	}
+	
+	public Interaction processDraw(IDrawsGraphics g) {
+		switch(action) {
+		case ChangeColor:
+			g.massColorLerp((Float)args[0], (Float)args[1], (Float)args[2], (Float)args[3], this.elapsed);
 			break;
 		default:
 			break;
 		}
+		
+		return this;
 	}
 }

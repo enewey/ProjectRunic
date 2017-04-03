@@ -10,8 +10,8 @@ public class Constants {
 	public final static int TILE_HEIGHT = 16;
 	public final static int TILE_MARGIN = 1;
 	
-	public final static float GAME_WIDTH = 320f;
-	public final static float GAME_HEIGHT = 240f;
+	public final static int GAME_WIDTH = 426;
+	public final static int GAME_HEIGHT = 240;
 	
 	public final static float LOWER_BOUND_X = (GAME_WIDTH / 2.0f) - (GAME_WIDTH / 8.0f) - (CHARA_WIDTH/2);
 	public final static float UPPER_BOUND_X = (GAME_WIDTH /2.0f) + (GAME_WIDTH / 8.0f) - (CHARA_WIDTH/2);

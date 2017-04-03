@@ -23,6 +23,7 @@ import com.neweyjrpg.util.Conversion;
 public class ActorManager extends Manager implements IDrawsGraphics {
 
 	private float boundX, boundY;
+	private Color color;
 	private IHandlesInteraction handler;
 	
 	private CharacterActor player;
@@ -64,10 +65,8 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 	}
 	
 	@Override
-	public void massColorAdd(float r, float g, float b, float a) {
-		for (GameActor actor : this.actors) {
-			actor.setColor(actor.getColor().add(r, g, b, a));
-		}
+	public void massColorLerp(float r, float g, float b, float a, float factor) {
+		this.color.lerp(r,g,b,a, factor);
 	}
 	
 	public ActorManager(CharacterActor player, float boundX, float boundY, IProducesInputs controller, IHandlesInteraction handler) {
@@ -75,6 +74,7 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 		this.player = player;
 		this.boundX = boundX;
 		this.boundY = boundY;
+		this.color = Color.WHITE;
 		this.actors = new Array<GameActor>(false, 10, GameActor.class);
 		this.actors.add(this.player);
 	}
@@ -114,7 +114,7 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 				if (actor.getX() + offsetX + actorSize.x < 0 || actor.getX() + offsetX > Constants.GAME_WIDTH + actorSize.x
 				 || actor.getY() + offsetY + actorSize.y < 0 || actor.getY() + offsetY > Constants.GAME_HEIGHT + actorSize.y)
 					continue;
-				batch.setColor(actor.getColor());
+				batch.setColor(actor.getColor().cpy().mul(this.color));
 				actor.draw(batch, deltaTime, actor.getX() + offsetX, actor.getY() + offsetY);
 				batch.setColor(Color.WHITE);
 			}

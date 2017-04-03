@@ -19,6 +19,7 @@ public class MessageInteraction extends Interaction {
 		this.message.add(formatString(str));
 	}
 	
+	//TODO: Make string format dynamic based on Constants.GAME_WIDTH
 	private String formatString(String str) { 
 		if (str.length() > 156)
 			return str.substring(0, 39) + "\n" + str.substring(39, 78) + "\n" + str.substring(78, 117) + "\n" + str.substring(117, 156);

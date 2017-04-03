@@ -3,6 +3,7 @@ package com.neweyjrpg.manager;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interaction.MessageInteraction;
@@ -84,7 +85,7 @@ public class WindowManager extends Manager {
 	public boolean handle(Interaction interaction) {
 		if (interaction instanceof MessageInteraction) {
 			for (String s : ((MessageInteraction) interaction).getData()) {
-				windows.addLast(new MessageWindow(interaction, 0,0,320,80,s));
+				windows.addLast(new MessageWindow(interaction, 0,0,Constants.GAME_WIDTH,80,s));
 			}
 			interaction.process(this);
 			return true;
