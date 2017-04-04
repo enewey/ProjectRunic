@@ -3,19 +3,18 @@ package com.neweyjrpg.manager;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interaction.Interaction;
-import com.neweyjrpg.interaction.MessageInteraction;
+import com.neweyjrpg.interaction.windows.WindowInteraction;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.window.GameWindow;
-import com.neweyjrpg.window.MessageWindow;
 
 public class WindowManager extends Manager {
 
 	private LinkedList<GameWindow> windows;
 	public boolean isEmpty() { return this.windows.isEmpty(); }
+	public void addWindow(GameWindow window) { this.windows.addLast(window); }
 	
 	private boolean halting;
 	public void setHalting(boolean b) { this.halting = b; }
@@ -31,8 +30,6 @@ public class WindowManager extends Manager {
 		else
 			return false;
 	}
-	
-	
 
 	@Override
 	public void draw(float deltaTime, int yaxis, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
@@ -83,10 +80,7 @@ public class WindowManager extends Manager {
 	
 	@Override
 	public boolean handle(Interaction interaction) {
-		if (interaction instanceof MessageInteraction) {
-			for (String s : ((MessageInteraction) interaction).getData()) {
-				windows.addLast(new MessageWindow(interaction, 0,0,Constants.GAME_WIDTH,80,s));
-			}
+		if (interaction instanceof WindowInteraction) {
 			interaction.process(this);
 			return true;
 		}

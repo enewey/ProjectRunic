@@ -5,8 +5,8 @@ import com.neweyjrpg.manager.Manager;
 
 public abstract class Interaction {
 	private GameScene scene;
-	private boolean started;
-	private boolean completed;
+	protected boolean started;
+	protected boolean completed;
 	public Interaction(GameScene scene) {
 		this.scene = scene;
 		this.init();

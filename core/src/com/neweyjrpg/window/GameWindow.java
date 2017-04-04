@@ -12,7 +12,7 @@ import com.neweyjrpg.interaction.Interaction;
 public abstract class GameWindow {
 	
 	protected int width, height, x, y; //x and y are the bottom-left corner of window
-	private TextureRegion windowSkin;
+	protected TextureRegion windowSkin;
 	private boolean disposed;
 	public boolean isDisposed() { return this.disposed; }
 	private Enums.Priority priority;
@@ -33,6 +33,7 @@ public abstract class GameWindow {
 		pxm.dispose();
 		
 		this.interaction = i;
+		this.priority = priority;
 	}
 	
 	public void draw(Batch batch, float deltaTime) {

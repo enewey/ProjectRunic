@@ -5,7 +5,6 @@ import com.neweyjrpg.enums.Enums.SceneAction;
 import com.neweyjrpg.game.GameScene;
 import com.neweyjrpg.interfaces.IDrawsGraphics;
 import com.neweyjrpg.manager.Manager;
-import com.neweyjrpg.map.GameMap;
 
 public class SceneInteraction extends Interaction {
 
@@ -41,7 +40,7 @@ public class SceneInteraction extends Interaction {
 	@Override
 	public Interaction process(Manager m) {
 		this.delta = Gdx.graphics.getDeltaTime();
-		this.elapsed += delta;
+		this.elapsed += this.delta;
 		
 		switch(action) {
 		case ChangeColor:
@@ -58,21 +57,11 @@ public class SceneInteraction extends Interaction {
 		return this;
 	}
 	
-	public Interaction processMap(GameMap m) {
+	private Interaction processDraw(IDrawsGraphics g) {
 		switch(action) {
 		case ChangeColor:
-		//include all graphics drawing cases here
-			return this.processDraw(m);
-		default:
-			break;
-		}
-		return this;
-	}
-	
-	public Interaction processDraw(IDrawsGraphics g) {
-		switch(action) {
-		case ChangeColor:
-			g.massColorLerp((Float)args[0], (Float)args[1], (Float)args[2], (Float)args[3], this.elapsed);
+			g.massColorLerp((Float)args[0], (Float)args[1], (Float)args[2], (Float)args[3], 
+					this.delta / (this.duration - this.elapsed));
 			break;
 		default:
 			break;

@@ -23,7 +23,7 @@ public class MessageWindow extends GameWindow {
 	}
 	
 	@Override
-	public void draw(Batch batch, float deltaTime) {
+	public void draw(Batch batch, float deltaTime) {		
 		super.draw(batch, deltaTime);
 		String m = message.stepMessage();
 		font.draw(batch, m, x + padding, y+height-padding);
@@ -31,10 +31,6 @@ public class MessageWindow extends GameWindow {
 	
 	public boolean isDone() {
 		return message.isDone();
-	}
-	
-	public void skip() {
-		
 	}
 	
 	@Override

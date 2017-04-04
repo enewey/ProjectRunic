@@ -33,7 +33,9 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		stateTime += deltaTime;
 	}
 	
-	private float scrollX, scrollY; //Represents how far the camera has scrolled, justified at the bottom-left corner.
+	private Vector2 scroll;
+	//private float scrollX, scrollY; //Represents how far the camera has scrolled, justified at the bottom-left corner.
+	public Vector2 getScroll() { return scroll; }
 	private float maxScrollX, maxScrollY; //How far the camera is allowed to scroll = (mapWidth-screenWidth, mapHeight-screenHeight)
 	
 	private Viewport viewport; //Used for drawing to the screen
@@ -63,8 +65,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.viewport = viewport;
 		
 		this.map = map;
-		this.scrollX = 0f;
-		this.scrollY = 0f;
+		this.scroll = new Vector2(0,0);
 		//Max scroll dictates how far the camera can scroll, so the edges align to the edge of the GameMap 
 		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
 		this.maxScrollY = -((map.getDimY() * Constants.TILE_HEIGHT)-Constants.GAME_HEIGHT);
@@ -72,6 +73,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.actorManager = new ActorManager(playerActor, map.getDimX()*Constants.TILE_WIDTH, map.getDimY()*Constants.TILE_HEIGHT, this, this);
 		this.windowManager = new WindowManager(true);
 		
+		//Very specific order.
 		this.managers = new LinkedList<Manager>();
 		managers.addLast(actorManager);
 		managers.addLast(windowManager);
@@ -105,10 +107,10 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 				batch.setColor(Color.WHITE); //reset batch setcolor to allow each manager handle their own coloring
 				
 				for (Manager m : managers) {
-					m.draw(stateTime, yaxis, scrollX, scrollY, batch, p);
+					m.draw(stateTime, yaxis, scroll.x, scroll.y, batch, p);
 				}
 				
-				map.draw(batch, yaxis, stateTime, scrollX, scrollY, p);
+				map.draw(batch, yaxis, stateTime, scroll.x, scroll.y, p);
 			}
 		}
 	}
@@ -186,16 +188,16 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	 * Sets the camera to be centered on a specific spot.
 	 */
 	public void adjustFocus(Vector2 pos) {		
-		if (pos.x+scrollX > Constants.UPPER_BOUND_X) {
-			scrollX = Math.max(Math.round(Constants.UPPER_BOUND_X - pos.x), maxScrollX);
-		} else if (pos.x+scrollX < Constants.LOWER_BOUND_X) {
-			scrollX = Math.min(Math.round(Constants.LOWER_BOUND_X - pos.x), 0);
+		if (pos.x+scroll.x > Constants.UPPER_BOUND_X) {
+			scroll.x = Math.max(Math.round(Constants.UPPER_BOUND_X - pos.x), maxScrollX);
+		} else if (pos.x+scroll.x < Constants.LOWER_BOUND_X) {
+			scroll.x = Math.min(Math.round(Constants.LOWER_BOUND_X - pos.x), 0);
 		}
 		
-		if (pos.y+scrollY > Constants.UPPER_BOUND_Y) {
-			scrollY = Math.max(Math.round(Constants.UPPER_BOUND_Y - pos.y), maxScrollY);
-		} else if (pos.y+scrollY < Constants.LOWER_BOUND_Y) {
-			scrollY = Math.min(Math.round(Constants.LOWER_BOUND_Y - pos.y), 0);
+		if (pos.y+scroll.y > Constants.UPPER_BOUND_Y) {
+			scroll.y = Math.max(Math.round(Constants.UPPER_BOUND_Y - pos.y), maxScrollY);
+		} else if (pos.y+scroll.y < Constants.LOWER_BOUND_Y) {
+			scroll.y = Math.min(Math.round(Constants.LOWER_BOUND_Y - pos.y), 0);
 		}
 	}
 	
@@ -256,7 +258,6 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 				for (Manager m : managers) { //the interaction needs to process each manager individually.
 					interaction.process(m);
 				}
-				sin.processMap(this.map);
 				if (sin.getData()) {
 					sin.complete();
 				}

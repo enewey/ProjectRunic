@@ -18,6 +18,9 @@ public class Constants {
 	public final static float LOWER_BOUND_Y = (GAME_HEIGHT / 2.0f) - (GAME_HEIGHT / 8.0f) - (CHARA_HEIGHT/2);
 	public final static float UPPER_BOUND_Y = (GAME_HEIGHT / 2.0f) + (GAME_HEIGHT / 8.0f) - (CHARA_HEIGHT/2);
 	
+	//Window properties
+	public final static float POPUP_DURATION = 1f;
+	
 	//Actor Animation
 	public final static float FRAME_DURATION = 0.125f;
 	public final static int FRAME_COUNT = 4;

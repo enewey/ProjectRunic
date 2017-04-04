@@ -25,9 +25,10 @@ import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
-import com.neweyjrpg.interaction.MessageInteraction;
 import com.neweyjrpg.interaction.MovementInteraction;
 import com.neweyjrpg.interaction.SceneInteraction;
+import com.neweyjrpg.interaction.windows.MessageInteraction;
+import com.neweyjrpg.interaction.windows.PopupMessageInteraction;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.physics.BlockBody;
 
@@ -125,11 +126,10 @@ public class NeweyJrpg extends ApplicationAdapter {
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 30f));
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.5f));
 		block.addOnActionInteraction(new MessageInteraction(scene, "Testing a second message!"));
-		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, -1.0f, -1.0f, -1.0f, -1.0f));
-		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 1.0f, 1.0f, 1.0f, 1.0f));
+		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 3.0f, true, 0.0f, 0.0f, 0.0f, 0.0f));
+		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 3.0f, true, 1.0f, 1.0f, 1.0f, 1.0f));
 		
 		s.addActor(block);
-		
 	}
 	
 	private void addNPCs(GameScene s, int num) {
@@ -146,7 +146,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setController(new BadAIController());
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
-			// npc.setOnTouchInteraction(new MessageInteraction("TOUCH " + i));
+			npc.addOnActionInteraction(new PopupMessageInteraction(scene, "", npc));
 			npc.addOnActionInteraction(new MessageInteraction(scene, 
 					"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
 			npc.addOnActionInteraction(new MessageInteraction(scene, "Testing a second message!"));

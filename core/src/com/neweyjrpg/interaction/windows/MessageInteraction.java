@@ -1,10 +1,14 @@
-package com.neweyjrpg.interaction;
+package com.neweyjrpg.interaction.windows;
 
 import com.badlogic.gdx.utils.Array;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.game.GameScene;
+import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.manager.Manager;
+import com.neweyjrpg.manager.WindowManager;
+import com.neweyjrpg.window.MessageWindow;
 
-public class MessageInteraction extends Interaction {
+public class MessageInteraction extends WindowInteraction {
 	
 	private Array<String> message;
 	public Array<String> getData() { return message; }
@@ -35,6 +39,9 @@ public class MessageInteraction extends Interaction {
 	
 	public Interaction process(Manager m) {
 		super.process(m);
+		for (String s : this.getData()) {
+			((WindowManager)m).addWindow(new MessageWindow(this, 0,0,Constants.GAME_WIDTH,80,s));
+		}
 		return this;
 	}
 }

@@ -7,10 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
-import com.neweyjrpg.interfaces.IDrawsGraphics;
 import com.neweyjrpg.physics.BlockBody;
 
-public class GameMap implements IDrawsGraphics {
+public class GameMap {
 
 	private ArrayList<MapLayer> mapData = null;
 	private int dimX, dimY;
@@ -65,6 +64,8 @@ public class GameMap implements IDrawsGraphics {
 	}
 	
 	public void draw(Batch batch, int yaxis, float deltaTime, float offsetX, float offsetY, Enums.Priority priority) {
+		offsetX = (float)Math.floor(offsetX);
+		offsetY = (float)Math.floor(offsetY);
 		int startX = Math.max((int)Math.floor(-offsetX/Constants.TILE_WIDTH), 0),
 			startY = Math.max((int)Math.floor(-offsetY/Constants.TILE_HEIGHT), 0);
 		int endX = Math.min(startX + (int)Math.round((Constants.GAME_WIDTH / Constants.TILE_WIDTH)+2), this.dimX),
@@ -95,9 +96,5 @@ public class GameMap implements IDrawsGraphics {
 		for (int i=0; i < mapData.size(); i++) {
 			mapData.get(i).dispose();
 		}
-	}
-	@Override
-	public void massColorLerp(float r, float g, float b, float a, float factor) {
-		this.color.lerp(r,g,b,a, factor);
 	}
 }
