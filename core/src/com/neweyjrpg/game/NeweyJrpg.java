@@ -86,7 +86,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 		
 		addBlockWithAction(scene, 128f, 210f);
 		
-		font = new BitmapFont();
+		font = Assets.loadFont(Constants.DEFAULT_FONT);
+		font.setColor(Color.WHITE);
 
 		//System.out.println("Create method done");
 	}
@@ -125,7 +126,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.5f));
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 30f));
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.5f));
-		block.addOnActionInteraction(new MessageInteraction(scene, "Testing a second message!"));
+		block.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
 		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 3.0f, true, 0.0f, 0.0f, 0.0f, 0.0f));
 		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 3.0f, true, 1.0f, 1.0f, 1.0f, 1.0f));
 		
@@ -147,9 +148,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
 			npc.addOnActionInteraction(new PopupMessageInteraction(scene, "", npc));
-			npc.addOnActionInteraction(new MessageInteraction(scene, 
-					"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
-			npc.addOnActionInteraction(new MessageInteraction(scene, "Testing a second message!"));
+			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT,
+					"This is a test message. We are going to write a ton of words here and see if the message interaction properly splits up a big long string with spaces appropriately. Let's try an ellipses... .... .... hello hello world!! test test! The quick brown fox jumps over the lazy dog. The slick drowned grok humps owner of crazy frog."));
+			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
 			s.addActor(npc);
 		}
 	}
@@ -167,9 +168,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 		scene.draw(); // Will draw all actors/tiles in the scene
 
 		// Draw overlays here
-		font.draw(scene.getBatch(),
-				"X/Y: " + scene.getActorManager().getActorByName("PUSHBLOCK").getX() + ", " + scene.getActorManager().getActorByName("PUSHBLOCK").getY()
-				+ "\nFPS: " + Gdx.graphics.getFramesPerSecond(), 0, 240);
+		scene.getBatch().setColor(Color.WHITE);
+		font.draw(scene.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 240);
 
 		scene.getBatch().end();
 

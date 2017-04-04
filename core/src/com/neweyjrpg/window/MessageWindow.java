@@ -2,24 +2,26 @@ package com.neweyjrpg.window;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.game.Assets;
 import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.sequences.MessageSequence;
 
 public class MessageWindow extends GameWindow {
 
-	private static int letterDelay = 1;
-	private static int idleTime = 5; //TODO: make these constants
-	private static int padding = 5;
+	private int letterDelay = Constants.LETTER_DELAY;
+	private int idleTime = Constants.IDLE_TIME; //TODO: make these constants
+	private int padding = Constants.WINDOW_PADDING;
 
 	private BitmapFont font;
 	private MessageSequence message;
 	public MessageSequence getSequence() { return this.message; }
 	
-	public MessageWindow(Interaction i, int x, int y, int width, int height, String str) {
+	public MessageWindow(Interaction i, int x, int y, int width, int height, String font, String str) {
 		super(i, x, y, width, height, Enums.Priority.Above);
 		this.message = new MessageSequence(str, letterDelay, idleTime);
-		this.font = new BitmapFont();
+		this.font = Assets.loadFont(font);
 	}
 	
 	@Override
@@ -35,7 +37,7 @@ public class MessageWindow extends GameWindow {
 	
 	@Override
 	public void dispose() {
-		this.font.dispose();
+		//this.font.dispose();
 		super.dispose();
 	}
 
