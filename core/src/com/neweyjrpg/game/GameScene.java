@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.CharacterActor;
@@ -67,6 +68,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		this.stateTime = 0f;
 		
 		this.batch = batch;
+		this.batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT));
 		this.viewport = viewport;
 		
 		this.mapManager = new MapManager(mapFile);
@@ -85,8 +87,6 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		//Max scroll dictates how far the camera can scroll, so the edges align to the edge of the GameMap 
 		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
 		this.maxScrollY = -((map.getDimY() * Constants.TILE_HEIGHT)-Constants.GAME_HEIGHT);
-		
-		
 		
 		this.input = new InputState();
 		

@@ -14,12 +14,12 @@ public class Constants {
 	public final static int GAME_HEIGHT = 240;
 	
 	public final static float LOWER_BOUND_X = (GAME_WIDTH / 2.0f) - (GAME_WIDTH / 8.0f) - (CHARA_WIDTH/2);
-	public final static float UPPER_BOUND_X = (GAME_WIDTH /2.0f) + (GAME_WIDTH / 8.0f) - (CHARA_WIDTH/2);
+	public final static float UPPER_BOUND_X = (GAME_WIDTH / 2.0f) + (GAME_WIDTH / 8.0f) - (CHARA_WIDTH/2);
 	public final static float LOWER_BOUND_Y = (GAME_HEIGHT / 2.0f) - (GAME_HEIGHT / 8.0f) - (CHARA_HEIGHT/2);
 	public final static float UPPER_BOUND_Y = (GAME_HEIGHT / 2.0f) + (GAME_HEIGHT / 8.0f) - (CHARA_HEIGHT/2);
 	
 	//Window properties
-	public final static float POPUP_DURATION = 1.5f;
+	public final static float POPUP_DURATION = 2.0f;
 	public final static String DEFAULT_FONT = "fonts/yoster-16.fnt";
 	public final static int WINDOW_PADDING = 5;
 	public final static int IDLE_TIME = 5;

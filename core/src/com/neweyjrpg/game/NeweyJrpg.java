@@ -1,6 +1,5 @@
 package com.neweyjrpg.game;
 
-import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.neweyjrpg.actor.CharacterActor;
-import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.PlayerActor;
@@ -29,7 +27,6 @@ import com.neweyjrpg.interaction.MovementInteraction;
 import com.neweyjrpg.interaction.SceneInteraction;
 import com.neweyjrpg.interaction.windows.MessageInteraction;
 import com.neweyjrpg.interaction.windows.PopupMessageInteraction;
-import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.physics.BlockBody;
 
 public class NeweyJrpg extends ApplicationAdapter {
@@ -55,11 +52,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 				chara, map);
 		Gdx.input.setInputProcessor(scene);
 		
-		
-		
-
-		addNPCs(scene, 6);
-		
+		font = Assets.loadFont(Constants.DEFAULT_FONT);
+		font.setColor(Color.WHITE);
+				
 		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
 		for (int k = 0; k < 10; k++) {
 			for (int i = 0; i < 10; i++) {
@@ -73,6 +68,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		bigBlock.setName("BIGBLOCK");
 		scene.addActor(bigBlock);
 
+		addNPCs(scene, 6);
 		addStaticBlock(scene, 32f, 32f);
 		addStaticBlock(scene, 32f, 16f);
 		addStaticBlock(scene, 48f, 32f);
@@ -82,11 +78,6 @@ public class NeweyJrpg extends ApplicationAdapter {
 		addPushBlock(scene, 128f, 156f);
 		
 		addBlockWithAction(scene, 128f, 210f);
-		
-		font = Assets.loadFont(Constants.DEFAULT_FONT);
-		font.setColor(Color.WHITE);
-
-		//System.out.println("Create method done");
 	}
 	
 	private void addStaticBlock(GameScene s, float x, float y) {
@@ -124,8 +115,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 30f));
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.5f));
 		block.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
-		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 3.0f, true, 0.0f, 0.0f, 0.0f, 0.0f));
-		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 3.0f, true, 1.0f, 1.0f, 1.0f, 1.0f));
+		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 0.0f, 0.0f, 0.0f, 1.0f));
+		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 1.0f, 1.0f, 1.0f, 1.0f));
 		
 		s.addActor(block);
 	}
@@ -166,7 +157,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 
 		// Draw overlays here
 		scene.getBatch().setColor(Color.WHITE);
-		font.draw(scene.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 240);
+		font.draw(scene.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 15);
 
 		scene.getBatch().end();
 

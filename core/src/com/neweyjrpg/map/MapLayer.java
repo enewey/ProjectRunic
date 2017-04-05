@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,7 +15,7 @@ import com.neweyjrpg.enums.Enums;
 
 public class MapLayer {
 	
-	
+	//TODO: Refactor this goddamn mess!!
 	private float fboScalar = 2.0f;
 	public float regionX;
 	public float regionY;

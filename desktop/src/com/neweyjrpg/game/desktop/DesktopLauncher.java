@@ -10,8 +10,8 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 				
 		config.title = "Game time y'all";
-		config.height = Constants.GAME_HEIGHT;
-		config.width = Constants.GAME_WIDTH;
+		config.height = Constants.GAME_HEIGHT*3;
+		config.width = Constants.GAME_WIDTH*3;
 		
 		new LwjglApplication(new NeweyJrpg(), config);
 	}
