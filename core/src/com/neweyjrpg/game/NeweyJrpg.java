@@ -34,7 +34,7 @@ import com.neweyjrpg.physics.BlockBody;
 
 public class NeweyJrpg extends ApplicationAdapter {
 	CharacterActor chara;
-	GameMap map;
+	String map;
 	GameScene scene;
 	BitmapFont font;
 	Camera camera;
@@ -43,7 +43,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 	@Override
 	public void create() {
 		camera = new PerspectiveCamera();
-		map = new GameMap("maps/map1.map");
+		map = "maps/map1.map";
 		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f,
 				new BlockBody(PhysicalState.MovingBlock,
 						new Rectangle(220f, 220f, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
@@ -56,10 +56,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(scene);
 		
 		
-		ArrayList<GhostActor> mapBlocks = map.getBlocks();
-		for (GhostActor block : mapBlocks) {
-			scene.addActor(block);
-		}
+		
 
 		addNPCs(scene, 6);
 		
@@ -149,7 +146,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setCollider(new BlockingCollider());
 			npc.addOnActionInteraction(new PopupMessageInteraction(scene, "", npc));
 			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT,
-					"This is a test message. We are going to write a ton of words here and see if the message interaction properly splits up a big long string with spaces appropriately. Let's try an ellipses... .... .... hello hello world!! test test! The quick brown fox jumps over the lazy dog. The slick drowned grok humps owner of crazy frog."));
+					"This is a test message. We are going to write a ton of words here and see if the message interaction properly splits up a big long string with spaces appropriately. Let's try an ellipses... .... .... hello hello world!! test test! The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog."));
 			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
 			s.addActor(npc);
 		}
@@ -183,7 +180,6 @@ public class NeweyJrpg extends ApplicationAdapter {
 
 	public void dispose() {
 		chara.dispose();
-		map.dispose();
 		font.dispose();
 		scene.dispose();
 	}

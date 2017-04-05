@@ -1,7 +1,11 @@
 package com.neweyjrpg.window;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.interaction.Interaction;
@@ -15,9 +19,20 @@ public class PopupWindow extends GameWindow {
 	
 	public PopupWindow(Interaction i, int x, int y, int width, int height, Vector2 source, float duration) {
 		super(i, x, y, width, height, Enums.Priority.Above);
+		this.setSkin();
 		this.source = source;
 		this.duration = duration;
 		this.elapsed = 0f;
+	}
+	
+	@Override
+	protected void setSkin() {
+		Pixmap pxm = new Pixmap(width, height, Format.RGBA8888);
+		pxm.setColor(Color.BLACK);
+		pxm.drawRectangle(x, y, width, height);
+		
+		this.windowSkin = new TextureRegion(new Texture(pxm));
+		pxm.dispose();
 	}
 	
 	public boolean isDone() {

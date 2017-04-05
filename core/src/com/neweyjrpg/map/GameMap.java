@@ -3,7 +3,11 @@ package com.neweyjrpg.map;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Matrix4;
 import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
@@ -32,7 +36,7 @@ public class GameMap {
 	
 	public GameMap(String mapFile) {
 		this.color = Color.WHITE;
-		mapData = Maps.parseMap(mapFile);			
+		mapData = Maps.parseMap(mapFile);
 	}
 	
 	public ArrayList<MapLayer> getMapData(){
@@ -80,13 +84,30 @@ public class GameMap {
 			if (layer.getPriority() != priority) { 
 				continue; 
 			}
-			for (int x=startX; x<endX; x++) {
-				MapTile tile = layer.getTile(x, yaxis);
-				if (!tile.isBlank()) {
+			
+			switch (priority) {
+			
+			case Below:
+			case Above:
+				if (yaxis == 0 && layer.getEntireLayer() != null) {
 					batch.setColor(this.color);
-					batch.draw(tile.getGraphic(), offsetX+(x*16), offsetY+(yaxis*16));
+//					Matrix4 matrix = batch.getProjectionMatrix();
+//					batch.setProjectionMatrix(layer.getProjectionMatrix());
+					batch.draw(layer.getEntireLayer(), offsetX, offsetY, layer.regionX, layer.regionY);
+					//batch.setProjectionMatrix(matrix);
 					batch.setColor(Color.WHITE);
 				}
+				break;
+			case Same:
+				for (int x=startX; x<endX; x++) {
+					MapTile tile = layer.getTile(x, yaxis);
+					if (!tile.isBlank()) {
+						batch.setColor(this.color);
+						batch.draw(tile.getGraphic(), offsetX+(x*Constants.TILE_WIDTH), offsetY+(yaxis*Constants.TILE_HEIGHT));
+						batch.setColor(Color.WHITE);
+					}
+				}
+				break;
 			}
 		}
 		

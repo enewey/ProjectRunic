@@ -25,15 +25,20 @@ public abstract class GameWindow {
 		this.height = height;
 		this.x = x;
 		this.y = y;
-		Pixmap pxm = new Pixmap(width, height, Format.RGB888);
-		pxm.setColor(new Color(0,0,0,1f));
-		pxm.fillRectangle(x, y, width, height);
-		
-		this.windowSkin = new TextureRegion(new Texture(pxm));
-		pxm.dispose();
 		
 		this.interaction = i;
 		this.priority = priority;
+	}
+	
+	protected void setSkin() {
+		Pixmap pxm = new Pixmap(width, height, Format.RGB888);
+		pxm.setColor(Color.BLACK);
+		pxm.fillRectangle(x, y, width, height);
+		pxm.setColor(Color.WHITE);
+		pxm.drawRectangle(x+1, y+1, width-2, height-2);
+		
+		this.windowSkin = new TextureRegion(new Texture(pxm));
+		pxm.dispose();
 	}
 	
 	public void draw(Batch batch, float deltaTime) {

@@ -20,6 +20,7 @@ public class MessageWindow extends GameWindow {
 	
 	public MessageWindow(Interaction i, int x, int y, int width, int height, String font, String str) {
 		super(i, x, y, width, height, Enums.Priority.Above);
+		this.setSkin();
 		this.message = new MessageSequence(str, letterDelay, idleTime);
 		this.font = Assets.loadFont(font);
 	}

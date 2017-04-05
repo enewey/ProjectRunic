@@ -1,5 +1,6 @@
 package com.neweyjrpg.game;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -11,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
+import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.InputState;
 import com.neweyjrpg.enums.Enums;
@@ -21,6 +23,7 @@ import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.InteractionDoneListener;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;
+import com.neweyjrpg.manager.MapManager;
 import com.neweyjrpg.manager.WindowManager;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
@@ -52,35 +55,47 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	public ActorManager getActorManager() { return this.actorManager; }
 	private WindowManager windowManager;
 	public WindowManager getWindowManager() { return this.windowManager; }
+	private MapManager mapManager;
+	public MapManager getMapManager() { return this.mapManager; }
 	private LinkedList<Manager> managers;
 
 	private InputState input; //Used to relay inputs to the actor
 	
 	private LinkedList<Interaction> interactionQueue;
 	
-	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, GameMap map) {
+	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, String mapFile) {
 		this.stateTime = 0f;
 		
 		this.batch = batch;
 		this.viewport = viewport;
 		
-		this.map = map;
-		this.scroll = new Vector2(0,0);
-		//Max scroll dictates how far the camera can scroll, so the edges align to the edge of the GameMap 
-		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
-		this.maxScrollY = -((map.getDimY() * Constants.TILE_HEIGHT)-Constants.GAME_HEIGHT);
+		this.mapManager = new MapManager(mapFile);
+		this.map = mapManager.getMap();
 		
 		this.actorManager = new ActorManager(playerActor, map.getDimX()*Constants.TILE_WIDTH, map.getDimY()*Constants.TILE_HEIGHT, this, this);
 		this.windowManager = new WindowManager(true);
 		
 		//Very specific order.
 		this.managers = new LinkedList<Manager>();
+		managers.addLast(mapManager);
 		managers.addLast(actorManager);
 		managers.addLast(windowManager);
+		
+		this.scroll = new Vector2(0,0);
+		//Max scroll dictates how far the camera can scroll, so the edges align to the edge of the GameMap 
+		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
+		this.maxScrollY = -((map.getDimY() * Constants.TILE_HEIGHT)-Constants.GAME_HEIGHT);
+		
+		
 		
 		this.input = new InputState();
 		
 		this.interactionQueue = new LinkedList<Interaction>();
+		
+		ArrayList<GhostActor> mapBlocks = map.getBlocks();
+		for (GhostActor block : mapBlocks) {
+			this.addActor(block);
+		}
 	}
 	
 	public void addActor(GameActor actor) {
@@ -110,7 +125,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 					m.draw(stateTime, yaxis, scroll.x, scroll.y, batch, p);
 				}
 				
-				map.draw(batch, yaxis, stateTime, scroll.x, scroll.y, p);
+//				map.draw(batch, yaxis, stateTime, scroll.x, scroll.y, p);
 			}
 		}
 	}

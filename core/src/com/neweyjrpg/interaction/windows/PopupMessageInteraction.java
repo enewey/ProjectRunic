@@ -23,10 +23,12 @@ public class PopupMessageInteraction extends WindowInteraction {
 	@Override
 	public Interaction process(Manager m) {
 		super.process(m);
+		float x = Math.min(Math.max(source.getX() + scroll.x, 1), Constants.GAME_WIDTH-1);
+		float y = Math.min(Math.max(source.getY() + scroll.y, 1), Constants.GAME_HEIGHT-1);
+		Vector2 v = new Vector2(x,y);
+		
 		((WindowManager)m).addWindow(
-				new PopupWindow(this, 0, 0, Constants.GAME_WIDTH, 80, 
-						new Vector2(source.getX(), source.getY()).add(scroll), 
-						Constants.POPUP_DURATION));
+				new PopupWindow(this, 0, 0, Constants.GAME_WIDTH, 80, v, Constants.POPUP_DURATION));
 		
 		return this;
 	}

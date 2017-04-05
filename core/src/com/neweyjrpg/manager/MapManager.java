@@ -11,6 +11,7 @@ import com.neweyjrpg.models.DirectionalInput;
 public class MapManager extends Manager implements IDrawsGraphics {
 
 	private GameMap map;
+	public GameMap getMap() { return this.map; }
 	
 	public MapManager(String file) {
 		this.map = new GameMap(file);
