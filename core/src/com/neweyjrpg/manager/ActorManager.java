@@ -2,14 +2,19 @@ package com.neweyjrpg.manager;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.actor.CharacterActor;
+import com.neweyjrpg.actor.EffectActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.actor.GhostActor;
+import com.neweyjrpg.actor.PlayerActor;
+import com.neweyjrpg.collider.OpenCollider;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
+import com.neweyjrpg.graphic.AttackAnimation;
 import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interaction.MovementInteraction;
 import com.neweyjrpg.interfaces.IDrawsGraphics;
@@ -17,6 +22,7 @@ import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
+import com.neweyjrpg.physics.BlockBody;
 import com.neweyjrpg.util.ClosestPosition;
 import com.neweyjrpg.util.Conversion;
 
@@ -26,9 +32,9 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 	private Color color;
 	private IHandlesInteraction handler;
 	
-	private CharacterActor player;
-	public CharacterActor getPlayer() { return this.player; }
-	public void setPlayer(CharacterActor player) { this.player = player; }
+	private PlayerActor player;
+	public PlayerActor getPlayer() { return this.player; }
+	public void setPlayer(PlayerActor player) { this.player = player; }
 	public Vector2 getPlayerPos() { return new Vector2(player.getX(), player.getY()); }
 	
 	private Array<GameActor> actors; //All actors in this scene
@@ -64,12 +70,20 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 		return true;
 	}
 	
+	private void cleanupActors() {
+		for (int i=0; i<actors.size; i++) {
+			if (actors.get(i).isDisposed()) {
+				this.actors.removeIndex(i);
+			}
+		}
+	}
+	
 	@Override
 	public void massColorLerp(float r, float g, float b, float a, float factor) {
 		this.color.lerp(r,g,b,a, factor);
 	}
 	
-	public ActorManager(CharacterActor player, float boundX, float boundY, IProducesInputs controller, IHandlesInteraction handler) {
+	public ActorManager(PlayerActor player, float boundX, float boundY, IProducesInputs controller, IHandlesInteraction handler) {
 		this.handler = handler;
 		this.player = player;
 		this.boundX = boundX;
@@ -87,9 +101,26 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 		case 1:
 		case 2:
 		case 3:
+			return playerAttack();
 		default:
 			return false;
 		}
+	}
+	
+	private boolean playerAttack() {
+//		if (!player.isAttacking()) {
+//			player.setAttacking(true);
+			EffectActor effect = new EffectActor(player.getX(), player.getY(), 
+					new BlockBody(Enums.PhysicalState.Open, new Rectangle(player.getX(), player.getY(), 1, 1)), 
+					Enums.Priority.Above);
+			effect.setCollider(new OpenCollider());
+			effect.setName("ATTACK_EFFECT");
+			effect.setAnimation(new AttackAnimation());
+			effect.setDir(player.getDir());
+			this.addActor(effect);
+			return true;
+//		}
+//		return false;
 	}
 	
 	@Override
@@ -100,6 +131,7 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 	@Override
 	public void draw(float deltaTime, int yaxis, float offsetX, float offsetY, Batch batch, Enums.Priority priority) {
 		//Draw all actors in the scene at their given position, taking into account the camera scrolling
+		cleanupActors();
 		actors.sort();
 		for (GameActor actor : actors) {
 			if (actor.getPriority() != priority) { 

@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.actor.GhostActor;
+import com.neweyjrpg.actor.PlayerActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.InputState;
 import com.neweyjrpg.enums.Enums;
@@ -42,8 +42,8 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	public Vector2 getScroll() { return scroll; }
 	private float maxScrollX, maxScrollY; //How far the camera is allowed to scroll = (mapWidth-screenWidth, mapHeight-screenHeight)
 	
-	private Viewport viewport; //Used for drawing to the screen
-	public Viewport getViewport() {	return viewport; }
+	private NeweyViewport viewport; //Used for drawing to the screen
+	public NeweyViewport getViewport() { return viewport; }
 
 	private Batch batch; //Used for drawing sprites
 	public Batch getBatch() { return batch; }
@@ -64,7 +64,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	
 	private LinkedList<Interaction> interactionQueue;
 	
-	public GameScene(Viewport viewport, Batch batch, CharacterActor playerActor, String mapFile) {
+	public GameScene(NeweyViewport viewport, Batch batch, PlayerActor playerActor, String mapFile) {
 		this.stateTime = 0f;
 		
 		this.batch = batch;
@@ -102,7 +102,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		actorManager.addActor(actor);
 	}
 	
-	public void setPlayer(CharacterActor actor) {
+	public void setPlayer(PlayerActor actor) {
 //		actor.setController(this);
 		this.actorManager.setPlayer(actor);
 	}

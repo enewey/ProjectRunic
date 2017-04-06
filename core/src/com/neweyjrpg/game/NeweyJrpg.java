@@ -2,16 +2,13 @@ package com.neweyjrpg.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.NPCActor;
@@ -30,16 +27,14 @@ import com.neweyjrpg.interaction.windows.PopupMessageInteraction;
 import com.neweyjrpg.physics.BlockBody;
 
 public class NeweyJrpg extends ApplicationAdapter {
-	CharacterActor chara;
+	PlayerActor chara;
 	String map;
 	GameScene scene;
 	BitmapFont font;
-	Camera camera;
 	float focusX, focusY;
 
 	@Override
 	public void create() {
-		camera = new PerspectiveCamera();
 		map = "maps/map1.map";
 		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f,
 				new BlockBody(PhysicalState.MovingBlock,
@@ -47,8 +42,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 				Enums.Priority.Same);
 		chara.setName("PLAYER");
 		chara.setCollider(new BlockingCollider());
-		
-		scene = new GameScene(new FitViewport(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, camera), new SpriteBatch(),
+		scene = new GameScene(new NeweyViewport(Constants.GAME_WIDTH, Constants.GAME_HEIGHT), new SpriteBatch(),
 				chara, map);
 		Gdx.input.setInputProcessor(scene);
 		
@@ -166,7 +160,14 @@ public class NeweyJrpg extends ApplicationAdapter {
 
 	@Override
 	public void resize(int width, int height) {
-		scene.getViewport().update(width, height);
+		
+		int modw = (width % Constants.GAME_WIDTH);
+		int w = width - modw;
+		int modh = (height % Constants.GAME_HEIGHT);
+		int h = height - modh;
+		scene.getViewport().update(w, h, width, height);
+		scene.getViewport().setScreenPosition(modw, modh);
+		//scene.getViewport().update(w, h, true);
 	}
 
 	public void dispose() {

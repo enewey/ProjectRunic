@@ -26,6 +26,11 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public BlockBody getPhysicsModel() {	return this.phys; }
 	protected float oldX, oldY;
 	
+	private boolean disposed;
+	public boolean isDisposed() {
+		return this.disposed;
+	}
+	
 	protected float physPaddingX, physPaddingY; //Where the physics model sits relative to the sprite/animation
 	
 	//Object that handles collision events
@@ -283,6 +288,8 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	public abstract Vector2 getSpriteSize();
-	public abstract void dispose();
+	public void dispose() {
+		this.disposed = true;
+	}
 	public abstract IProducesInputs getController();
 }

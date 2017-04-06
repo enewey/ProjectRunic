@@ -77,6 +77,7 @@ public class MassiveActor extends GameActor {
 				graphics[i][j].getTexture().dispose();
 			}
 		}
+		super.dispose();
 	}
 
 	@Override

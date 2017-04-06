@@ -113,5 +113,6 @@ public class CharacterActor extends GameActor {
 
 	public void dispose() {
 		this.animation.dispose();
+		super.dispose();
 	}
 }

@@ -52,6 +52,7 @@ public class StaticActor extends GameActor {
 	
 	public void dispose() {
 		this.texture.getTexture().dispose();
+		super.dispose();
 	}
 
 	@Override

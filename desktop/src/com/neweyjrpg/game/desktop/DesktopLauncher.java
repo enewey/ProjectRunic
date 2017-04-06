@@ -13,6 +13,7 @@ public class DesktopLauncher {
 		config.height = Constants.GAME_HEIGHT*3;
 		config.width = Constants.GAME_WIDTH*3;
 		
+		
 		new LwjglApplication(new NeweyJrpg(), config);
 	}
 }

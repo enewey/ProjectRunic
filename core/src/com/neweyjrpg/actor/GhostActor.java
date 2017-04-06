@@ -32,7 +32,7 @@ public class GhostActor extends GameActor {
 
 	@Override
 	public void dispose() {
-		
+		super.dispose();
 	}
 
 	@Override
