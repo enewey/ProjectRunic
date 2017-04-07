@@ -1,13 +1,13 @@
 package com.neweyjrpg.interaction;
 
-import com.neweyjrpg.game.GameScene;
+import com.neweyjrpg.interfaces.InteractionCompleteListener;
 import com.neweyjrpg.manager.Manager;
 
 public abstract class Interaction {
-	private GameScene scene;
+	private InteractionCompleteListener scene;
 	protected boolean started;
 	protected boolean completed;
-	public Interaction(GameScene scene) {
+	public Interaction(InteractionCompleteListener scene) {
 		this.scene = scene;
 		this.init();
 	} 
@@ -24,7 +24,9 @@ public abstract class Interaction {
 	public boolean isCompleted() { return this.completed; }
 	public void complete() {
 		this.completed = true;
-		this.scene.onInteractionComplete(this);
+		if (scene != null) {
+			this.scene.onInteractionComplete(this);
+		}
 	}
 	
 }

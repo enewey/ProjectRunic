@@ -1,5 +1,6 @@
 package com.neweyjrpg.actor;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.enums.Enums.Priority;
 import com.neweyjrpg.interfaces.IProducesInputs;
@@ -38,6 +39,11 @@ public class GhostActor extends GameActor {
 	@Override
 	public IProducesInputs getController() {
 		return null;
+	}
+
+	@Override
+	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY) {
+		
 	}
 
 	

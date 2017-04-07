@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.actor.PlayerActor;
@@ -21,6 +20,7 @@ import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interaction.SceneInteraction;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
+import com.neweyjrpg.interfaces.InteractionCompleteListener;
 import com.neweyjrpg.interfaces.InteractionDoneListener;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;
@@ -30,7 +30,8 @@ import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
-public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction, InteractionDoneListener {
+public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction, 
+														InteractionDoneListener, InteractionCompleteListener {
 	
 	private float stateTime;
 	public void incrementStateTime(float deltaTime) {

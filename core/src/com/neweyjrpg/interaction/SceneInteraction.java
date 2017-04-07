@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.neweyjrpg.enums.Enums.SceneAction;
 import com.neweyjrpg.game.GameScene;
 import com.neweyjrpg.interfaces.IDrawsGraphics;
+import com.neweyjrpg.interfaces.InteractionCompleteListener;
 import com.neweyjrpg.manager.Manager;
 
 public class SceneInteraction extends Interaction {
@@ -17,7 +18,7 @@ public class SceneInteraction extends Interaction {
 	private float elapsed;
 	private float delta;
 	
-	public SceneInteraction(GameScene scene, SceneAction action, float duration, boolean isBlocking, Object ...args) {
+	public SceneInteraction(InteractionCompleteListener scene, SceneAction action, float duration, boolean isBlocking, Object ...args) {
 		super(scene);
 		this.action = action;
 		this.args = args;

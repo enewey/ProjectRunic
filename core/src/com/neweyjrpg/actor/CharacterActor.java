@@ -45,20 +45,11 @@ public class CharacterActor extends GameActor {
 		this.physPaddingY = (Constants.CHARA_HEIGHT / 16f);
 	}
 
-	// Methods
 	@Override
-	public void draw(Batch batch, float deltaTime) {
-		super.draw(batch, deltaTime);
+	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY) {
 		if (!isMoving)
 			deltaTime = Constants.IDLE_FRAME * Constants.FRAME_DURATION;
-		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), this.getX(), this.getY());
-	}
-
-	public void draw(Batch batch, float deltaTime, float x, float y) {
-		super.draw(batch, deltaTime, x, y);
-		if (!isMoving)
-			deltaTime = Constants.IDLE_FRAME * Constants.FRAME_DURATION;
-		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), x, y);
+		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), this.getX()+offsetX, this.getY()+offsetY);
 	}
 
 	@Override

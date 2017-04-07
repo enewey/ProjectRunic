@@ -40,8 +40,9 @@ public class MassiveActor extends GameActor {
 	}
 
 	@Override
-	public void draw(Batch batch, float deltaTime, float x, float y) {
-		super.draw(batch, deltaTime, x, y);
+	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY) {
+		float x = this.getX() + offsetX;
+		float y = this.getY() + offsetY;
 		for(int i=0; i < graphics.length; i++) {
 			for(int j=0; j < graphics[i].length; j++) {
 				float dx = j * gWidth;

@@ -2,30 +2,23 @@ package com.neweyjrpg.interaction;
 
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.actor.CharacterActor;
-import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.game.GameScene;
+import com.neweyjrpg.interfaces.InteractionCompleteListener;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;
 import com.neweyjrpg.util.Conversion;
 
-public class MovementInteraction extends Interaction {
-	
-	private String targetName; //name of actor this movement interaction should target
-	//public String getTarget() { return this.targetName; }
-	
-	private GameActor target;
-	public GameActor getTarget() { return this.target; }
-	
+public class MovementInteraction extends ActorInteraction {
+		
 	private Enums.Move type;
 	public Enums.Move getType() {
 		return this.type;
 	}
 	private Object[] extra; // extra data for processing move type... could be a Vector2, Dir, a secondary target, etc..
 
-	public MovementInteraction(GameScene scene, String target, Enums.Move type, Object... extra ) {
-		super(scene);
-		this.targetName = target;
+	public MovementInteraction(InteractionCompleteListener scene, String target, Enums.Move type, Object... extra ) {
+		super(scene, target);
 		this.extra = extra;
 		this.type = type;
 	}

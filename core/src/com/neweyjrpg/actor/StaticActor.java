@@ -31,8 +31,7 @@ public class StaticActor extends GameActor {
 	@Override
 	public void draw(Batch batch, float deltaTime, float x, float y) {
 		if (this.texture == null) return;
-		super.draw(batch, deltaTime, x, y);
-		batch.draw(texture, x, y);
+		batch.draw(texture, this.getX() + x, this.getY() + y);
 	}
 
 //	@Override

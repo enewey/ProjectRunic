@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.PlayerActor;

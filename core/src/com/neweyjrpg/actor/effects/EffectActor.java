@@ -1,7 +1,8 @@
-package com.neweyjrpg.actor;
+package com.neweyjrpg.actor.effects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.enums.Enums.Priority;
 import com.neweyjrpg.graphic.EffectAnimation;
@@ -14,17 +15,17 @@ public class EffectActor extends GameActor {
 	public EffectAnimation getAnimation() { return animation; }
 	public void setAnimation(EffectAnimation animation) { this.animation = animation; }
 	
-	private float duration;
-	private float startTime;
+	protected float duration;
+	protected float startTime;
 	
 	// The direction this character is facing
 	private Dir dir;
 	public Dir getDir() { return dir; }
 	public void setDir(Dir dir) { this.dir = dir; }
 	
-	public EffectActor(float x, float y, BlockBody phys, Priority priority) {
+	public EffectActor(float x, float y, BlockBody phys, Priority priority, float speed) {
 		super(x, y, phys, priority);
-		this.duration = 0.5f;
+		this.duration = 0.5f / speed;
 		this.startTime = -1;
 	}
 	
@@ -32,8 +33,6 @@ public class EffectActor extends GameActor {
 	public void draw(Batch batch, float deltaTime, float x, float y) {
 		if (startTime < 0) { this.startTime = deltaTime; }
 		super.draw(batch, deltaTime);
-		//this.setColor(Color.WHITE);
-		//batch.draw(this.animation.getTest(), x, y);
 		batch.draw(this.animation.getFrame(deltaTime - startTime, this.dir, true), x, y);
 	}
 	

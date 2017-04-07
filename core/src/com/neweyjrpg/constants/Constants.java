@@ -6,6 +6,10 @@ public class Constants {
 	public final static int CHARA_HEIGHT = 32;
 	public final static int CHARA_MARGIN = 0;
 	
+	public final static int EFFECT_WIDTH = 32;
+	public final static int EFFECT_HEIGHT = 32;
+	public final static int EFFECT_FRAMES = 4;
+	
 	public final static int TILE_WIDTH = 16;
 	public final static int TILE_HEIGHT = 16;
 	public final static int TILE_MARGIN = 1;
