@@ -1,12 +1,13 @@
 package com.neweyjrpg.physics;
 
 import com.badlogic.gdx.math.Vector2;
+import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.util.Line;
 
 public class LineBody extends PhysicsBody {
 
 	private Line line;
-	public Line getBounds() {
+	public Line getLine() {
 		return this.line;
 	}
 	
@@ -21,6 +22,16 @@ public class LineBody extends PhysicsBody {
 	}
 	public float getHeight() {
 		return Math.abs(this.line.a.y - this.line.b.y);
+	}
+	
+	public LineBody(PhysicalState type, float ax, float ay, float bx, float by) {
+		this.type = type;
+		this.line = new Line(new Vector2(ax,ay), new Vector2(bx,by));
+	}
+	
+	public LineBody(PhysicalState type, Vector2 a, Vector2 b) {
+		this.type = type;
+		this.line = new Line(a,b);
 	}
 	
 	/**
@@ -46,7 +57,7 @@ public class LineBody extends PhysicsBody {
 		if (other instanceof BlockBody) {
 			return ((BlockBody)other).lineDoesIntersect(this.line.a, this.line.b);
 		} else if (other instanceof LineBody) {
-			return ((LineBody)other).getBounds().overlaps(this.line);
+			return ((LineBody)other).getLine().overlaps(this.line);
 		} else {
 			return false;
 		}

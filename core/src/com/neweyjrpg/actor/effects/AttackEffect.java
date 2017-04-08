@@ -10,8 +10,10 @@ import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.collider.AttackCollider;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.AttackAnimation;
 import com.neweyjrpg.physics.BlockBody;
+import com.neweyjrpg.physics.LineBody;
 import com.neweyjrpg.util.Line;
 
 public class AttackEffect extends EffectActor {
@@ -20,7 +22,6 @@ public class AttackEffect extends EffectActor {
 	protected Vector2 offset;
 	public GameActor getTarget() { return this.target; } 
 	protected LinkedList<Vector2> hitboxFrames;
-	protected Line hitbox; // length of two
 	
 	public AttackEffect(CharacterActor target, float speed) {
 		super(target.getX(), target.getY(), 
@@ -34,10 +35,11 @@ public class AttackEffect extends EffectActor {
 		this.setDir(target.getDir());
 		calcOffset();
 		
-		this.hitboxFrames = new LinkedList<Vector2>();
+		this.phys = new LineBody(PhysicalState.Open,
+								 new Vector2(target.getX(), target.getY()),
+								 new Vector2(target.getX(), target.getY() - 24f));
 		
-		this.hitboxFrames.add(new Vector2(target.getX(), target.getY()));
-		this.hitboxFrames.add(new Vector2(target.getX(), target.getY() - 24f)); // lets say its length 24 for now
+		this.hitboxFrames = new LinkedList<Vector2>();
 		
 		this.hitboxFrames.add(new Vector2(target.getX(), target.getY()));
 		this.hitboxFrames.add(new Vector2(target.getX() - 12f, target.getY() - 20.78f));
@@ -76,11 +78,8 @@ public class AttackEffect extends EffectActor {
 	
 	private void advanceHitbox() {
 		if (!this.hitboxFrames.isEmpty()) {
-			if (this.hitbox == null) {
-				this.hitbox = new Line();
-			}
-			this.hitbox.a = this.hitboxFrames.removeFirst();
-			this.hitbox.b = this.hitboxFrames.removeFirst();
+			((LineBody)this.phys).getLine().a = this.hitboxFrames.removeFirst();
+			((LineBody)this.phys).getLine().b = this.hitboxFrames.removeFirst();
 		}
 	}
 }

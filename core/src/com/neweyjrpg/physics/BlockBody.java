@@ -47,7 +47,7 @@ public class BlockBody extends PhysicsBody {
 		}
 		else if (other instanceof LineBody) {
 			LineBody line = (LineBody)other;
-			return this.lineDoesIntersect(line.getBounds().a, line.getBounds().b);
+			return this.lineDoesIntersect(line.getLine().a, line.getLine().b);
 		}
 		else {
 			return false;

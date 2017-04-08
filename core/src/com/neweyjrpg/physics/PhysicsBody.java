@@ -8,7 +8,7 @@ public abstract class PhysicsBody {
 	public abstract boolean overlaps(PhysicsBody other);
 	public abstract Vector2 getCenter();
 	
-	private PhysicalState type;
+	protected PhysicalState type;
 	public PhysicalState getType() {
 		return type;
 	}

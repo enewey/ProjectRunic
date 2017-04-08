@@ -125,7 +125,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 					Enums.Priority.Same);
 			npc.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(),
 					(float) Math.min(Math.random() + 0.25, 1.0)));
-			npc.setController(new BadAIController());
+			//npc.setController(new BadAIController());
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
 			npc.addOnActionInteraction(new PopupMessageInteraction(scene, "", npc));
