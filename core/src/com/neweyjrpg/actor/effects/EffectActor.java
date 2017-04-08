@@ -6,10 +6,11 @@ import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.enums.Enums.Priority;
 import com.neweyjrpg.graphic.EffectAnimation;
+import com.neweyjrpg.interfaces.IHasGraphics;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.physics.BlockBody;
 
-public class EffectActor extends GameActor {
+public class EffectActor extends GameActor implements IHasGraphics {
 
 	private EffectAnimation animation;
 	public EffectAnimation getAnimation() { return animation; }
@@ -38,15 +39,14 @@ public class EffectActor extends GameActor {
 	
 	@Override
 	public void act(float delta) {
-		this.duration-=delta;
 		if (this.duration <= 0) {
 			this.dispose();
 		}
+		this.duration-=delta;
 	}
 
 	@Override
-	public Vector2 getSpriteSize() {
-		//return new Vector2(this.animation.getTest().getRegionWidth(), this.animation.getTest().getRegionHeight());
+	public Vector2 getGraphicSize() {
 		return new Vector2(this.animation.getFrame(0, getDir(), false).getRegionWidth(),
 				this.animation.getFrame(0, getDir(), false).getRegionHeight());
 	}
@@ -61,5 +61,4 @@ public class EffectActor extends GameActor {
 	public IProducesInputs getController() {
 		return null;
 	}
-
 }

@@ -8,20 +8,20 @@ import com.neweyjrpg.interfaces.IHandlesCollision;
 public class BlockingCollider implements IHandlesCollision<GameActor>{
 
 	@Override
-	public boolean handleCollision(GameActor actor, GameActor subject) {
+	public boolean checkCollision(GameActor actor, GameActor subject) {
 		boolean ret = false;
-		if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
+		if (actor.getPhysicsBody().overlaps(subject.getPhysicsBody())){
 			float currX, currY, oldX, oldY, subX, subY;
 			oldX = actor.getOldPosition().x;
 			oldY = actor.getOldPosition().y;
-			currX = actor.getPhysicsModel().getBounds().x;
-			currY = actor.getPhysicsModel().getBounds().y;
-			subX = subject.getPhysicsModel().getBounds().x;
-			subY = subject.getPhysicsModel().getBounds().y;
+			currX = actor.getPhysicsBody().getX();
+			currY = actor.getPhysicsBody().getY();
+			subX = subject.getPhysicsBody().getX();
+			subY = subject.getPhysicsBody().getY();
 			
 			ret = true;
 			
-			switch (subject.getPhysicsModel().getType()) {
+			switch (subject.getPhysicsBody().getType()) {
 			case Open:
 				break;
 			case Custom:
@@ -34,8 +34,8 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 				float moveY = currY - oldY;
 				actor.setPhysicalPosition(oldX, oldY);
 				
-				Vector2 ac = actor.getPhysicsModel().getCenter();
-				Vector2 sc = subject.getPhysicsModel().getCenter();
+				Vector2 ac = actor.getPhysicsBody().getCenter();
+				Vector2 sc = subject.getPhysicsBody().getCenter();
 				float diffX = sc.x - ac.x;
 				float diffY = sc.y - ac.y;
 				if (Math.abs(diffX) > Math.abs(diffY)) 
@@ -56,9 +56,9 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 					if (interpolateY(actor, subject, currX, currY)) break;
 				}
 				
-				if (actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())) {
+				if (actor.getPhysicsBody().overlaps(subject.getPhysicsBody())) {
 					actor.setPhysicalPosition(oldX, oldY);
-					Vector2 moveCheck = actor.getPhysicsModel().moveOff(subject.getPhysicsModel());
+					Vector2 moveCheck = actor.getPhysicsBody().moveOff(subject.getPhysicsBody());
 					if (moveCheck != null) {
 						actor.movePhysicalPosition(moveCheck.x, moveCheck.y);
 					}
@@ -75,7 +75,7 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 		float interpY = currY;
 		
 		while (Math.abs(interpY - oldY) > 0.01f){
-			if (!actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())){
+			if (!actor.getPhysicsBody().overlaps(subject.getPhysicsBody())){
 				return true;
 			}
 			interpY = (interpY+oldY) / 2f;
@@ -83,7 +83,7 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 			
 		}
 		actor.setPhysicalPosition(currX, oldY);
-		return !actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds());
+		return !actor.getPhysicsBody().overlaps(subject.getPhysicsBody());
 	}
 	
 	private boolean interpolateX(GameActor actor, GameActor subject, float currX, float currY) {
@@ -91,14 +91,14 @@ public class BlockingCollider implements IHandlesCollision<GameActor>{
 		float interpX = currX;
 		
 		while (Math.abs(interpX - oldX) > 0.01f){
-			if (!actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds())) {
+			if (!actor.getPhysicsBody().overlaps(subject.getPhysicsBody())) {
 				return true;
 			}
 			interpX = (interpX+oldX) / 2f;
 			actor.setPhysicalPosition(interpX, currY);
 		}
 		actor.setPhysicalPosition(oldX, currY);
-		return !actor.getPhysicsModel().getBounds().overlaps(subject.getPhysicsModel().getBounds());
+		return !actor.getPhysicsBody().overlaps(subject.getPhysicsBody());
 	}
 
 }

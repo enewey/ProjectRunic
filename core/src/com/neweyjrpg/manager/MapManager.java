@@ -3,12 +3,12 @@ package com.neweyjrpg.manager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.neweyjrpg.enums.Enums.Priority;
 import com.neweyjrpg.interaction.Interaction;
-import com.neweyjrpg.interfaces.IDrawsGraphics;
+import com.neweyjrpg.interfaces.IManagesGraphics;
 import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
-public class MapManager extends Manager implements IDrawsGraphics {
+public class MapManager extends Manager implements IManagesGraphics {
 
 	private GameMap map;
 	public GameMap getMap() { return this.map; }

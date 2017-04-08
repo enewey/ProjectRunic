@@ -1,7 +1,6 @@
 package com.neweyjrpg.actor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.enums.Enums.Priority;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.physics.BlockBody;
@@ -24,11 +23,6 @@ public class GhostActor extends GameActor {
 	@Override
 	public void moveDistance(float x, float y, float speedScalar) {
 		this.move(x*speedScalar, y*speedScalar);
-	}
-
-	@Override
-	public Vector2 getSpriteSize() {
-		return new Vector2(0,0);
 	}
 
 	@Override

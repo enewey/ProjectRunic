@@ -18,10 +18,10 @@ public class ClosestPosition implements Comparator<GameActor> {
 	
 	@Override
 	public int compare(GameActor a1, GameActor a2) {
-		float dist1 = dist(a1.getPhysicsModel().getBounds().x, a1.getPhysicsModel().getBounds().y,
-				anchor.getPhysicsModel().getBounds().x, anchor.getPhysicsModel().getBounds().y);
-		float dist2 = dist(a2.getPhysicsModel().getBounds().x, a2.getPhysicsModel().getBounds().y,
-				anchor.getPhysicsModel().getBounds().x, anchor.getPhysicsModel().getBounds().y);
+		float dist1 = dist(a1.getPhysicsBody().getX(), a1.getPhysicsBody().getY(),
+				anchor.getPhysicsBody().getX(), anchor.getPhysicsBody().getY());
+		float dist2 = dist(a2.getPhysicsBody().getX(), a2.getPhysicsBody().getY(),
+				anchor.getPhysicsBody().getX(), anchor.getPhysicsBody().getY());
 		
 		
 		return (int)((dist1*1000f) - (dist2*1000f));

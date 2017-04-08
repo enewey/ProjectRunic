@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
-import com.neweyjrpg.actor.GhostActor;
 import com.neweyjrpg.actor.PlayerActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
@@ -14,15 +13,16 @@ import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.interaction.AttackInteraction;
 import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interaction.MovementInteraction;
-import com.neweyjrpg.interfaces.IDrawsGraphics;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
+import com.neweyjrpg.interfaces.IHasGraphics;
+import com.neweyjrpg.interfaces.IManagesGraphics;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 import com.neweyjrpg.util.ClosestPosition;
 import com.neweyjrpg.util.Conversion;
 
-public class ActorManager extends Manager implements IDrawsGraphics {
+public class ActorManager extends Manager implements IManagesGraphics {
 
 	private float boundX, boundY;
 	private Color color;
@@ -126,19 +126,19 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 			if (actor.getPriority() != priority) { 
 				continue; 
 			}
-			if (actor instanceof GhostActor) {
-				continue;
+			if (actor instanceof IHasGraphics) {
+				if (actor.getPhysicsBody().getY() >= yaxis * Constants.TILE_HEIGHT && 
+					actor.getPhysicsBody().getY() < (yaxis * Constants.TILE_HEIGHT) + Constants.TILE_HEIGHT ) {
+					Vector2 actorSize = ((IHasGraphics)actor).getGraphicSize();
+					if (actor.getX() + offsetX + actorSize.x < 0 || actor.getX() + offsetX > Constants.GAME_WIDTH + actorSize.x
+					 || actor.getY() + offsetY + actorSize.y < 0 || actor.getY() + offsetY > Constants.GAME_HEIGHT + actorSize.y)
+						continue;
+					batch.setColor(actor.getColor().cpy().mul(this.color));
+					actor.draw(batch, deltaTime, offsetX, offsetY);
+					batch.setColor(Color.WHITE);
+				}
 			}
-			if (actor.getPhysicsModel().getBounds().y >= yaxis * Constants.TILE_HEIGHT && 
-				actor.getPhysicsModel().getBounds().y < (yaxis * Constants.TILE_HEIGHT) + Constants.TILE_HEIGHT ) {
-				Vector2 actorSize = actor.getSpriteSize();
-				if (actor.getX() + offsetX + actorSize.x < 0 || actor.getX() + offsetX > Constants.GAME_WIDTH + actorSize.x
-				 || actor.getY() + offsetY + actorSize.y < 0 || actor.getY() + offsetY > Constants.GAME_HEIGHT + actorSize.y)
-					continue;
-				batch.setColor(actor.getColor().cpy().mul(this.color));
-				actor.draw(batch, deltaTime, offsetX, offsetY);
-				batch.setColor(Color.WHITE);
-			}
+			
 		}
 	}
 
@@ -159,7 +159,7 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 			
 			actor.act(deltaTime);
 			
-			if (actor.getPhysicsModel().getType() != PhysicalState.StaticBlock) {
+			if (actor.getPhysicsBody().getType() != PhysicalState.StaticBlock) {
 				this.detectCollision(actor, false); //Detect collision after each individual action; this is key
 			}
 		}
@@ -174,16 +174,7 @@ public class ActorManager extends Manager implements IDrawsGraphics {
 	 * 			NOTE: Static Actors should not be specified as the parameter for this method.
 	 */
 	private void detectCollision(GameActor actor, boolean doInteract) {
-		if (actor.getPhysicsModel().getBounds().x < 0)
-			actor.setPhysicalPosition(0, actor.getPhysicsModel().getBounds().y);
-		else if (actor.getPhysicsModel().getBounds().x > boundX - actor.getPhysicsModel().getBounds().width)
-			actor.setPhysicalPosition(boundX - actor.getPhysicsModel().getBounds().width, actor.getPhysicsModel().getBounds().y);
-		
-		if (actor.getPhysicsModel().getBounds().y < 0)
-			actor.setPhysicalPosition(actor.getPhysicsModel().getBounds().x, 0);
-		else if (actor.getPhysicsModel().getBounds().y > boundY - actor.getPhysicsModel().getBounds().height)
-			actor.setPhysicalPosition(actor.getPhysicsModel().getBounds().x, boundY - actor.getPhysicsModel().getBounds().height);
-		
+		actor.keepInBounds(boundX, boundY);
 		
 		Array<GameActor> sortedActors = new Array<GameActor>(actors);
 		sortedActors.sort(new ClosestPosition(actor));

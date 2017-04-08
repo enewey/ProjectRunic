@@ -2,8 +2,7 @@ package com.neweyjrpg.interaction;
 
 import com.badlogic.gdx.Gdx;
 import com.neweyjrpg.enums.Enums.SceneAction;
-import com.neweyjrpg.game.GameScene;
-import com.neweyjrpg.interfaces.IDrawsGraphics;
+import com.neweyjrpg.interfaces.IManagesGraphics;
 import com.neweyjrpg.interfaces.InteractionCompleteListener;
 import com.neweyjrpg.manager.Manager;
 
@@ -46,8 +45,8 @@ public class SceneInteraction extends Interaction {
 		switch(action) {
 		case ChangeColor:
 		//include all graphics drawing cases here
-			if (IDrawsGraphics.class.isAssignableFrom(m.getClass())) {
-				IDrawsGraphics g = (IDrawsGraphics)m;
+			if (IManagesGraphics.class.isAssignableFrom(m.getClass())) {
+				IManagesGraphics g = (IManagesGraphics)m;
 				return this.processDraw(g);
 			}
 			break;
@@ -58,7 +57,7 @@ public class SceneInteraction extends Interaction {
 		return this;
 	}
 	
-	private Interaction processDraw(IDrawsGraphics g) {
+	private Interaction processDraw(IManagesGraphics g) {
 		switch(action) {
 		case ChangeColor:
 			g.massColorLerp((Float)args[0], (Float)args[1], (Float)args[2], (Float)args[3], 

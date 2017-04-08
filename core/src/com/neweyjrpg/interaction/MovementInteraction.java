@@ -3,7 +3,6 @@ package com.neweyjrpg.interaction;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.enums.Enums;
-import com.neweyjrpg.game.GameScene;
 import com.neweyjrpg.interfaces.InteractionCompleteListener;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;

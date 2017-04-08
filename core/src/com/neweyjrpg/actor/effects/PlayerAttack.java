@@ -1,6 +1,5 @@
 package com.neweyjrpg.actor.effects;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.neweyjrpg.actor.PlayerActor;
 
 public class PlayerAttack extends AttackEffect {
@@ -12,16 +11,15 @@ public class PlayerAttack extends AttackEffect {
 	public PlayerAttack(PlayerActor target, float speed) {
 		super(target, speed);
 		this.target = target;
+		this.offset.y += 8f;
 	}
 		
 	@Override
 	public void act(float delta) {
-		this.duration -= delta;
 		if (this.duration <= 0) {
 			this.target.setAttacking(false);
-			this.dispose();
 		}
-		//super.act(delta);
+		super.act(delta);
 	}
 
 }

@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.interfaces.IHasGraphics;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.physics.BlockBody;
 
-public class StaticActor extends GameActor {
+public class StaticActor extends GameActor implements IHasGraphics {
 	
 	private TextureRegion texture;
 	
@@ -45,7 +46,7 @@ public class StaticActor extends GameActor {
 //	}
 
 	@Override
-	public Vector2 getSpriteSize() {
+	public Vector2 getGraphicSize() {
 		return new Vector2(this.texture.getRegionWidth(), this.texture.getRegionHeight());
 	}
 	

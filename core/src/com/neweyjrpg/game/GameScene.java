@@ -125,8 +125,6 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 				for (Manager m : managers) {
 					m.draw(stateTime, yaxis, scroll.x, scroll.y, batch, p);
 				}
-				
-//				map.draw(batch, yaxis, stateTime, scroll.x, scroll.y, p);
 			}
 		}
 	}

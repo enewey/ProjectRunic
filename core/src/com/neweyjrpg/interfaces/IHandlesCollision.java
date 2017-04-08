@@ -8,5 +8,5 @@ public interface IHandlesCollision<T> {
 	 * @param obj2
 	 * @return - true if collision occurred.
 	 */
-	public boolean handleCollision(T obj, T obj2);
+	public boolean checkCollision(T obj, T obj2);
 }

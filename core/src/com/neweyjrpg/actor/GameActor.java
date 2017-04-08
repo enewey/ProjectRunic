@@ -1,7 +1,9 @@
 package com.neweyjrpg.actor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -16,20 +18,25 @@ import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.IProducesInteraction;
+import com.neweyjrpg.models.ActorState;
 import com.neweyjrpg.physics.BlockBody;
+import com.neweyjrpg.physics.PhysicsBody;
 import com.neweyjrpg.util.Conversion;
 
 public abstract class GameActor extends Actor implements Comparable<GameActor>, ICanCollide<GameActor>, IProducesInteraction {
-	
+		
 	//Fields
-	protected BlockBody phys;
-	public BlockBody getPhysicsModel() {	return this.phys; }
+	protected PhysicsBody phys;
+	public PhysicsBody getPhysicsBody() {	return this.phys; }
 	protected float oldX, oldY;
 	
 	private boolean disposed;
 	public boolean isDisposed() {
 		return this.disposed;
 	}
+	
+	private HashMap<String, ActorState> stateMap;
+	public HashMap<String,ActorState> getState() { return this.stateMap; }
 	
 	protected float physPaddingX, physPaddingY; //Where the physics model sits relative to the sprite/animation
 	
@@ -79,6 +86,7 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		physPaddingY = 0f;
 		
 		this.actionQueue = new LinkedList<Action>();
+		this.stateMap = new HashMap<String, ActorState>();
 	}
 	
 	//Methods
@@ -197,8 +205,8 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 			}
 		}
 		
-		this.oldX = this.phys.getBounds().x;
-		this.oldY = this.phys.getBounds().y;
+		this.oldX = this.phys.getX();
+		this.oldY = this.phys.getY();
 		
 		super.act(deltaTime);
 		alignPhysicsModelToActor();
@@ -212,26 +220,26 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	private void alignPhysicsModelToActor() {
-		this.getPhysicsModel().getBounds().setPosition(getX() + physPaddingX, getY() + physPaddingY);
+		this.getPhysicsBody().setPosition(getX() + physPaddingX, getY() + physPaddingY);
 	}
 	
 	public void setPhysicalPosition(float x, float y) {
-		this.getPhysicsModel().getBounds().setPosition(x, y);
+		this.getPhysicsBody().setPosition(x, y);
 		alignActorToPhysicsModel();
 	}
 	
 	public void movePhysicalPosition(float x, float y) {
-		this.getPhysicsModel().getBounds().setPosition(
-				this.getPhysicsModel().getBounds().x + x, 
-				this.getPhysicsModel().getBounds().y + y);
-		this.oldX = this.phys.getBounds().x;
-		this.oldY = this.phys.getBounds().y;
+		this.getPhysicsBody().setPosition(
+				this.getPhysicsBody().getX() + x, 
+				this.getPhysicsBody().getY() + y);
+		this.oldX = this.phys.getX();
+		this.oldY = this.phys.getY();
 		alignActorToPhysicsModel();
 	}
 	
 	private void alignActorToPhysicsModel() {
-		this.setX(getPhysicsModel().getBounds().x - physPaddingX);
-		this.setY(getPhysicsModel().getBounds().y - physPaddingY);
+		this.setX(getPhysicsBody().getX() - physPaddingX);
+		this.setY(getPhysicsBody().getY() - physPaddingY);
 	}
 	
 	public Vector2 getPosition() {
@@ -242,10 +250,15 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	}
 	
 	public float getDistance(GameActor subject) {
-		Vector2 a = this.getPhysicsModel().getCenter();
-		Vector2 b = subject.getPhysicsModel().getCenter();
+		Vector2 a = this.getPhysicsBody().getCenter();
+		Vector2 b = subject.getPhysicsBody().getCenter();
 		
 		return (float)Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+	}
+	
+	public void keepInBounds(float boundx, float boundy) {
+		this.phys.keepInBounds(boundx,boundy);
+		this.alignActorToPhysicsModel();
 	}
 	
 	@Override
@@ -259,12 +272,12 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	
 	@Override
 	public boolean collideInto(GameActor obj) {
-		return this.getCollider().handleCollision(this, obj);
+		return this.getCollider().checkCollision(this, obj);
 		
 	}
 	@Override
 	public boolean collisionFrom(GameActor obj) {
-		return obj.getCollider().handleCollision(obj, this);	
+		return obj.getCollider().checkCollision(obj, this);	
 	}
 	
 	@Override
@@ -282,7 +295,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		return this.onTouchInteraction;
 	}
 	
-	public abstract Vector2 getSpriteSize();
 	public void dispose() {
 		this.disposed = true;
 	}

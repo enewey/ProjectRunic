@@ -7,10 +7,11 @@ import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.graphic.ActorAnimation;
+import com.neweyjrpg.interfaces.IHasGraphics;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.physics.BlockBody;
 
-public class CharacterActor extends GameActor {
+public class CharacterActor extends GameActor implements IHasGraphics {
 
 	// Fields
 	private ActorAnimation animation;
@@ -43,6 +44,8 @@ public class CharacterActor extends GameActor {
 
 		this.physPaddingX = (Constants.CHARA_WIDTH / 4f);
 		this.physPaddingY = (Constants.CHARA_HEIGHT / 16f);
+		
+		
 	}
 
 	@Override
@@ -97,13 +100,15 @@ public class CharacterActor extends GameActor {
 			this.isMoving = true;
 	}
 
-	public Vector2 getSpriteSize() {
-		return new Vector2(this.animation.getFrame(0, getDir(), false).getRegionWidth(),
-				this.animation.getFrame(0, getDir(), false).getRegionHeight());
-	}
-
 	public void dispose() {
 		this.animation.dispose();
 		super.dispose();
+	}
+	
+	@Override
+	public Vector2 getGraphicSize() {
+		return new Vector2(this.animation.getFrame(0, Dir.UP, true).getRegionWidth(),
+						   this.animation.getFrame(0, Dir.UP, true).getRegionHeight());
+		
 	}
 }

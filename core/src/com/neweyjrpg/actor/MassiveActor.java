@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
+import com.neweyjrpg.interfaces.IHasGraphics;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.physics.BlockBody;
 
-public class MassiveActor extends GameActor {
+public class MassiveActor extends GameActor implements IHasGraphics {
 
 	private TextureRegion[][] graphics;
 	private float gWidth, gHeight; //Height of each individual texture; must all be same size!
@@ -67,8 +68,7 @@ public class MassiveActor extends GameActor {
 	}
 	
 	@Override
-	public Vector2 getSpriteSize() {
-		// TODO Auto-generated method stub
+	public Vector2 getGraphicSize() {
 		return new Vector2(totalWidth, totalHeight);
 	}
 	
