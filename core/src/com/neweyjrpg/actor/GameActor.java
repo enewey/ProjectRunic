@@ -219,8 +219,13 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		alignPhysicsModelToActor();
 	}
 	
-	private void alignPhysicsModelToActor() {
+	protected void alignPhysicsModelToActor() {
 		this.getPhysicsBody().setPosition(getX() + physPaddingX, getY() + physPaddingY);
+	}
+	
+	protected void alignActorToPhysicsModel() {
+		this.setX(getPhysicsBody().getX() - physPaddingX);
+		this.setY(getPhysicsBody().getY() - physPaddingY);
 	}
 	
 	public void setPhysicalPosition(float x, float y) {
@@ -235,11 +240,6 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		this.oldX = this.phys.getX();
 		this.oldY = this.phys.getY();
 		alignActorToPhysicsModel();
-	}
-	
-	private void alignActorToPhysicsModel() {
-		this.setX(getPhysicsBody().getX() - physPaddingX);
-		this.setY(getPhysicsBody().getY() - physPaddingY);
 	}
 	
 	public Vector2 getPosition() {

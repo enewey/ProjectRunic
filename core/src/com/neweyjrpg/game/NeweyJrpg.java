@@ -8,14 +8,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.NPCActor;
 import com.neweyjrpg.actor.PlayerActor;
 import com.neweyjrpg.actor.StaticActor;
 import com.neweyjrpg.collider.BlockingCollider;
 import com.neweyjrpg.constants.Constants;
-import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.TileGraphic;
@@ -34,6 +36,20 @@ public class NeweyJrpg extends ApplicationAdapter {
 
 	@Override
 	public void create() {
+		
+//		Vector2 a = new Vector2(4,6);
+//		Vector2 b = new Vector2(4,2);
+//		Polygon poly = new Polygon(new float[] {
+//				5, 5,
+//				5, 10,
+//				10, 10,
+//				10, 5
+//				});
+//		System.out.println(Intersector.intersectSegmentPolygon(a, b, poly));
+		
+		
+		
+		
 		map = "maps/map1.map";
 		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f,
 				new BlockBody(PhysicalState.MovingBlock,
@@ -125,13 +141,11 @@ public class NeweyJrpg extends ApplicationAdapter {
 					Enums.Priority.Same);
 			npc.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(),
 					(float) Math.min(Math.random() + 0.25, 1.0)));
-			//npc.setController(new BadAIController());
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
 			npc.addOnActionInteraction(new PopupMessageInteraction(scene, "", npc));
-			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT,
-					"This is a test message. We are going to write a ton of words here and see if the message interaction properly splits up a big long string with spaces appropriately. Let's try an ellipses... .... .... hello hello world!! test test! The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog."));
-			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
+			npc.setName("NPC number "+i);
+			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "My name is " + npc.getName()));
 			s.addActor(npc);
 		}
 	}
@@ -150,7 +164,7 @@ public class NeweyJrpg extends ApplicationAdapter {
 
 		// Draw overlays here
 		scene.getBatch().setColor(Color.WHITE);
-		font.draw(scene.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 15);
+		font.draw(scene.getBatch(), "X/Y: " + chara.getPhysicsBody().getCenter().x + " " + chara.getPhysicsBody().getCenter().y, 0, 15);
 
 		scene.getBatch().end();
 

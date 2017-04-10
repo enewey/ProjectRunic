@@ -3,10 +3,6 @@ package com.neweyjrpg.actor.effects;
 import com.neweyjrpg.actor.PlayerActor;
 
 public class PlayerAttack extends AttackEffect {
-
-	PlayerActor target;
-	@Override
-	public PlayerActor getTarget() { return this.target; }
 	
 	public PlayerAttack(PlayerActor target, float speed) {
 		super(target, speed);
@@ -17,7 +13,7 @@ public class PlayerAttack extends AttackEffect {
 	@Override
 	public void act(float delta) {
 		if (this.duration <= 0) {
-			this.target.setAttacking(false);
+			((PlayerActor)this.target).setAttacking(false);
 		}
 		super.act(delta);
 	}

@@ -3,6 +3,7 @@ package com.neweyjrpg.actor.effects;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.actor.GameActor;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.enums.Enums.Priority;
 import com.neweyjrpg.graphic.EffectAnimation;
@@ -18,6 +19,7 @@ public class EffectActor extends GameActor implements IHasGraphics {
 	
 	protected float duration;
 	protected float startTime;
+	protected float frameDuration;
 	
 	// The direction this character is facing
 	private Dir dir;
@@ -26,7 +28,8 @@ public class EffectActor extends GameActor implements IHasGraphics {
 	
 	public EffectActor(float x, float y, BlockBody phys, Priority priority, float speed) {
 		super(x, y, phys, priority);
-		this.duration = 0.5f / speed;
+		this.duration = (Constants.FRAME_DURATION * Constants.EFFECT_FRAMES) / speed;
+		this.frameDuration = this.duration / Constants.EFFECT_FRAMES;
 		this.startTime = -1;
 	}
 	
@@ -34,7 +37,10 @@ public class EffectActor extends GameActor implements IHasGraphics {
 	public void draw(Batch batch, float deltaTime, float x, float y) {
 		if (startTime < 0) { this.startTime = deltaTime; }
 		super.draw(batch, deltaTime);
-		batch.draw(this.animation.getFrame(deltaTime - startTime, this.dir, true), x, y);
+		float keyTime = deltaTime - startTime;
+		if (!(this.duration < (keyTime % frameDuration))) {
+			batch.draw(this.animation.getFrame(keyTime, this.dir, true), x, y);
+		}
 	}
 	
 	@Override

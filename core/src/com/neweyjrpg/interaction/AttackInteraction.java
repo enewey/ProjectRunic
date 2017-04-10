@@ -23,9 +23,9 @@ public class AttackInteraction extends ActorInteraction {
 		
 		this.target = m.getActorByName(this.targetName);
 		if (this.target instanceof PlayerActor) {
-			this.effect = new PlayerAttack((PlayerActor)this.target, 4f);
+			this.effect = new PlayerAttack((PlayerActor)this.target, 3f);
 		} else {
-			this.effect = new AttackEffect((CharacterActor)this.target, 4f);
+			this.effect = new AttackEffect((CharacterActor)this.target, 3f);
 		}
 		
 		m.addActor(this.effect);

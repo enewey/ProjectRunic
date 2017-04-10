@@ -57,9 +57,9 @@ public class BlockBody extends PhysicsBody {
 	public boolean lineDoesIntersect(Vector2 a, Vector2 b) {
 		Polygon poly = new Polygon(new float[] {
 				this.bounds.x, this.bounds.y,
-				this.bounds.x, this.bounds.height,
-				this.bounds.width, this.bounds.height,
-				this.bounds.width, this.bounds.y
+				this.bounds.x + this.bounds.width, this.bounds.y,
+				this.bounds.x + this.bounds.width, this.bounds.y + this.bounds.height,
+				this.bounds.x, this.bounds.y + this.bounds.height
 				});
 		return Intersector.intersectSegmentPolygon(a, b, poly);
 	}

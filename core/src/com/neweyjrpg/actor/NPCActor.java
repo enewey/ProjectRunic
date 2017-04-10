@@ -29,7 +29,7 @@ public class NPCActor extends CharacterActor implements IAttackable {
 	@Override
 	public void takeAttack() {
 		if (!this.getState().get("invulnerable").isActive()) {
-			System.out.println(this.getName() + " Attacked");
+			System.out.println(this.getName() + " Attacked " + this.phys.getCenter().x+" "+this.phys.getCenter().y);
 			this.getState().get("invulnerable").activate(this.iframes);
 		}
 		
