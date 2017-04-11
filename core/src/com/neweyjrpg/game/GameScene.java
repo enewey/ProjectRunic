@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.actor.GhostActor;
-import com.neweyjrpg.actor.PlayerActor;
+import com.neweyjrpg.actor.characters.PlayerActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.controller.InputState;
 import com.neweyjrpg.enums.Enums;
@@ -20,8 +20,6 @@ import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interaction.SceneInteraction;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IProducesInputs;
-import com.neweyjrpg.interfaces.InteractionCompleteListener;
-import com.neweyjrpg.interfaces.InteractionDoneListener;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;
 import com.neweyjrpg.manager.MapManager;
@@ -30,17 +28,15 @@ import com.neweyjrpg.map.GameMap;
 import com.neweyjrpg.models.ButtonInput;
 import com.neweyjrpg.models.DirectionalInput;
 
-public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction, 
-														InteractionDoneListener, InteractionCompleteListener {
+public class GameScene extends InputAdapter implements IProducesInputs, IHandlesInteraction {
 	
 	private float stateTime;
 	public void incrementStateTime(float deltaTime) {
 		stateTime += deltaTime;
 	}
 	
-	private Vector2 scroll;
-	//private float scrollX, scrollY; //Represents how far the camera has scrolled, justified at the bottom-left corner.
-	public Vector2 getScroll() { return scroll; }
+	public static Vector2 scroll; //Represents how far the camera has scrolled, justified at the bottom-left corner.
+	public static Vector2 getScroll() { return scroll; }
 	private float maxScrollX, maxScrollY; //How far the camera is allowed to scroll = (mapWidth-screenWidth, mapHeight-screenHeight)
 	
 	private NeweyViewport viewport; //Used for drawing to the screen
@@ -84,7 +80,7 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 		managers.addLast(actorManager);
 		managers.addLast(windowManager);
 		
-		this.scroll = new Vector2(0,0);
+		scroll = new Vector2(0,0);
 		//Max scroll dictates how far the camera can scroll, so the edges align to the edge of the GameMap 
 		this.maxScrollX = -((map.getDimX() * Constants.TILE_WIDTH)-Constants.GAME_WIDTH);
 		this.maxScrollY = -((map.getDimY() * Constants.TILE_HEIGHT)-Constants.GAME_HEIGHT);
@@ -261,6 +257,9 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 	 */
 	private boolean handleQueuedInteraction() {
 		this.cleanUpQueue();
+		for (Manager manager : this.managers) { //unblock everything explicitly.. let the interaction re-block it.
+			manager.unblock();
+		}
 		if (!this.interactionQueue.isEmpty()) {
 			Interaction interaction = this.interactionQueue.get(0);
 			if (interaction.isStarted() && !interaction.isCompleted()) {
@@ -276,6 +275,9 @@ public class GameScene extends InputAdapter implements IProducesInputs, IHandles
 					sin.complete();
 				}
 				if (sin.isBlocking()) {
+					for (Manager manager : this.managers) {
+						manager.block();
+					}
 					return true;
 				}
 			} else {

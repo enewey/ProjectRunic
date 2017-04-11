@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.neweyjrpg.actor.CharacterActor;
+import com.neweyjrpg.actor.characters.CharacterActor;
 import com.neweyjrpg.collider.AttackCollider;
+import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
 import com.neweyjrpg.graphic.AttackAnimation;
+import com.neweyjrpg.interfaces.IAttacker;
 import com.neweyjrpg.physics.BlockBody;
 import com.neweyjrpg.physics.LineBody;
 import com.neweyjrpg.util.Line;
@@ -31,7 +33,7 @@ public class AttackEffect extends EffectActor {
 				Enums.Priority.Above, speed);
 		
 		this.target = target;
-		this.setCollider(new AttackCollider());
+		this.setCollider(new AttackCollider((IAttacker)target));
 		this.setName("ATTACK_EFFECT");
 		this.setAnimation(new AttackAnimation(speed));
 		this.setDir(target.getDir());
@@ -40,12 +42,13 @@ public class AttackEffect extends EffectActor {
 		this.frameCounter = frameDuration;
 		this.hitboxFrames = new LinkedList<Line>();
 		
-		
 		Vector2[] vecs = {
-			new Vector2(0f, -24f),
-			new Vector2(-12, -20.78f),
-			new Vector2(-20.78f, -12f),
-			new Vector2(-24f, 0f)
+			new Vector2(0f, -32f),
+			new Vector2(-16, -27.7f),
+			new Vector2(-27.7f, -16f),
+			new Vector2(-32f, 0f),
+			new Vector2(-27.7f, 16f),
+			new Vector2(-16, 27.7f),
 		};
 		
 		float degs = 0f;
@@ -73,7 +76,9 @@ public class AttackEffect extends EffectActor {
 		Vector2 center = this.getTarget().getPhysicsBody().getCenter();
 		this.phys.setPosition(center.x, center.y);
 		
-		this.setTexture();
+		if (Constants.DEBUG) {
+			this.setTexture();
+		}
 	}
 	
 	private void setTexture() {
@@ -95,10 +100,11 @@ public class AttackEffect extends EffectActor {
 		super.draw(batch, deltaTime, this.getX() + x, this.getY() + y);
 		
 		//Debugging
-		Vector2 v = ((LineBody)this.phys).getLine().getBottomLeft();
-		batch.draw(this.hitboxDebug, v.x + x, v.y + y);
+		if (Constants.DEBUG) {
+			Vector2 v = ((LineBody)this.phys).getLine().getBottomLeft();
+			batch.draw(this.hitboxDebug, v.x + x, v.y + y);
+		}
 	}
-	
 	
 	@Override
 	public void act(float delta) {
@@ -115,7 +121,9 @@ public class AttackEffect extends EffectActor {
 			((LineBody)this.phys).setLine(seg);
 			Vector2 center = this.getTarget().getPhysicsBody().getCenter();
 			this.phys.setPosition(center.x, center.y);
-			this.setTexture();
+			if (Constants.DEBUG) {
+				this.setTexture();
+			}
 		}
 	}
 }

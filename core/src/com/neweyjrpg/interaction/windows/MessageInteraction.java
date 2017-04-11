@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.game.Assets;
-import com.neweyjrpg.game.GameScene;
 import com.neweyjrpg.interaction.Interaction;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.manager.Manager;
 import com.neweyjrpg.manager.WindowManager;
 import com.neweyjrpg.window.MessageWindow;
@@ -17,7 +17,7 @@ public class MessageInteraction extends WindowInteraction {
 	public Array<String> getData() { return message; }
 	private String font;
 	
-	public MessageInteraction(GameScene scene, String font, String str) {
+	public MessageInteraction(IHandlesInteraction scene, String font, String str) {
 		super(scene);
 		this.font = font;
 		this.message = this.formatString(str);

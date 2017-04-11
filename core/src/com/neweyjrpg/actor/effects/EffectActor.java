@@ -29,7 +29,8 @@ public class EffectActor extends GameActor implements IHasGraphics {
 	public EffectActor(float x, float y, BlockBody phys, Priority priority, float speed) {
 		super(x, y, phys, priority);
 		this.duration = (Constants.FRAME_DURATION * Constants.EFFECT_FRAMES) / speed;
-		this.frameDuration = this.duration / Constants.EFFECT_FRAMES;
+		//frameDuration rounded off due to the last frame disappearing at specific speeds
+		this.frameDuration = (float)Math.floor((this.duration / Constants.EFFECT_FRAMES) * 1000f)/1000f;
 		this.startTime = -1;
 	}
 	
@@ -38,14 +39,12 @@ public class EffectActor extends GameActor implements IHasGraphics {
 		if (startTime < 0) { this.startTime = deltaTime; }
 		super.draw(batch, deltaTime);
 		float keyTime = deltaTime - startTime;
-		if (!(this.duration < (keyTime % frameDuration))) {
-			batch.draw(this.animation.getFrame(keyTime, this.dir, true), x, y);
-		}
+		batch.draw(this.animation.getFrame(keyTime, this.dir, false), x, y);
 	}
 	
 	@Override
 	public void act(float delta) {
-		if (this.duration <= 0) {
+		if (this.duration < 0) {
 			this.dispose();
 		}
 		this.duration-=delta;

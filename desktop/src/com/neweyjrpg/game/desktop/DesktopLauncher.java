@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		config.title = "Game time y'all";
 		config.height = Constants.GAME_HEIGHT*2;
 		config.width = Constants.GAME_WIDTH*2;
+		config.forceExit = true;
 		
 		
 		new LwjglApplication(new NeweyJrpg(), config);

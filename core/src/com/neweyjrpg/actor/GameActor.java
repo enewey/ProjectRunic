@@ -10,15 +10,17 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.neweyjrpg.constants.Events;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.Dir;
 import com.neweyjrpg.interaction.Interaction;
-import com.neweyjrpg.interaction.MovementInteraction;
+import com.neweyjrpg.interaction.actors.MovementInteraction;
 import com.neweyjrpg.interfaces.ICanCollide;
 import com.neweyjrpg.interfaces.IHandlesCollision;
 import com.neweyjrpg.interfaces.IProducesInputs;
 import com.neweyjrpg.interfaces.IProducesInteraction;
-import com.neweyjrpg.models.ActorState;
+import com.neweyjrpg.models.TemporalStateMap;
+import com.neweyjrpg.models.TemporalItem;
 import com.neweyjrpg.physics.BlockBody;
 import com.neweyjrpg.physics.PhysicsBody;
 import com.neweyjrpg.util.Conversion;
@@ -34,35 +36,11 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public boolean isDisposed() {
 		return this.disposed;
 	}
-	
-	private HashMap<String, ActorState> stateMap;
-	public HashMap<String,ActorState> getState() { return this.stateMap; }
+		
+	private TemporalStateMap stateMap;
+	public TemporalStateMap getState() { return this.stateMap; }
 	
 	protected float physPaddingX, physPaddingY; //Where the physics model sits relative to the sprite/animation
-	
-	//Object that handles collision events
-	protected IHandlesCollision<GameActor> collider;
-	public IHandlesCollision<GameActor> getCollider() { return this.collider; }
-	public void setCollider(IHandlesCollision<GameActor> collider) { this.collider = collider; }
-	
-	//Interactions are a way for actors to transfer unique instructions to its interaction handler
-	protected ArrayList<Interaction> onTouchInteraction;
-	public void setOnTouchInteraction(ArrayList<Interaction> i) { this.onTouchInteraction = i; }
-	public void addOnTouchInteraction(Interaction i) {
-		if (this.onTouchInteraction == null) {
-			this.onTouchInteraction = new ArrayList<Interaction>();
-		}
-		this.onTouchInteraction.add(i); 
-	}
-	
-	protected ArrayList<Interaction> onActionInteraction;
-	public void setOnActionInteraction(ArrayList<Interaction> i) { this.onActionInteraction = i; }
-	public void addOnActionInteraction(Interaction i) {
-		if (this.onActionInteraction == null) {
-			this.onActionInteraction = new ArrayList<Interaction>();
-		}
-		this.onActionInteraction.add(i); 
-	}
 	
 	protected float actionSpeed;
 	public float getActionSpeed() {	return actionSpeed;	}
@@ -71,8 +49,17 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	protected boolean isMoving;
 	public boolean isMoving() { return this.isMoving; }
 	
+	protected boolean isBlocked;
+	public void block() { this.isBlocked = true; }
+	public void unblock() { this.isBlocked = false; }
+	
 	private Enums.Priority priority;
 	public Enums.Priority getPriority() { return this.priority; }
+	
+	//Actions are things this actor will handle itself within the act() method
+	protected LinkedList<Action> actionQueue;
+	//Interactions are to be picked up by the ActorManager, and percolated upwards from there
+	protected LinkedList<Interaction> interactionQueue;
 	
 	//Constructor
 	public GameActor(float x, float y, BlockBody phys, Enums.Priority priority) {
@@ -86,7 +73,8 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		physPaddingY = 0f;
 		
 		this.actionQueue = new LinkedList<Action>();
-		this.stateMap = new HashMap<String, ActorState>();
+		this.interactionQueue = new LinkedList<Interaction>();
+		this.stateMap = new TemporalStateMap();
 	}
 	
 	//Methods
@@ -103,16 +91,15 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	 *  The moveQueue is also used to determine if an actor is moving, what direction to face, etc.
 	 */
 	
-	protected LinkedList<Action> actionQueue;
-	
 	/**
-	 * move - this will move the actor (+x,+y) relative to its location, in actionSpeed seconds.
+	 * move - this will move the actor the direction of (+x,+y) relative to its location.
+	 * (x,y) expected to be a unit vector.
 	 */
 	public void move(float x, float y) { 
 		this.addMove(Actions.moveBy(x,y, this.actionSpeed));
 	}
 	/**
-	 * move the actor (+x,+y) relative to its location, scaling the actionSpeed by s.
+	 * move the actor in the direction (+x,+y) relative to its location, scaling the actionSpeed by s.
 	 */
 	public void moveDistance(float x, float y, float s) {
 		this.addMove(Actions.moveBy(x*s, y*s, this.actionSpeed*s));
@@ -131,6 +118,17 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 	public void move(Vector2 v, float s) { this.moveDistance(v.x, v.y, s); }
 	public void moveOnce(Dir dir) { this.move(Conversion.dirToVec(dir)); }
 	
+	/**
+	 * Returns a MoveByAction.
+	 * @param x,y - unit vector to serve as direction of movement
+	 * @param d - distance in units to move
+	 * @param speed - speed to movement multiplicative (i.e. 4 = four times faster, 8 = eight times faster)
+	 * @return - MoveByAction to passed into this.addMove or this.forceMove
+	 */
+	public MoveByAction getDistanceSpeedMove(float x, float y, float d, float speed) {
+		return Actions.moveBy(x*d, y*d, (this.actionSpeed*d)/speed);
+	}
+		
 	/**
 	 * Adds a MoveByAction directly to the move queue.
 	 */
@@ -194,15 +192,29 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		return null;
 	}
 	
+	public LinkedList<Interaction> getInteractionQueue() { return this.interactionQueue; }
+	public void queueInteraction(Interaction i) {
+		this.interactionQueue.addLast(i);
+	}
+	
 	@Override
 	public void act(float deltaTime) {
 		//Determine and set moving state, and place actions from queue into actor actions.
 		this.isMoving = false;
+		
+		if (this.isBlocked) {
+			return;
+		}
+		
 		if (!this.actionQueue.isEmpty()) {
 			this.isMoving = true;
 			if (!this.hasActions()) {
 				this.advanceQueue();
 			}
+		}
+		
+		for (TemporalItem state : this.getState().values()) {
+			state.tick(deltaTime);
 		}
 		
 		this.oldX = this.phys.getX();
@@ -261,6 +273,11 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		this.alignActorToPhysicsModel();
 	}
 	
+	//Object that handles collision events
+	protected IHandlesCollision<GameActor> collider;
+	public IHandlesCollision<GameActor> getCollider() { return this.collider; }
+	public void setCollider(IHandlesCollision<GameActor> collider) { this.collider = collider; }
+	
 	@Override
 	/**
 	 * Comparator sorts by Y position on screen
@@ -280,21 +297,46 @@ public abstract class GameActor extends Actor implements Comparable<GameActor>, 
 		return obj.getCollider().checkCollision(obj, this);	
 	}
 	
+	//Interactions are a way for actors to transfer unique instructions to its interaction handler
+	public void addOnTouchInteraction(Interaction i) {
+		this.addOnEventInteraction(Events.TOUCH, i);
+	}
+	
+	public void addOnActionInteraction(Interaction i) { 
+		this.addOnEventInteraction(Events.INTERACT, i);
+	}
+	
+	protected HashMap<Integer, ArrayList<Interaction>> onEventInteraction;
+	public void addOnEventInteraction(int event, Interaction i) {
+		if (this.onEventInteraction == null) {
+			this.onEventInteraction = new HashMap<Integer, ArrayList<Interaction>>();
+		}
+		if (!this.onEventInteraction.containsKey(event)) {
+			this.onEventInteraction.put(event, new ArrayList<Interaction>());
+		}
+		this.onEventInteraction.get(event).add(i);
+	}
+	
 	@Override
 	public ArrayList<Interaction> onAction() {
-		if (this.onActionInteraction == null) {
-			this.onActionInteraction = new ArrayList<Interaction>();
-		}
-		return this.onActionInteraction;
+		return this.onEvent(Events.INTERACT);
 	}
 	@Override
 	public ArrayList<Interaction> onTouch() {
-		if (this.onTouchInteraction == null) {
-			this.onTouchInteraction = new ArrayList<Interaction>();
-		}
-		return this.onTouchInteraction;
+		return this.onEvent(Events.TOUCH);
 	}
 	
+	@Override
+	public ArrayList<Interaction> onEvent(int ev) {
+		if (this.onEventInteraction == null) {
+			this.onEventInteraction = new HashMap<Integer, ArrayList<Interaction>>();
+		}
+		if (!this.onEventInteraction.containsKey(ev)) {
+			this.onEventInteraction.put(ev, new ArrayList<Interaction>());
+		}
+		return this.onEventInteraction.get(ev);
+	}
+
 	public void dispose() {
 		this.disposed = true;
 	}

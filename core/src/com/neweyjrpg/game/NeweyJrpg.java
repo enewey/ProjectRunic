@@ -7,22 +7,23 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.neweyjrpg.actor.MassiveActor;
-import com.neweyjrpg.actor.NPCActor;
-import com.neweyjrpg.actor.PlayerActor;
 import com.neweyjrpg.actor.StaticActor;
+import com.neweyjrpg.actor.characters.EnemyActor;
+import com.neweyjrpg.actor.characters.NPCActor;
+import com.neweyjrpg.actor.characters.PlayerActor;
 import com.neweyjrpg.collider.BlockingCollider;
 import com.neweyjrpg.constants.Constants;
+import com.neweyjrpg.constants.Events;
+import com.neweyjrpg.controller.BadAIController;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
+import com.neweyjrpg.enums.Enums.SceneAction;
 import com.neweyjrpg.graphic.TileGraphic;
-import com.neweyjrpg.interaction.MovementInteraction;
 import com.neweyjrpg.interaction.SceneInteraction;
+import com.neweyjrpg.interaction.actors.DamageInteraction;
+import com.neweyjrpg.interaction.actors.DisposeInteraction;
+import com.neweyjrpg.interaction.actors.MovementInteraction;
 import com.neweyjrpg.interaction.windows.MessageInteraction;
 import com.neweyjrpg.interaction.windows.PopupMessageInteraction;
 import com.neweyjrpg.physics.BlockBody;
@@ -36,19 +37,6 @@ public class NeweyJrpg extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		
-//		Vector2 a = new Vector2(4,6);
-//		Vector2 b = new Vector2(4,2);
-//		Polygon poly = new Polygon(new float[] {
-//				5, 5,
-//				5, 10,
-//				10, 10,
-//				10, 5
-//				});
-//		System.out.println(Intersector.intersectSegmentPolygon(a, b, poly));
-		
-		
-		
 		
 		map = "maps/map1.map";
 		chara = new PlayerActor(new Texture("hero.png"), 0, 220f, 220f,
@@ -64,20 +52,22 @@ public class NeweyJrpg extends ApplicationAdapter {
 		font = Assets.loadFont(Constants.DEFAULT_FONT);
 		font.setColor(Color.WHITE);
 				
-		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
-		for (int k = 0; k < 10; k++) {
-			for (int i = 0; i < 10; i++) {
-				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
-			}
-		}
-		MassiveActor bigBlock = new MassiveActor(176f, 112f,
-				new BlockBody(PhysicalState.StaticBlock, new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f,
-				16f, Enums.Priority.Same);
-		bigBlock.setCollider(new BlockingCollider());
-		bigBlock.setName("BIGBLOCK");
-		scene.addActor(bigBlock);
+//		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
+//		for (int k = 0; k < 10; k++) {
+//			for (int i = 0; i < 10; i++) {
+//				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
+//			}
+//		}
+//		MassiveActor bigBlock = new MassiveActor(176f, 112f,
+//				new BlockBody(PhysicalState.StaticBlock, new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f,
+//				16f, Enums.Priority.Same);
+//		bigBlock.setCollider(new BlockingCollider());
+//		bigBlock.setName("BIGBLOCK");
+//		scene.addActor(bigBlock);
 
-		addNPCs(scene, 6);
+
+		addEnemies(scene, 4);
+		addNPCs(scene, 4);
 		addStaticBlock(scene, 32f, 32f);
 		addStaticBlock(scene, 32f, 16f);
 		addStaticBlock(scene, 48f, 32f);
@@ -130,6 +120,32 @@ public class NeweyJrpg extends ApplicationAdapter {
 		s.addActor(block);
 	}
 	
+	private void addEnemies(GameScene s, int num) {
+		// Bunch of random Enemies
+		for (int i = 0; i < num; i++) {
+			float x = (int) (Math.random() * 1000) % 300;
+			float y = (int) (Math.random() * 1000) % 300;
+			EnemyActor enemy = new EnemyActor(new Texture("hero.png"), 0, x, y,
+					new BlockBody(PhysicalState.MovingPushable,
+							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
+					Enums.Priority.Same);
+			enemy.setColor(Color.RED);
+			enemy.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
+			enemy.setCollider(new BlockingCollider());
+			enemy.setController(new BadAIController());
+			enemy.setName("Enemy number "+i);
+			s.addActor(enemy);
+			enemy.addOnTouchInteraction(new DamageInteraction(scene, "PLAYER", enemy));
+			enemy.addOnEventInteraction(Events.DEATH, new DisposeInteraction(null, enemy.getName()));
+			enemy.addOnEventInteraction(Events.DEATH, new SceneInteraction(null, SceneAction.ChangeColor, 0.1f, false, 1f,0f,0f,1f));
+			enemy.addOnEventInteraction(Events.DEATH, new SceneInteraction(null, SceneAction.ChangeColor, 0.1f, false, 1f,1f,1f,1f));
+			enemy.addOnEventInteraction(Events.DEATH, new SceneInteraction(null, SceneAction.ChangeColor, 0.1f, false, 1f,0f,0f,1f));
+			enemy.addOnEventInteraction(Events.DEATH, new SceneInteraction(null, SceneAction.ChangeColor, 0.1f, false, 1f,1f,1f,1f));
+			enemy.addOnEventInteraction(Events.DEATH, new SceneInteraction(null, SceneAction.ChangeColor, 0.1f, false, 1f,0f,0f,1f));
+			enemy.addOnEventInteraction(Events.DEATH, new SceneInteraction(null, SceneAction.ChangeColor, 0.1f, false, 1f,1f,1f,1f));
+		}
+	}
+	
 	private void addNPCs(GameScene s, int num) {
 		// Bunch of random NPCs
 		for (int i = 0; i < num; i++) {
@@ -139,13 +155,18 @@ public class NeweyJrpg extends ApplicationAdapter {
 					new BlockBody(PhysicalState.MovingPushable,
 							new Rectangle(x, y, Constants.CHARA_PHYS_WIDTH, Constants.CHARA_PHYS_HEIGHT)),
 					Enums.Priority.Same);
-			npc.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(),
-					(float) Math.min(Math.random() + 0.25, 1.0)));
+			npc.setColor(Color.GREEN);
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
+			npc.setController(new BadAIController());
 			npc.addOnActionInteraction(new PopupMessageInteraction(scene, "", npc));
 			npc.setName("NPC number "+i);
-			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "My name is " + npc.getName()));
+			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, 
+					"My name is " + npc.getName()));
+			npc.addOnActionInteraction(new SceneInteraction(scene, SceneAction.ChangeColor, 1f, true, 0f,0f,0f,1f));
+			npc.addOnActionInteraction(new SceneInteraction(scene, SceneAction.ChangeColor, 1f, true, 1f,1f,1f,1f));
+			npc.addOnActionInteraction(new SceneInteraction(scene, SceneAction.ChangeColor, 1f, false, 0f,0f,0f,1f));
+			npc.addOnActionInteraction(new SceneInteraction(scene, SceneAction.ChangeColor, 1f, false, 1f,1f,1f,1f));
 			s.addActor(npc);
 		}
 	}

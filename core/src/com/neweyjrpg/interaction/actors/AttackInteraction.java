@@ -1,18 +1,19 @@
-package com.neweyjrpg.interaction;
+package com.neweyjrpg.interaction.actors;
 
-import com.neweyjrpg.actor.CharacterActor;
-import com.neweyjrpg.actor.PlayerActor;
+import com.neweyjrpg.actor.characters.CharacterActor;
+import com.neweyjrpg.actor.characters.PlayerActor;
 import com.neweyjrpg.actor.effects.AttackEffect;
 import com.neweyjrpg.actor.effects.EffectActor;
 import com.neweyjrpg.actor.effects.PlayerAttack;
-import com.neweyjrpg.interfaces.InteractionCompleteListener;
+import com.neweyjrpg.interaction.Interaction;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.manager.ActorManager;
 
 public class AttackInteraction extends ActorInteraction {
 	
 	EffectActor effect;
 	
-	public AttackInteraction(InteractionCompleteListener scene, String target) {
+	public AttackInteraction(IHandlesInteraction scene, String target) {
 		super(scene, target);
 	}
 	
@@ -23,9 +24,9 @@ public class AttackInteraction extends ActorInteraction {
 		
 		this.target = m.getActorByName(this.targetName);
 		if (this.target instanceof PlayerActor) {
-			this.effect = new PlayerAttack((PlayerActor)this.target, 3f);
+			this.effect = new PlayerAttack((PlayerActor)this.target, 3.5f);
 		} else {
-			this.effect = new AttackEffect((CharacterActor)this.target, 3f);
+			this.effect = new AttackEffect((CharacterActor)this.target, 3.5f);
 		}
 		
 		m.addActor(this.effect);

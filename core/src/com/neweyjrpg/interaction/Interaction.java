@@ -1,16 +1,18 @@
 package com.neweyjrpg.interaction;
 
-import com.neweyjrpg.interfaces.InteractionCompleteListener;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.manager.Manager;
 
 public abstract class Interaction {
-	private InteractionCompleteListener scene;
+	private IHandlesInteraction scene;
 	protected boolean started;
 	protected boolean completed;
-	public Interaction(InteractionCompleteListener scene) {
+	public Interaction(IHandlesInteraction scene) {
 		this.scene = scene;
 		this.init();
 	} 
+	public void setScene(IHandlesInteraction scene) { this.scene = scene; }
+	
 	public abstract Object getData();
 	public Interaction process(Manager m) {
 		this.started = true;

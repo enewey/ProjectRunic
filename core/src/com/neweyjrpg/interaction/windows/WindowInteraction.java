@@ -1,12 +1,12 @@
 package com.neweyjrpg.interaction.windows;
 
-import com.neweyjrpg.game.GameScene;
 import com.neweyjrpg.interaction.Interaction;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.manager.Manager;
 
 public abstract class WindowInteraction extends Interaction {
 	
-	public WindowInteraction(GameScene scene) {
+	public WindowInteraction(IHandlesInteraction scene) {
 		super(scene);
 	}
 

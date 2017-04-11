@@ -61,5 +61,14 @@ public class MapManager extends Manager implements IManagesGraphics {
 	public void massColorLerp(float r, float g, float b, float a, float factor) {
 		map.getColor().lerp(r,g,b,a, factor);
 	}
+	
+	public void block() {}
+	public void unblock() {}
+
+	@Override
+	public void onInteractionComplete(Interaction i) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

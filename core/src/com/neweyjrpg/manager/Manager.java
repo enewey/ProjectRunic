@@ -15,5 +15,7 @@ public abstract class Manager implements IHandlesInteraction {
 	public abstract void draw(float deltaTime, int yaxis, float offsetX, float offsetY, Batch batch, Enums.Priority priority);
 	public abstract boolean act(float deltaTime);
 	public abstract void dispose();
+	public abstract void block();
+	public abstract void unblock();
 	
 }

@@ -18,10 +18,11 @@ public class AttackAnimation extends EffectAnimation {
 		
 	protected void buildSwordSwing() {
 		for (int i = 0; i < 4; i++) {
-			Sprite[] tr = new Sprite[4];
-			for (int f=0; f < 4; f++)
+			Sprite[] tr = new Sprite[Constants.EFFECT_FRAMES];
+			for (int f=0; f < Constants.EFFECT_FRAMES; f++)
 			{
-				tr[f] = new Sprite(graphic, f*32, i*32, 32, 32);
+				int x = (f > 3 ? 3 : f);
+				tr[f] = new Sprite(graphic, x*32, i*32, 32, 32); //TODO: make effect graphics more frames frames
 			}
 			switch (i) {
 				case 0: //Up

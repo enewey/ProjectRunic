@@ -19,9 +19,6 @@ public class Assets {
 
 		BitmapFont f = new BitmapFont(Gdx.files.internal(filename));
 		fonts.put(filename, f);
-		
-		
-		
 		return f;
 	}	
 }

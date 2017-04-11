@@ -92,11 +92,11 @@ public class WindowManager extends Manager {
 	public boolean handleButtonPress(int button) {
 		switch(button) {
 		case 0:
+		case 3:
 			return interact();
 		case 1:
 			return cancel();
 		case 2:
-		case 3:
 		default:
 			return false;
 		}
@@ -122,5 +122,20 @@ public class WindowManager extends Manager {
 		for (GameWindow window : windows) {
 			window.dispose();
 		}
+	}
+	
+	private boolean isBlocked;
+	public boolean isBlocked() { return this.isBlocked; }
+	public void block() {
+		this.isBlocked = true;
+	}
+	public void unblock() {
+		this.isBlocked = false;
+	}
+	
+	@Override
+	public void onInteractionComplete(Interaction i) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,8 +1,9 @@
-package com.neweyjrpg.actor;
+package com.neweyjrpg.actor.characters;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.neweyjrpg.actor.GameActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.Dir;
@@ -23,9 +24,10 @@ public class CharacterActor extends GameActor implements IHasGraphics {
 	public void setController(IProducesInputs controller) { this.controller = controller; }
 
 	// The direction this character is facing
-	private Dir dir;
+	protected Dir dir;
 	public Dir getDir() { return dir; }
 	public void setDir(Dir dir) { this.dir = dir; }
+	protected boolean directionFixed; 
 
 	// Distance that a single move call will move this actor, in pixels.
 	protected float movespeed;
@@ -44,13 +46,11 @@ public class CharacterActor extends GameActor implements IHasGraphics {
 
 		this.physPaddingX = (Constants.CHARA_WIDTH / 4f);
 		this.physPaddingY = (Constants.CHARA_HEIGHT / 16f);
-		
-		
 	}
 
 	@Override
 	public void draw(Batch batch, float deltaTime, float offsetX, float offsetY) {
-		if (!isMoving)
+		if (!isMoving || this.isBlocked)
 			deltaTime = Constants.IDLE_FRAME * Constants.FRAME_DURATION;
 		batch.draw(this.animation.getFrame(deltaTime, this.dir, this.isMoving), this.getX()+offsetX, this.getY()+offsetY);
 	}
@@ -58,7 +58,7 @@ public class CharacterActor extends GameActor implements IHasGraphics {
 	@Override
 	public void act(float delta) {
 		//Adjust the direction Actor is facing before acting.
-		if (!this.hasActions() && !this.actionQueue.isEmpty() && this.getMoveActionFromQueue() != null) {
+		if (!this.hasActions() && !this.actionQueue.isEmpty() && this.getMoveActionFromQueue() != null && !directionFixed) {
 			this.adjustFacing(this.getMoveActionFromQueue().getAmountX(), this.getMoveActionFromQueue().getAmountY());
 		}
 		

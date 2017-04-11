@@ -4,15 +4,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.neweyjrpg.actor.CharacterActor;
 import com.neweyjrpg.actor.GameActor;
-import com.neweyjrpg.actor.PlayerActor;
+import com.neweyjrpg.actor.characters.CharacterActor;
+import com.neweyjrpg.actor.characters.PlayerActor;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.enums.Enums;
 import com.neweyjrpg.enums.Enums.PhysicalState;
-import com.neweyjrpg.interaction.AttackInteraction;
 import com.neweyjrpg.interaction.Interaction;
-import com.neweyjrpg.interaction.MovementInteraction;
+import com.neweyjrpg.interaction.actors.AttackInteraction;
+import com.neweyjrpg.interaction.actors.CreateActorInteraction;
+import com.neweyjrpg.interaction.actors.DamageInteraction;
+import com.neweyjrpg.interaction.actors.DisposeInteraction;
+import com.neweyjrpg.interaction.actors.MovementInteraction;
 import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IHasGraphics;
 import com.neweyjrpg.interfaces.IManagesGraphics;
@@ -27,6 +30,7 @@ public class ActorManager extends Manager implements IManagesGraphics {
 	private float boundX, boundY;
 	private Color color;
 	private IHandlesInteraction handler;
+	private boolean isBlocked;
 	
 	private PlayerActor player;
 	public PlayerActor getPlayer() { return this.player; }
@@ -141,26 +145,41 @@ public class ActorManager extends Manager implements IManagesGraphics {
 			
 		}
 	}
+	
+	public void block() {
+		this.isBlocked = true;
+		for (GameActor a : this.actors) {
+			a.block();
+		}
+	}
+	public void unblock() {
+		this.isBlocked = false;
+		for (GameActor a : this.actors) {
+			a.unblock();
+		}
+	}
 
 	@Override
-	public boolean act(float deltaTime) {
-		if (player == null || actors == null || actors.size == 0) 
-			return false;
+	public boolean act(float deltaTime) {		
+		if (player == null || actors == null || actors.size == 0 || this.isBlocked) 
+			return false;		
 		
-		player.act(deltaTime);
-		this.detectCollision(player, true); //Detect collision after each individual action; this is key
-		
+		// Non-player actions 
 		for (GameActor actor : actors) {
-			if (actor == this.player) continue;
+			//if (actor == this.player) continue;
+			while (!actor.getInteractionQueue().isEmpty()) {
+				Interaction i = actor.getInteractionQueue().removeFirst();
+				i.setScene(this.handler);
+				handler.handle(i);
+			}
 						
 			//If actor has a controller attached, allow the controller to work.
 			if (actor instanceof CharacterActor && actor.getController() != null)
 				actor.move(Conversion.dpadToVec(actor.getController().getDirectionalState().getInputs()));
-			
 			actor.act(deltaTime);
 			
 			if (actor.getPhysicsBody().getType() != PhysicalState.StaticBlock) {
-				this.detectCollision(actor, false); //Detect collision after each individual action; this is key
+				this.detectCollision(actor);
 			}
 		}
 		
@@ -169,11 +188,11 @@ public class ActorManager extends Manager implements IManagesGraphics {
 
 	/**
 	 * Checks if a given actor is colliding with any other actors in the scene.
-	 * Also prevents actors from going out of bounds. TODO: tie boundaries to the map model
+	 * Also prevents actors from going out of bounds.
 	 * @param actor - the actor that is colliding into another actor.
 	 * 			NOTE: Static Actors should not be specified as the parameter for this method.
 	 */
-	private void detectCollision(GameActor actor, boolean doInteract) {
+	private void detectCollision(GameActor actor) {
 		actor.keepInBounds(boundX, boundY);
 		
 		Array<GameActor> sortedActors = new Array<GameActor>(actors);
@@ -184,11 +203,16 @@ public class ActorManager extends Manager implements IManagesGraphics {
 			if (subject.equals(actor)) {
 				continue;
 			}
-			if (actor.collideInto(subject) && doInteract) {
-				for (Interaction action : subject.onTouch()) {
-					handler.handle(action);
+			if (actor.collideInto(subject)) {
+				if (player == actor) {
+					for (Interaction action : subject.onTouch()) {
+						handler.handle(action);
+					}
+				} else if (player == subject) {
+					for (Interaction action : actor.onTouch()) {
+						handler.handle(action);
+					}
 				}
-				
 			}
 		}
 	}
@@ -249,11 +273,10 @@ public class ActorManager extends Manager implements IManagesGraphics {
 				action.getTarget().move(data);
 			}
 		}
-		if (interaction instanceof AttackInteraction) {
-			AttackInteraction action = (AttackInteraction)interaction;
-			action.process(this);
-			action.complete();
-		}
+		if (interaction instanceof AttackInteraction) { ((AttackInteraction)interaction).process(this); interaction.complete(); }
+		if (interaction instanceof DamageInteraction) { ((DamageInteraction)interaction).process(this); interaction.complete(); }
+		if (interaction instanceof DisposeInteraction) { ((DisposeInteraction)interaction).process(this); interaction.complete(); }
+		if (interaction instanceof CreateActorInteraction) { ((CreateActorInteraction)interaction).process(this); interaction.complete(); }
 		return false;
 	}
 	
@@ -277,5 +300,11 @@ public class ActorManager extends Manager implements IManagesGraphics {
 		for (GameActor actor : actors) {
 			actor.dispose();
 		}
+	}
+	
+	@Override
+	public void onInteractionComplete(Interaction i) {
+		// TODO Auto-generated method stub
+		
 	}
 }

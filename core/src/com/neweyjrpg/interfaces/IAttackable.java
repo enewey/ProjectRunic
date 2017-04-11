@@ -2,5 +2,5 @@ package com.neweyjrpg.interfaces;
 
 public interface IAttackable {
 
-	public void takeAttack();
+	public void takeAttack(IAttacker attacker);
 }

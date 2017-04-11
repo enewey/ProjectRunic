@@ -1,9 +1,9 @@
-package com.neweyjrpg.interaction;
+package com.neweyjrpg.interaction.actors;
 
 import com.badlogic.gdx.math.Vector2;
-import com.neweyjrpg.actor.CharacterActor;
+import com.neweyjrpg.actor.characters.CharacterActor;
 import com.neweyjrpg.enums.Enums;
-import com.neweyjrpg.interfaces.InteractionCompleteListener;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.manager.ActorManager;
 import com.neweyjrpg.manager.Manager;
 import com.neweyjrpg.util.Conversion;
@@ -16,7 +16,7 @@ public class MovementInteraction extends ActorInteraction {
 	}
 	private Object[] extra; // extra data for processing move type... could be a Vector2, Dir, a secondary target, etc..
 
-	public MovementInteraction(InteractionCompleteListener scene, String target, Enums.Move type, Object... extra ) {
+	public MovementInteraction(IHandlesInteraction scene, String target, Enums.Move type, Object... extra ) {
 		super(scene, target);
 		this.extra = extra;
 		this.type = type;
@@ -34,7 +34,7 @@ public class MovementInteraction extends ActorInteraction {
 		ActorManager mana = (ActorManager)m;
 		this.target = mana.getActorByName(targetName);
 		
-		switch (this.type) {
+		switch (this.type) { //TODO: This type shit pattern is bad, make abstract classes!!
 		case StepDir: //extra[0] = Direction, extra[1] = scalar (optional)
 			Vector2 v = Conversion.dirToVec((Enums.Dir)extra[0]);
 			float s = extra.length > 1 ? (Float)extra[1] : 1f;

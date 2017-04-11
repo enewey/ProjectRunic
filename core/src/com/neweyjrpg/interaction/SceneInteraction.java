@@ -2,8 +2,8 @@ package com.neweyjrpg.interaction;
 
 import com.badlogic.gdx.Gdx;
 import com.neweyjrpg.enums.Enums.SceneAction;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.interfaces.IManagesGraphics;
-import com.neweyjrpg.interfaces.InteractionCompleteListener;
 import com.neweyjrpg.manager.Manager;
 
 public class SceneInteraction extends Interaction {
@@ -17,7 +17,7 @@ public class SceneInteraction extends Interaction {
 	private float elapsed;
 	private float delta;
 	
-	public SceneInteraction(InteractionCompleteListener scene, SceneAction action, float duration, boolean isBlocking, Object ...args) {
+	public SceneInteraction(IHandlesInteraction scene, SceneAction action, float duration, boolean isBlocking, Object ...args) {
 		super(scene);
 		this.action = action;
 		this.args = args;
@@ -44,8 +44,8 @@ public class SceneInteraction extends Interaction {
 		
 		switch(action) {
 		case ChangeColor:
-		//include all graphics drawing cases here
-			if (IManagesGraphics.class.isAssignableFrom(m.getClass())) {
+			//include all graphics drawing cases here
+			if (m instanceof IManagesGraphics) {
 				IManagesGraphics g = (IManagesGraphics)m;
 				return this.processDraw(g);
 			}

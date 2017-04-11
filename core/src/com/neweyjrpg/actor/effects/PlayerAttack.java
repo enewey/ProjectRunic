@@ -1,6 +1,6 @@
 package com.neweyjrpg.actor.effects;
 
-import com.neweyjrpg.actor.PlayerActor;
+import com.neweyjrpg.actor.characters.PlayerActor;
 
 public class PlayerAttack extends AttackEffect {
 	

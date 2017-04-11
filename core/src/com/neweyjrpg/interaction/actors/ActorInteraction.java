@@ -1,7 +1,8 @@
-package com.neweyjrpg.interaction;
+package com.neweyjrpg.interaction.actors;
 
 import com.neweyjrpg.actor.GameActor;
-import com.neweyjrpg.interfaces.InteractionCompleteListener;
+import com.neweyjrpg.interaction.Interaction;
+import com.neweyjrpg.interfaces.IHandlesInteraction;
 import com.neweyjrpg.manager.Manager;
 
 public abstract class ActorInteraction extends Interaction {
@@ -11,7 +12,7 @@ public abstract class ActorInteraction extends Interaction {
 	protected GameActor target;
 	public GameActor getTarget() { return this.target; }
 	
-	public ActorInteraction(InteractionCompleteListener scene, String target) {
+	public ActorInteraction(IHandlesInteraction scene, String target) {
 		super(scene);
 		this.targetName = target;
 	}
