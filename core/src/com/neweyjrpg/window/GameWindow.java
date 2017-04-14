@@ -33,9 +33,9 @@ public abstract class GameWindow {
 	protected void setSkin() {
 		Pixmap pxm = new Pixmap(width, height, Format.RGB888);
 		pxm.setColor(Color.BLACK);
-		pxm.fillRectangle(x, y, width, height);
+		pxm.fillRectangle(0, 0, width, height);
 		pxm.setColor(Color.WHITE);
-		pxm.drawRectangle(x+1, y+1, width-2, height-2);
+		pxm.drawRectangle(1, 1, width-2, height-2);
 		
 		this.windowSkin = new TextureRegion(new Texture(pxm));
 		pxm.dispose();

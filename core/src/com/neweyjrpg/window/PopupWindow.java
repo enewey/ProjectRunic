@@ -29,7 +29,7 @@ public class PopupWindow extends GameWindow {
 	protected void setSkin() {
 		Pixmap pxm = new Pixmap(width, height, Format.RGBA8888);
 		pxm.setColor(Color.BLACK);
-		pxm.drawRectangle(x, y, width, height);
+		pxm.drawRectangle(0, 0, width, height);
 		
 		this.windowSkin = new TextureRegion(new Texture(pxm));
 		pxm.dispose();

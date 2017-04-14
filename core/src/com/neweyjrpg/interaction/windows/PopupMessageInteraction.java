@@ -12,10 +12,16 @@ import com.neweyjrpg.window.PopupWindow;
 
 public class PopupMessageInteraction extends WindowInteraction {
 
-	private GameActor source;	
-	public PopupMessageInteraction(IHandlesInteraction scene, String str, GameActor source) {
+	private GameActor source;
+	private int x,y,width,height;
+	
+	public PopupMessageInteraction(IHandlesInteraction scene, int x, int y, int width, int height, GameActor source) {
 		super(scene);
 		this.source = source;
+		this.x=x;
+		this.y=y;
+		this.width=width;
+		this.height=height;
 	}
 	
 	@Override
@@ -26,7 +32,7 @@ public class PopupMessageInteraction extends WindowInteraction {
 		Vector2 v = new Vector2(x,y);
 		
 		((WindowManager)m).addWindow(
-				new PopupWindow(this, 0, 0, Constants.GAME_WIDTH, 80, v, Constants.POPUP_DURATION));
+				new PopupWindow(this, this.x, this.y, this.width, this.height, v, Constants.POPUP_DURATION));
 		
 		return this;
 	}

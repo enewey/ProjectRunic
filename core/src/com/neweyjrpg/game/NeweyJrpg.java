@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.neweyjrpg.actor.MassiveActor;
 import com.neweyjrpg.actor.StaticActor;
 import com.neweyjrpg.actor.characters.EnemyActor;
 import com.neweyjrpg.actor.characters.NPCActor;
@@ -26,6 +28,10 @@ import com.neweyjrpg.interaction.actors.DisposeInteraction;
 import com.neweyjrpg.interaction.actors.MovementInteraction;
 import com.neweyjrpg.interaction.windows.MessageInteraction;
 import com.neweyjrpg.interaction.windows.PopupMessageInteraction;
+import com.neweyjrpg.interaction.windows.SpeechMessageInteraction;
+import com.neweyjrpg.interaction.windows.SpeechPopupInteraction;
+import com.neweyjrpg.interaction.windows.StandardMessageInteraction;
+import com.neweyjrpg.interaction.windows.StandardPopupMessageInteraction;
 import com.neweyjrpg.physics.BlockBody;
 
 public class NeweyJrpg extends ApplicationAdapter {
@@ -52,19 +58,18 @@ public class NeweyJrpg extends ApplicationAdapter {
 		font = Assets.loadFont(Constants.DEFAULT_FONT);
 		font.setColor(Color.WHITE);
 				
-//		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
-//		for (int k = 0; k < 10; k++) {
-//			for (int i = 0; i < 10; i++) {
-//				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
-//			}
-//		}
-//		MassiveActor bigBlock = new MassiveActor(176f, 112f,
-//				new BlockBody(PhysicalState.StaticBlock, new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f,
-//				16f, Enums.Priority.Same);
-//		bigBlock.setCollider(new BlockingCollider());
-//		bigBlock.setName("BIGBLOCK");
-//		scene.addActor(bigBlock);
-
+		TextureRegion[][] bigBlockGraphics = new TextureRegion[10][10];
+		for (int k = 0; k < 10; k++) {
+			for (int i = 0; i < 10; i++) {
+				bigBlockGraphics[k][i] = new TileGraphic(new Texture("dungeon.png"), 0, 5);
+			}
+		}
+		MassiveActor bigBlock = new MassiveActor(176f, 112f,
+				new BlockBody(PhysicalState.StaticBlock, new Rectangle(96f, 96f, 160f, 160f)), bigBlockGraphics, 16f,
+				16f, Enums.Priority.Same);
+		bigBlock.setCollider(new BlockingCollider());
+		bigBlock.setName("BIGBLOCK");
+		scene.addActor(bigBlock);
 
 		addEnemies(scene, 4);
 		addNPCs(scene, 4);
@@ -113,7 +118,10 @@ public class NeweyJrpg extends ApplicationAdapter {
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.5f));
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.StepDir, Enums.Dir.UP, 30f));
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.5f));
-		block.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
+		block.addOnActionInteraction(new StandardPopupMessageInteraction(scene, block));
+		block.addOnActionInteraction(new StandardMessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
+		block.addOnActionInteraction(new SpeechPopupInteraction(scene, 40, 40, "Testing a THIRD message!", block));
+		block.addOnActionInteraction(new SpeechMessageInteraction(scene, 40, 40, Constants.DEFAULT_FONT, "Testing a THIRD message!"));
 		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 0.0f, 0.0f, 0.0f, 1.0f));
 		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 1.0f, 1.0f, 1.0f, 1.0f));
 		
@@ -159,9 +167,9 @@ public class NeweyJrpg extends ApplicationAdapter {
 			npc.setMovespeed((float) (Math.random() + 0.5f) * 1.3f);
 			npc.setCollider(new BlockingCollider());
 			npc.setController(new BadAIController());
-			npc.addOnActionInteraction(new PopupMessageInteraction(scene, "", npc));
+			npc.addOnActionInteraction(new StandardPopupMessageInteraction(scene, npc));
 			npc.setName("NPC number "+i);
-			npc.addOnActionInteraction(new MessageInteraction(scene, Constants.DEFAULT_FONT, 
+			npc.addOnActionInteraction(new StandardMessageInteraction(scene, Constants.DEFAULT_FONT, 
 					"My name is " + npc.getName()));
 			npc.addOnActionInteraction(new SceneInteraction(scene, SceneAction.ChangeColor, 1f, true, 0f,0f,0f,1f));
 			npc.addOnActionInteraction(new SceneInteraction(scene, SceneAction.ChangeColor, 1f, true, 1f,1f,1f,1f));
