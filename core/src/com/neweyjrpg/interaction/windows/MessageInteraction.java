@@ -2,7 +2,6 @@ package com.neweyjrpg.interaction.windows;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.interaction.Interaction;
 import com.neweyjrpg.interfaces.IHandlesInteraction;

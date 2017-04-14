@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.neweyjrpg.constants.Constants;
 import com.neweyjrpg.game.Assets;
 
@@ -81,8 +80,8 @@ public class Funcs {
 	
 	public static int getWindowHeight(String str, String font) {
 		ArrayList<String> lines = Funcs.formatString(str, font, Constants.GAME_WIDTH/3, Constants.WINDOW_PADDING);
-		if (lines.size() > 1) {
-			return lines.get(0).split("\\n").length * 20;
+		if (lines.size() == 1) {
+			return (lines.get(0).split("\\n").length * 18) + 10;
 		} else {
 			return 80;
 		}

@@ -26,8 +26,6 @@ import com.neweyjrpg.interaction.SceneInteraction;
 import com.neweyjrpg.interaction.actors.DamageInteraction;
 import com.neweyjrpg.interaction.actors.DisposeInteraction;
 import com.neweyjrpg.interaction.actors.MovementInteraction;
-import com.neweyjrpg.interaction.windows.MessageInteraction;
-import com.neweyjrpg.interaction.windows.PopupMessageInteraction;
 import com.neweyjrpg.interaction.windows.SpeechMessageInteraction;
 import com.neweyjrpg.interaction.windows.SpeechPopupInteraction;
 import com.neweyjrpg.interaction.windows.StandardMessageInteraction;
@@ -120,8 +118,8 @@ public class NeweyJrpg extends ApplicationAdapter {
 		block.addOnActionInteraction(new MovementInteraction(scene, "PUSHBLOCK", Enums.Move.Pause, 0.5f));
 		block.addOnActionInteraction(new StandardPopupMessageInteraction(scene, block));
 		block.addOnActionInteraction(new StandardMessageInteraction(scene, Constants.DEFAULT_FONT, "Testing a second message!"));
-		block.addOnActionInteraction(new SpeechPopupInteraction(scene, 40, 40, "Testing a THIRD message!", block));
-		block.addOnActionInteraction(new SpeechMessageInteraction(scene, 40, 40, Constants.DEFAULT_FONT, "Testing a THIRD message!"));
+		block.addOnActionInteraction(new SpeechPopupInteraction(scene, 40, 80, "Oh hey", block));
+		block.addOnActionInteraction(new SpeechMessageInteraction(scene, 40, 80, Constants.DEFAULT_FONT, "Test the tiny popup!"));
 		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 0.0f, 0.0f, 0.0f, 1.0f));
 		block.addOnActionInteraction(new SceneInteraction(scene, Enums.SceneAction.ChangeColor, 1.0f, true, 1.0f, 1.0f, 1.0f, 1.0f));
 		
